@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Repository;
+using QuizMaster.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<QuizMasterDbContext>(options =>
 
 // Add services here
 //builder.Services.AddScoped<FunctionService>();
+builder.Services.AddScoped<QuizService>();
 
 var app = builder.Build();
 

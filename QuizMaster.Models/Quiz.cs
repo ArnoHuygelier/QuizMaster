@@ -11,16 +11,16 @@ namespace QuizMaster.Models
 		public int QuizId { get; set; }
 
 		[StringLength(200)]
-		public string Title { get; set; } = null!;
+		public required string Title { get; set; } 
 
-		public string Description { get; set; } = null!;
+		public required string Description { get; set; } 
 
 		public int CreatedBy { get; set; }
 
 		public DateOnly CreatedAt { get; set; }
 
 		[StringLength(50)]
-		public string Mode { get; set; } = null!;
+		public required string Mode { get; set; } 
 
 		public bool IsFinished { get; set; }
 

@@ -11,16 +11,16 @@ namespace QuizMaster.Models
 		public int UserId { get; set; }
 
 		[StringLength(200)]
-		public string UserName { get; set; } = null!;
+		public required string UserName { get; set; } 
 
 		[StringLength(200)]
-		public string Email { get; set; } = null!;
+		public required string Email { get; set; } 
 
 		[StringLength(50)]
-		public string Password { get; set; } = null!;
+		public required string Password { get; set; }
 
 		[StringLength(50)]
-		public string Role { get; set; } = null!;
+		public required string Role { get; set; }
 
 		public DateOnly CreatedAt { get; set; }
 
@@ -34,7 +34,7 @@ namespace QuizMaster.Models
 
 		[ForeignKey("AvatarId")]
 		[InverseProperty("Users")]
-		public virtual Avatar Avatar { get; set; } = null!;
+		public required Avatar Avatar { get; set; } 
 
 		[InverseProperty("User")]
 		public virtual ICollection<Leaderboard> Leaderboards { get; set; } = new List<Leaderboard>();

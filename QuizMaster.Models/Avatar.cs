@@ -10,11 +10,11 @@ namespace QuizMaster.Models
 		[Key]
 		public int AvatarId { get; set; }
 
-		public string AvatarUrl { get; set; } = null!;
+		public required string AvatarUrl { get; set; }
 
 		public DateTime UploadedAt { get; set; }
 
 		[InverseProperty("Avatar")]
-		public virtual ICollection<User> Users { get; set; } = new List<User>();
+		public  ICollection<User> Users { get; set; } = new List<User>();
 	}
 }

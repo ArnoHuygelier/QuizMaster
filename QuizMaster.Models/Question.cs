@@ -12,7 +12,7 @@ namespace QuizMaster.Models
 
 		public int QuizId { get; set; }
 
-		public string QuestionText { get; set; } = null!;
+		public required string QuestionText { get; set; } 
 
 		public bool CorrectOption { get; set; }
 
@@ -23,6 +23,6 @@ namespace QuizMaster.Models
 
 		[ForeignKey("QuizId")]
 		[InverseProperty("Questions")]
-		public virtual Quiz Quiz { get; set; } = null!;
+		public required Quiz Quiz { get; set; } 
 	}
 }

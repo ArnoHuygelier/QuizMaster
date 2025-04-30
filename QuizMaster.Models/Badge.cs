@@ -12,14 +12,14 @@ namespace QuizMaster.Models
 		public int BadgeId { get; set; }
 
 		[StringLength(200)]
-		public string BadgeName { get; set; } = null!;
+		public required string BadgeName { get; set; } 
 
-		public string Description { get; set; } = null!;
+		public required string Description { get; set; } 
 
-		public string Criteria { get; set; } = null!;
+		public required string Criteria { get; set; } 
 
 		[InverseProperty("Badge")]
-		public virtual ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
+		public  ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
 	}
 
 }

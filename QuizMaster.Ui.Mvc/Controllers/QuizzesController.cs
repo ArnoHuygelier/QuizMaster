@@ -1,12 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuizMaster.Services;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
     public class QuizzesController : Controller
     {
-        public IActionResult Index()
+        private readonly QuizService _quizService;
+
+        public QuizzesController(QuizService quizService)
         {
-            return View();
+            _quizService = quizService;
         }
+
+
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
+
+
     }
 }

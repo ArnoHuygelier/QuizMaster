@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuizMaster.Services\QuizMaster.Services.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using QuizMaster.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString(nameof(QuizMasterDbContext));
+
+builder.Services.AddDbContext<QuizMasterDbContext>(options =>
+{
+	options.UseSqlServer(connectionString);
+});
 
 var app = builder.Build();
 

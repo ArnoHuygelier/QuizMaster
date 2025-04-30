@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuizMaster.Models\QuizMaster.Models.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
   </ItemGroup>
 
 </Project>

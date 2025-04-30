@@ -14,28 +14,25 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
 
-        public IActionResult Index()
-        {
-            var quizzes = _quizService.GetAll();
-            return View(quizzes);
-        }
+       
         public IActionResult Detail(int id)
         {
             var quiz = _quizService.GetById(id);
             return View(quiz);
         }
 
-        //[HttpGet]
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public IActionResult Create(Quiz quiz)
-        //{
-        //    _quizService.Create(quiz);
-        //}
+        [HttpPost]
+        public IActionResult Create(Quiz quiz)
+        {
+            _quizService.Create(quiz);
+            return RedirectToAction("index", "home");
+        }
 
     }
 }

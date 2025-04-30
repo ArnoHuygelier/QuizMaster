@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 using QuizMaster.Repository;
 
@@ -19,7 +20,7 @@ namespace QuizMaster.Services
 
         public IList<Quiz> GetAll()
         {
-            return _dbContext.Quizzes.ToList();
+            return _dbContext.Quizzes.Include(q => q.CreatedByNavigation).ToList();
         }
 
         public Quiz? GetById(int id)

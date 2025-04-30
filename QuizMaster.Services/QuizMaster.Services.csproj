@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuizMaster.Repository\QuizMaster.Repository.csproj" />
+  </ItemGroup>
+
 </Project>

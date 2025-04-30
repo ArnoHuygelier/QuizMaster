@@ -19,6 +19,11 @@ namespace QuizMaster.Ui.Mvc.Controllers
             var quizzes = _quizService.GetAll();
             return View(quizzes);
         }
+        public IActionResult Detail(int id)
+        {
+            var quiz = _quizService.GetById(id);
+            return View(quiz);
+        }
 
         //[HttpGet]
         //public IActionResult Create()

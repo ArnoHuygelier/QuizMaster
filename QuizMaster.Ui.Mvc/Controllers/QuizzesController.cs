@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuizMaster.Models;
 using QuizMaster.Services;
 
 namespace QuizMaster.Ui.Mvc.Controllers
@@ -13,11 +14,23 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
 
-        //public IActionResult Index()
+        public IActionResult Index()
+        {
+            var quizzes = _quizService.GetAll();
+            return View(quizzes);
+        }
+
+        //[HttpGet]
+        //public IActionResult Create()
         //{
         //    return View();
         //}
 
+        //[HttpPost]
+        //public IActionResult Create(Quiz quiz)
+        //{
+        //    _quizService.Create(quiz);
+        //}
 
     }
 }

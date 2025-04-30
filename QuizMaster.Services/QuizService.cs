@@ -17,19 +17,21 @@ namespace QuizMaster.Services
             _dbContext = dbContext;
         }
 
-        public IList<Quiz> Find()
+        public IList<Quiz> GetAll()
         {
             return _dbContext.Quizzes.ToList();
         }
 
-        public Quiz? Get(int id)
+        public Quiz? GetById(int id)
         {
             return _dbContext.Quizzes.FirstOrDefault(q => q.QuizId == id);
         }
 
-        //public Quiz? Create(Quiz quiz)
-        //{
-        //    quiz.CreatedAt = DateTime.Now;
-        //}
+        public Quiz? Create(Quiz quiz)
+        {
+            _dbContext.Quizzes.Add(quiz);
+            _dbContext.SaveChanges();
+            return quiz;
+        }
     }
 }

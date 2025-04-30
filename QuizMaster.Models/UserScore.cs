@@ -22,10 +22,10 @@ namespace QuizMaster.Models
 
 		[ForeignKey("QuizId")]
 		[InverseProperty("UserScores")]
-		public virtual Quiz Quiz { get; set; } = null!;
+		public required Quiz Quiz { get; set; } 
 
 		[ForeignKey("UserId")]
 		[InverseProperty("UserScores")]
-		public virtual User User { get; set; } = null!;
+		public required User User { get; set; } 
 	}
 }

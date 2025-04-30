@@ -13,11 +13,11 @@ namespace QuizMaster.Models
 		public int QuestionId { get; set; }
 
 		[StringLength(255)]
-		public string OptionText { get; set; } = null!;
+		public required string OptionText { get; set; }
 
 		[ForeignKey("QuestionId")]
 		[InverseProperty("QuestionOptions")]
-		public virtual Question Question { get; set; } = null!;
+		public required Question Question { get; set; } 
 	}
 
 }

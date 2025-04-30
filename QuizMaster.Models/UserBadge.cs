@@ -18,11 +18,11 @@ namespace QuizMaster.Models
 
 		[ForeignKey("BadgeId")]
 		[InverseProperty("UserBadges")]
-		public virtual Badge Badge { get; set; } = null!;
+		public required Badge Badge { get; set; } 
 
 		[ForeignKey("UserId")]
 		[InverseProperty("UserBadges")]
-		public virtual User User { get; set; } = null!;
+		public required User User { get; set; } 
 	}
 
 }

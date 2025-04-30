@@ -11,9 +11,9 @@ namespace QuizMaster.Models
 		public int ChallengeId { get; set; }
 
 		[StringLength(200)]
-		public string ChallengeTitle { get; set; } = null!;
+		public required string ChallengeTitle { get; set; }
 
-		public string ChallengeDescription { get; set; } = null!;
+		public required string ChallengeDescription { get; set; }
 
 		public DateTime StartDate { get; set; }
 
@@ -22,7 +22,7 @@ namespace QuizMaster.Models
 		public int RewardPoints { get; set; }
 
 		[InverseProperty("Challenge")]
-		public virtual ICollection<UserChallenge> UserChallenges { get; set; } = new List<UserChallenge>();
+		public  ICollection<UserChallenge> UserChallenges { get; set; } = new List<UserChallenge>();
 	}
 
 }

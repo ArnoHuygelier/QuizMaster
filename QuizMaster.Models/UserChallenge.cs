@@ -21,11 +21,11 @@ namespace QuizMaster.Models
 
 		[ForeignKey("ChallengeId")]
 		[InverseProperty("UserChallenges")]
-		public virtual DailyChallenge Challenge { get; set; } = null!;
+		public required DailyChallenge Challenge { get; set; }
 
 		[ForeignKey("UserId")]
 		[InverseProperty("UserChallenges")]
-		public virtual User User { get; set; } = null!;
+		public required User User { get; set; } 
 	}
 
 }

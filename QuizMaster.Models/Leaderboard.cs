@@ -18,13 +18,13 @@ namespace QuizMaster.Models
 
 		public int Rank { get; set; }
 
-		[ForeignKey("QuizId")]
-		[InverseProperty("Leaderboards")]
-		public virtual Quiz Quiz { get; set; } = null!;
+        [ForeignKey("QuizId")]
+        [InverseProperty("Leaderboards")]
+        public required Quiz Quiz { get; set; } 
 
 		[ForeignKey("UserId")]
 		[InverseProperty("Leaderboards")]
-		public virtual User User { get; set; } = null!;
+		public required  User User { get; set; } 
 	}
 
 }

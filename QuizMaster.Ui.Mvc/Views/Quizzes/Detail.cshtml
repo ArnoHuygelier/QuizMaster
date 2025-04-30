@@ -1,0 +1,104 @@
+﻿@model QuizMaster.Models.Quiz
+
+<div class="container py-4">
+    <!-- Quiz Header Info -->
+    <div class="row align-items-center mb-4">
+        <div class="col-md-3 text-center mb-3 mb-md-0">
+            <img src="/images/homeImageBlokken.png" class="img-fluid rounded" alt="Quiz Image">
+        </div>
+        <div class="col-md-9">
+            <h2 class="fw-bold">@Model.Title</h2>
+            <p class="text-muted">@Model.Description</p>
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <div><i class="bi bi-play-circle"></i> 1.8M Plays</div>
+                <div><i class="bi bi-star-fill text-warning"></i> 4.0 <span class="text-muted">(1,001)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Stats Panel -->
+    <div class="bg-light rounded shadow-sm p-4 mb-4 text-center">
+        <div class="row">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="fw-bold">QUESTION #</div>
+                <div>---</div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="fw-bold">QUESTIONS REMAINING</div>
+                <div>@Model.Questions.Count</div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="fw-bold">SCORE</div>
+                <div>0/@Model.Questions.Count</div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="fw-bold">TIMER</div>
+                <div>01:00</div>
+            </div>
+        </div>
+        <button class="btn btn-primary mt-3 px-4">Play Quiz</button>
+    </div>
+
+    <!-- Quiz Details and Modes -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-bold">Details</span>
+            <div>
+                <a href="#" class="text-decoration-none me-3"><i class="bi bi-flag"></i> Report</a>
+                <i class="bi bi-three-dots-vertical"></i>
+            </div>
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled">
+                <li class="mb-2">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Multiple Choice:</strong> Click on answers from a set of options
+                </li>
+                <li class="mb-2">
+                    <i class="bi bi-arrow-down-up text-primary me-2"></i>
+                    <strong>Forced Order:</strong> Questions have to be entered in order without skipping
+                </li>
+                <li class="mb-2">
+                    <i class="bi bi-exclamation-circle-fill text-danger me-2"></i>
+                    <strong>Minefield:</strong> Wrong answers will end the quiz
+                </li>
+                <li>
+                    <i class="bi bi-shuffle text-warning me-2"></i>
+                    <strong>Random Order:</strong> Randomize order of answers
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Best Players -->
+    <h5 class="mb-3">Best Players</h5>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        <div class="col text-center">
+            <img src="/images/person.png" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" alt="Player">
+            <div class="fw-bold">Alexander Bastian</div>
+            <small class="text-muted">Quiz Challenger</small>
+        </div>
+        <div class="col text-center">
+            <img src="/images/person.png" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" alt="Player">
+            <div class="fw-bold">Labie Carthaline</div>
+            <small class="text-muted">Marketing Specialist</small>
+        </div>
+        <div class="col text-center">
+            <img src="/images/person.png" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" alt="Player">
+            <div class="fw-bold">Jonathan Doe</div>
+            <small class="text-muted">Financial Strategist</small>
+        </div>
+        <div class="col text-center">
+            <img src="/images/person.png" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" alt="Player">
+            <div class="fw-bold">Kitani Saraswati</div>
+            <small class="text-muted">Film Editor & Actor</small>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+

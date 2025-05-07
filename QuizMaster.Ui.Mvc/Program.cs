@@ -17,6 +17,7 @@ builder.Services.AddDbContext<QuizMasterDbContext>(options =>
 // Add services here
 //builder.Services.AddScoped<FunctionService>();
 builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<LeaderboardService>();
 
 var app = builder.Build();
 
@@ -43,7 +44,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=leaderboard}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 

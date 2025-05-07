@@ -1,0 +1,101 @@
+﻿
+
+@{
+    ViewBag.Title = "Team Standings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="my-4 text-primary">Team Standings</h2>
+
+<div class="container bg-light-subtle p-4 rounded">
+    <div class="row">
+        <div class="col-12">
+            <ul class="list-group list-group-flush">
+                @{
+                    var teams = new[]
+                    {
+                        new { Rank = 1, Name = "Amanda Harvey", Score = 4.97, Avatar = "/images/avatars/amanda.png", CreatedAt = new DateOnly(2024, 12, 1), Badge = "Gold" },
+                        new { Rank = 2, Name = "David Harrison", Score = 4.95, Avatar = "/images/avatars/david.png", CreatedAt = new DateOnly(2024, 11, 15), Badge = "Gold" },
+                        new { Rank = 3, Name = "Lori Hunter", Score = 4.90, Avatar = "/images/avatars/lori.png", CreatedAt = new DateOnly(2024, 10, 5), Badge = "Silver" },
+                        new { Rank = 4, Name = "Linda Bates", Score = 4.52, Avatar = "/images/avatars/linda.png", CreatedAt = new DateOnly(2024, 9, 20), Badge = "Silver" },
+                        new { Rank = 5, Name = "Brian Halligan", Score = 4.25, Avatar = "/images/avatars/brian.png", CreatedAt = new DateOnly(2024, 9, 10), Badge = "Bronze" },
+                        new { Rank = 6, Name = "Costa Quinn", Score = 3.80, Avatar = "/images/avatars/costa.png", CreatedAt = new DateOnly(2024, 8, 30), Badge = "Bronze" },
+                        new { Rank = 7, Name = "Mark Colbert", Score = 3.80, Avatar = "/images/avatars/mark.png", CreatedAt = new DateOnly(2024, 8, 12), Badge = "Bronze" },
+                        new { Rank = 8, Name = "Ella Lauda", Score = 3.45, Avatar = "/images/avatars/ella.png", CreatedAt = new DateOnly(2024, 7, 28), Badge = "Bronze" },
+                        new { Rank = 9, Name = "Finch Hoot", Score = 3.02, Avatar = "/images/avatars/finch.png", CreatedAt = new DateOnly(2024, 7, 10), Badge = "No Badge" },
+                        new { Rank = 10, Name = "Chris Mathew", Score = 2.92, Avatar = "/images/avatars/chris.png", CreatedAt = new DateOnly(2024, 6, 25), Badge = "No Badge" },
+                        new { Rank = 11, Name = "Amanda Harvey", Score = 4.97, Avatar = "/images/avatars/amanda.png", CreatedAt = new DateOnly(2024, 12, 1), Badge = "Gold" },
+                        new { Rank = 12, Name = "David Harrison", Score = 4.95, Avatar = "/images/avatars/david.png", CreatedAt = new DateOnly(2024, 11, 15), Badge = "Gold" },
+                        new { Rank = 13, Name = "Lori Hunter", Score = 4.90, Avatar = "/images/avatars/lori.png", CreatedAt = new DateOnly(2024, 10, 5), Badge = "Silver" },
+                        new { Rank = 14, Name = "Linda Bates", Score = 4.52, Avatar = "/images/avatars/linda.png", CreatedAt = new DateOnly(2024, 9, 20), Badge = "Silver" },
+                        new { Rank = 15, Name = "Brian Halligan", Score = 4.25, Avatar = "/images/avatars/brian.png", CreatedAt = new DateOnly(2024, 9, 10), Badge = "Bronze" },
+                        new { Rank = 16, Name = "Costa Quinn", Score = 3.80, Avatar = "/images/avatars/costa.png", CreatedAt = new DateOnly(2024, 8, 30), Badge = "Bronze" },
+                        new { Rank = 17, Name = "Mark Colbert", Score = 3.80, Avatar = "/images/avatars/mark.png", CreatedAt = new DateOnly(2024, 8, 12), Badge = "Bronze" },
+                        new { Rank = 18, Name = "Ella Lauda", Score = 3.45, Avatar = "/images/avatars/ella.png", CreatedAt = new DateOnly(2024, 7, 28), Badge = "Bronze" },
+                        new { Rank = 19, Name = "Finch Hoot", Score = 3.02, Avatar = "/images/avatars/finch.png", CreatedAt = new DateOnly(2024, 7, 10), Badge = "No Badge" },
+                        new { Rank = 20, Name = "Chris Mathew", Score = 2.92, Avatar = "/images/avatars/chris.png", CreatedAt = new DateOnly(2024, 6, 25), Badge = "No Badge" },
+                        new { Rank = 21, Name = "Amanda Harvey", Score = 4.97, Avatar = "/images/avatars/amanda.png", CreatedAt = new DateOnly(2024, 12, 1), Badge = "Gold" },
+                        new { Rank = 22, Name = "David Harrison", Score = 4.95, Avatar = "/images/avatars/david.png", CreatedAt = new DateOnly(2024, 11, 15), Badge = "Gold" },
+                        new { Rank = 23, Name = "Lori Hunter", Score = 4.90, Avatar = "/images/avatars/lori.png", CreatedAt = new DateOnly(2024, 10, 5), Badge = "Silver" },
+                        new { Rank = 24, Name = "Linda Bates", Score = 4.52, Avatar = "/images/avatars/linda.png", CreatedAt = new DateOnly(2024, 9, 20), Badge = "Silver" },
+                        new { Rank = 25, Name = "Brian Halligan", Score = 4.25, Avatar = "/images/avatars/brian.png", CreatedAt = new DateOnly(2024, 9, 10), Badge = "Bronze" },
+                        new { Rank = 26, Name = "Costa Quinn", Score = 3.80, Avatar = "/images/avatars/costa.png", CreatedAt = new DateOnly(2024, 8, 30), Badge = "Bronze" },
+                        new { Rank = 27, Name = "Mark Colbert", Score = 3.80, Avatar = "/images/avatars/mark.png", CreatedAt = new DateOnly(2024, 8, 12), Badge = "Bronze" },
+                        new { Rank = 28, Name = "Ella Lauda", Score = 3.45, Avatar = "/images/avatars/ella.png", CreatedAt = new DateOnly(2024, 7, 28), Badge = "Bronze" },
+                        new { Rank = 29, Name = "Finch Hoot", Score = 3.02, Avatar = "/images/avatars/finch.png", CreatedAt = new DateOnly(2024, 7, 10), Badge = "No Badge" },
+                        new { Rank = 30, Name = "Chris Mathew", Score = 2.92, Avatar = "/images/avatars/chris.png", CreatedAt = new DateOnly(2024, 6, 25), Badge = "No Badge" }
+                    };
+                }
+
+                <li class="list-group-item bg-primary text-white fw-bold">
+                    <div class="row text-center">
+                        <div class="col-1">Rank</div>
+                        <div class="col-4 text-start">Name</div>
+                        <div class="col-2">Score</div>
+                        <div class="col-3">Badge</div>
+                        <div class="col-2">Joined</div>
+                    </div>
+                </li>
+
+                @foreach (var team in teams)
+                {
+                    <li class="list-group-item bg-white rounded shadow-sm mb-2">
+                        <div class="row align-items-center text-center">
+                            <div class="col-1">
+                                <span class="badge bg-primary">#@team.Rank</span>
+                            </div>
+                            <div class="col-4 d-flex align-items-center">
+                                <img src="@team.Avatar" class="rounded-circle" alt="Avatar" width="30" height="30"/>
+                                <div class="ms-2 fw-semibold text-dark">@team.Name</div>
+                            </div>
+                            <div class="col-2 text-warning fw-bold">
+                                <i class="bi bi-star-fill"></i> @team.Score.ToString("0.00")
+                            </div>
+                            <div class="col-3">
+                                @if (team.Badge == "Gold")
+                                {
+                                    <span class="badge bg-warning text-dark">Gold</span>
+                                }
+                                else if (team.Badge == "Silver")
+                                {
+                                    <span class="badge bg-secondary">Silver</span>
+                                }
+                                else if (team.Badge == "Bronze")
+                                {
+                                    <span class="badge bg-bronze">Bronze</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-dark">No Badge</span>
+                                }
+                            </div>
+                            <div class="col-2 fw-semibold text-dark">
+                                @team.CreatedAt.ToString("MMM dd, yyyy")
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

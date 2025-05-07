@@ -20,6 +20,6 @@ namespace QuizMaster.Models
 
 		[InverseProperty("Badge")]
 		public  ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
-	}
+	}	
 
 }

@@ -18,11 +18,11 @@ namespace QuizMaster.Services
         }
         public IList<Quiz> Find() /// Gets all quizzes
         {
-            return _dbContext.Quizzes.Include(q => q.CreatedByNavigation).ToList();
+            return _dbContext.Quizzes.Include(q => q.User).ToList();
         }
         public Quiz? Get(int id) /// Gets a specific quiz by id
         {
-            return _dbContext.Quizzes.FirstOrDefault(q => q.QuizId == id);
+            return _dbContext.Quizzes.FirstOrDefault(q => q.Id == id);
         }
         public Quiz? Create(Quiz quiz) /// Creates a new quiz
         {

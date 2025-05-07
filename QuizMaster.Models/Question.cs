@@ -1,28 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
 
-namespace QuizMaster.Models
-{
-	public partial class Question
-	{
-		[Key]
-		public int QuestionId { get; set; }
+    namespace QuizMaster.Models
+    {
+        public class Question
+        {
+        public int QuestionId { get; set; }
+        public string QuestionText { get; set; }
 
-		public int QuizId { get; set; }
-
-		public string QuestionText { get; set; } = null!;
-
-		public bool CorrectOption { get; set; }
-
-		public int Difficulty { get; set; }
-
-		[InverseProperty("Question")]
-		public virtual ICollection<QuestionOption> QuestionOptions { get; set; } = new List<QuestionOption>();
-
-		[ForeignKey("QuizId")]
-		[InverseProperty("Questions")]
-		public virtual Quiz Quiz { get; set; } = null!;
-	}
+        public ICollection<Category> Categories { get; set; }
+        public ICollection<Quiz> Quizzes { get; set; }
+        public ICollection<Answer> Answers { get; set; }
+    }
 }

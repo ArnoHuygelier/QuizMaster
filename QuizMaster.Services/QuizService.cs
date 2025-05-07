@@ -20,12 +20,12 @@ namespace QuizMaster.Services
 
         public IList<Quiz> GetAll()
         {
-            return _dbContext.Quizzes.Include(q => q.CreatedByNavigation).ToList();
+            return _dbContext.Quizzes.Include(q => q.User).ToList();
         }
 
         public Quiz? GetById(int id)
         {
-            return _dbContext.Quizzes.FirstOrDefault(q => q.QuizId == id);
+            return _dbContext.Quizzes.FirstOrDefault(q => q.Id == id);
         }
 
         public Quiz? Create(Quiz quiz)

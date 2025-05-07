@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Leaderboard";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container-fluid py-5 text-white" style="max-width:1600px; min-height: 100vh;">
+    <h2 class="text-center mb-5 fw-bold">Weekly Top Leaderboard</h2>
+
+    <div class="row mb-5 px-4">
+        <div class="col-md-6">
+            <h4 class="text-center mb-4">Top Reviews</h4>
+            <div class="bg-white text-dark rounded p-3 mb-3">
+                <div class="d-flex align-items-center">
+                    <img src="~/images/person.png" class="rounded-circle me-3" />
+                    <div>
+                        <h6 class="mb-0">Sunoj Khandwal</h6>
+                        <small>Junior Reviewer</small>
+                    </div>
+                </div>
+                <p class="mt-3 mb-2">
+                    <strong>⭐️⭐️⭐️⭐️⭐️</strong> Review: "Great experience in QUIZMASTER. Loved the questions and leaderboard!"
+                </p>
+                <div class="d-flex gap-2">
+                    <span>Achievements:</span>
+                    <i class="bi bi-trophy-fill text-warning"></i>
+                    <i class="bi bi-linkedin"></i>
+                    <i class="bi bi-award-fill text-primary"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h4 class="text-center mb-4">Top Referrals</h4>
+            <div class="bg-white text-dark rounded p-3 mb-3">
+                <div class="d-flex align-items-center">
+                    <img src="~/images/person.png" class="rounded-circle me-3" />
+                    <div>
+                        <h6 class="mb-0">Sunoj Khandwal</h6>
+                        <small>Junior Referrer</small>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p><strong>345</strong> Referrals</p>
+                    <p><strong>₹200</strong> Bonus</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-center mb-3">Top 10 Players Of QuizMaster</h3>
+    <div class="d-flex justify-content-center mb-3">
+        <button class="btn btn-outline-light me-2">Monthly</button>
+        <button class="btn btn-outline-light">Quarterly</button>
+    </div>
+
+    <div class="table-responsive px-4">
+        <table class="table table-bordered table-hover table-dark text-center">
+            <thead class="table-primary">
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Achievements</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <tr>
+                        <td>
+                            @if (i == 1)
+                            {
+                                <span class="text-warning fw-bold">👑</span>
+                            }
+                            else if (i == 2)
+                            {
+                                <span class="text-secondary fw-bold">🥈</span>
+                            }
+                            else if (i == 3)
+                            {
+                                <span class="text-warning">🥉</span>
+                            }
+                            else
+                            {
+                                <span>@i</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <img src="~/images/person.png" class="rounded-circle" />
+                                <span>Player @i</span>
+                            </div>
+                        </td>
+                        <td>
+                            <i class="bi bi-trophy-fill text-warning"></i>
+                            <i class="bi bi-linkedin text-info"></i>
+                            <i class="bi bi-patch-check-fill text-success"></i>
+                        </td>
+                        <td>₹@(10000 - i * 300)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<style>
+    main{
+        max-width:100%!important;
+        background: linear-gradient(to bottom, #3a8ef6, #6c2bff);
+        margin:0px;
+        padding:0px;
+    }
+    img{
+        height: 146px;
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />

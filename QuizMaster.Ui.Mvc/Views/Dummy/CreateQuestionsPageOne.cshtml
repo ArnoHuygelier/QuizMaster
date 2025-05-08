@@ -1,27 +1,34 @@
-﻿@{
-    ViewData["Title"] = "Quiz Aanmaken - Stap 1";
-    var title = TempData["title"]?.ToString() ?? "";
-    var description = TempData["description"]?.ToString() ?? "";
+﻿@model QuizMaster.Models.Quiz
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Stap 1: Basisgegevens voor de Quiz</h2>
+    <div class="form-container" style="max-width: 600px; margin: auto;">
+        <form asp-action="CreateQuestionsPageTwo" method="get">
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Titel</label>
+                <input asp-for="Title" class="form-control" placeholder="Titel invullen" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Beschrijving</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Foto (optioneel)</label>
+                <input type="file" name="image" class="form-control" />
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="/" class="btn btn-secondary">Annuleer</a>
+                <button type="submit" class="btn btn-primary">Volgende</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
-
-<h2>Stap 1: Basisgegevens</h2>
-
-<form action="/Dummy/CreateQuestionsPageOne" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="image">Foto</label>
-        <input type="file" class="form-control" id="image" name="image">
-    </div>
-
-    <div class="form-group">
-        <label for="title">Titel</label>
-        <input type="text" class="form-control" id="title" name="title" value="@title" placeholder="Titel invullen">
-    </div>
-
-    <div class="form-group">
-        <label for="description">Beschrijving</label>
-        <textarea class="form-control" id="description" name="description" rows="3">@description</textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Next</button>
-    <a href="/" class="btn btn-secondary">Cancel</a>
-</form>

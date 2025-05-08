@@ -11,7 +11,7 @@ namespace QuizMaster.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
         public ICollection<Question> Questions { get; set; } = new List<Question>();

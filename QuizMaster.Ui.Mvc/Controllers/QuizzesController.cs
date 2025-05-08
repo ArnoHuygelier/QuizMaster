@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
 using System;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
+	[Authorize(Roles = "Admin")]
     public class QuizzesController : CrudController<Quiz>
     {
        

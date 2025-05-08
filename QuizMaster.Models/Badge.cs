@@ -12,7 +12,7 @@ namespace QuizMaster.Models
 		public int BadgeId { get; set; }
 
 		[StringLength(200)]
-		public required string BadgeName { get; set; } 
+		public required string BadgeName { get; set; }
 
 		public required string Description { get; set; } 
 

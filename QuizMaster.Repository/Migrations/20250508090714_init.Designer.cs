@@ -12,8 +12,8 @@ using QuizMaster.Repository;
 namespace QuizMaster.Repository.Migrations
 {
     [DbContext(typeof(QuizMasterDbContext))]
-    [Migration("20250508075642_Identity")]
-    partial class Identity
+    [Migration("20250508090714_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,17 +225,17 @@ namespace QuizMaster.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("AvatarUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Url")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Avatar");
+                    b.ToTable("Avatars");
                 });
 
             modelBuilder.Entity("QuizMaster.Models.Badge", b =>
@@ -319,10 +319,7 @@ namespace QuizMaster.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -330,7 +327,7 @@ namespace QuizMaster.Repository.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Quizzes");
                 });
@@ -428,10 +425,7 @@ namespace QuizMaster.Repository.Migrations
                     b.Property<int>("BadgeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -439,7 +433,7 @@ namespace QuizMaster.Repository.Migrations
 
                     b.HasIndex("BadgeId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserBadges");
                 });
@@ -546,7 +540,7 @@ namespace QuizMaster.Repository.Migrations
 
                     b.HasOne("QuizMaster.Models.User", "User")
                         .WithMany("Quizzes")
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -574,7 +568,7 @@ namespace QuizMaster.Repository.Migrations
 
                     b.HasOne("QuizMaster.Models.User", "User")
                         .WithMany("UserBadges")
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

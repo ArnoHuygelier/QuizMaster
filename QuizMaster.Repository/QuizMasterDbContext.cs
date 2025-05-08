@@ -13,6 +13,7 @@ namespace QuizMaster.Repository
         public DbSet<Category> Categories { get; set; }
         public DbSet<Badge> Badges { get; set; }
         public DbSet<UserBadge> UserBadges { get; set; }
+        public DbSet<Avatar> Avatars { get; set; }
 
 		public QuizMasterDbContext() { }
 

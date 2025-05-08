@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 
-namespace QuizMaster.Ui.Mvc.Controllers
+namespace QuizMaster.Ui.Mvc.Controllers.ControllerBases
 {
     public abstract class CrudController<T> : Controller where T : class
     {
+        
         public abstract Task<IActionResult> Index();
         public abstract Task<IActionResult> Detail(int id);
         public abstract IActionResult Create();

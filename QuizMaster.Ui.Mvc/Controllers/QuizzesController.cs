@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
+using QuizMaster.Ui.Mvc.Controllers.ControllerBases;
 using System;
 
 namespace QuizMaster.Ui.Mvc.Controllers

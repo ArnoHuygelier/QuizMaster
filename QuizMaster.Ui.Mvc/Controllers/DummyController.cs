@@ -96,4 +96,14 @@ public class DummyController : Controller
         return View();
     }
 
+    public IActionResult EditUser()
+    {
+        return View();
+    }
+
+    public IActionResult CreateBadge()
+    {
+        return View();
+    }
+
 }

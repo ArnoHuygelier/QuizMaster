@@ -1,58 +1,109 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
+using QuizMaster.Services;
 using QuizMaster.Ui.Mvc.Controllers.ControllerBases;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
-    public class UsersController : CrudController<User>
+    public class UsersController : CrudController<User,string>
     {
-        [HttpGet]
-        public override Task<IActionResult> Index()
+
+        private readonly UserService _userService;
+
+        public UsersController(UserService userService)
         {
-            throw new NotImplementedException();
+            _userService = userService;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public override async Task<IActionResult> Index()
+        {
+            var users = await _userService.Find();
+            return View(users);
         }
 
         [HttpGet]
-        public override Task<IActionResult> Detail(int id)
+        public override async Task<IActionResult> Detail(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userService.Get(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
         }
 
         [HttpGet]
         public override IActionResult Create()
         {
-            throw new NotImplementedException();
+            return View();
         }
 
         [HttpPost]
-        public override Task<IActionResult> Create(User entity)
+        public override async Task<IActionResult> Create(User entity)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+            {
+                return View(entity);
+            }
+
+            var createdUser = await _userService.Create(entity);
+            return RedirectToAction("Index");
         }
 
 
         [HttpGet]
-        public override Task<IActionResult> Edit(int id)
+        public override async Task<IActionResult> Edit(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userService.Get(id);
+            if (user is null)
+            {
+                return RedirectToAction("Index");
+            }
+
+
+
+            return View(user);
         }
 
         [HttpPost]
-        public override Task<IActionResult> Edit(int id, User entity)
+        public override async Task<IActionResult> Edit(string id, User entity)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+            {
+                return View(entity);
+            }
+
+            var updatedUser = await _userService.Update(id, entity);
+            if (updatedUser == null)
+            {
+                return NotFound();
+            }
+
+           
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public override Task<IActionResult> Delete(int id)
+        public override async Task<IActionResult> Delete(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userService.Get(id);
+            if (user is null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(user);
         }
 
         [HttpPost]
-        public override Task<IActionResult> DeleteConfirmed(int id)
+        public override async Task<IActionResult> DeleteConfirmed(string id)
         {
-            throw new NotImplementedException();
+            await _userService.Delete(id);
+
+            return RedirectToAction("Index");
         }
 
     }

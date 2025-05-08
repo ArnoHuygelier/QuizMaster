@@ -43,6 +43,9 @@ namespace QuizMaster.Services
             {
                 return null;
             }
+
+            //Update properties
+
             await _dbContext.SaveChangesAsync();
             return tempUser;
         }

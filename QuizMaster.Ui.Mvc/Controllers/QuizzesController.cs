@@ -8,23 +8,25 @@ using System;
 namespace QuizMaster.Ui.Mvc.Controllers
 {
 	[Authorize(Roles = "Admin")]
-    public class QuizzesController : CrudController<Quiz>
+    public class QuizzesController : CrudController<Quiz,int>
     {
        
         private readonly QuizService _quizService;
 
+        
         public QuizzesController(QuizService quizService)
         {
             _quizService = quizService;
         }
 
-        
+        [HttpGet]
         public override async Task<IActionResult> Index()
         {
             var quizzes = await _quizService.Find();
             return View(quizzes);
         }
 
+        [HttpGet]
         public override async Task<IActionResult> Detail(int id)
         {
             var quiz = await _quizService.Get(id);
@@ -35,11 +37,13 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(quiz);
         }
 
+        [HttpGet]
         public override IActionResult Create()
         {
             return View();
         }
 
+        [HttpPost]
         public override async Task<IActionResult> Create(Quiz entity)
         {
             if (!ModelState.IsValid)
@@ -51,6 +55,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
         public override async Task<IActionResult> Edit(int id)
         {
             var quiz = await _quizService.Get(id);
@@ -64,6 +69,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(quiz);
         }
 
+        [HttpPost]
         public override async Task<IActionResult> Edit(int id, Quiz entity)
         {
             if (!ModelState.IsValid)
@@ -80,6 +86,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return RedirectToAction("Index");
         }
 
+
+        [HttpGet]
         public override async Task<IActionResult> Delete(int id)
         {
             var quiz = await _quizService.Get(id);
@@ -90,6 +98,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(quiz);
         }
 
+        [HttpPost]
         public override async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _quizService.Delete(id);

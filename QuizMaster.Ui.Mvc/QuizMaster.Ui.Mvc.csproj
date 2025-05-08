@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\Interfaces\" />
+    </ItemGroup>
+
 </Project>

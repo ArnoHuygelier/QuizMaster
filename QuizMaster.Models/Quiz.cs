@@ -1,41 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace QuizMaster.Models
 {
-	public partial class Quiz
-	{
-		[Key]
-		public int QuizId { get; set; }
+    public class Quiz
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-		[StringLength(200)]
-		public string Title { get; set; } = null!;
+        public int UserId { get; set; }
+        public User User { get; set; }
 
-		public string Description { get; set; } = null!;
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
 
-		public int CreatedBy { get; set; }
-
-		public DateOnly CreatedAt { get; set; }
-
-		[StringLength(50)]
-		public string Mode { get; set; } = null!;
-
-		public bool IsFinished { get; set; }
-
-		[ForeignKey("CreatedBy")]
-		[InverseProperty("Quizzes")]
-		public virtual User CreatedByNavigation { get; set; } = null!;
-
-		[InverseProperty("Quiz")]
-		public virtual ICollection<Leaderboard> Leaderboards { get; set; } = new List<Leaderboard>();
-
-		[InverseProperty("Quiz")]
-		public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
-
-		[InverseProperty("Quiz")]
-		public virtual ICollection<UserScore> UserScores { get; set; } = new List<UserScore>();
-	}
+        public ICollection<Question> Questions { get; set; }
+    }
 
 }

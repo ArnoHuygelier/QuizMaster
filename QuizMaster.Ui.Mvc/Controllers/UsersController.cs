@@ -11,10 +11,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
     {
 
         private readonly ICrudService<User, string> _userService;
+        private readonly UserService _userServiceWithoutInterface;
 
-        public UsersController(ICrudService<User, string> userService)
+        public UsersController(ICrudService<User, string> userService, UserService service)
         {
             _userService = userService;
+            _userServiceWithoutInterface = service;
         }
 
         [Authorize(Roles = "Admin")]
@@ -56,9 +58,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
 
         [HttpGet]
-        public override async Task<IActionResult> Edit(string id)
+        public override async Task<IActionResult> Edit(string nickname)
         {
-            var user = await _userService.Get(id);
+            var user = await _userServiceWithoutInterface.GetByNickname(nickname);
             if (user is null)
             {
                 return RedirectToAction("Index");
@@ -70,8 +72,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
         [HttpPost]
-        public override async Task<IActionResult> Edit(string id, User entity)
+        public override async Task<IActionResult> Edit([FromRoute]string id, [FromForm]User entity)
         {
+            User? user = await _userService.Get(id);
+
+            if(user is null)
+            {
+                return View(entity);
+            }
+
+            user.UserName = entity.UserName;
+            user.Email = entity.Email;
+            user.IsActive = entity.IsActive;
+
             if (!ModelState.IsValid)
             {
                 return View(entity);

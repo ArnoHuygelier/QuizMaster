@@ -28,6 +28,12 @@ namespace QuizMaster.Services
         {
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
+
+        public async Task<User?> GetByNickname(string nickname)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == nickname);
+        }
+
         public async Task<User?> Create(User entity)
         {
             await _dbContext.Users.AddAsync(entity);
@@ -57,7 +63,6 @@ namespace QuizMaster.Services
             {
                 return;
             }
-
 
             _dbContext.Users.Remove(user);
 

@@ -4,11 +4,13 @@ using QuizMaster.Models;
 using QuizMaster.Services;
 using QuizMaster.Ui.Mvc.Controllers.ControllerBases;
 using System;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Ui.Mvc.Models.Quizzes;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
 	[Authorize(Roles = "Admin")]
-    public class QuizzesController : CrudController<Quiz,int>
+    public class QuizzesController : Controller
     {
        
         private readonly QuizService _quizService;
@@ -20,14 +22,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
         [HttpGet]
-        public override async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             var quizzes = await _quizService.Find();
             return View(quizzes);
         }
 
         [HttpGet]
-        public override async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             var quiz = await _quizService.Get(id);
             if (quiz == null)
@@ -38,25 +40,33 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
         [HttpGet]
-        public override IActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public override async Task<IActionResult> Create(Quiz entity)
+        public  async Task<IActionResult> Create(CreateQuizViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(entity);
+                return View(viewModel);
             }
+            var quiz = new Quiz
+            {
+                Title = viewModel.Title,
+                Description = viewModel.Description,
+                CategoryId = viewModel.CategoryId,
+                CreatedAt = DateTime.Now, 
+                UserId = viewModel.UserId ?? "default-user-id" 
+            };
 
-            var createdQuiz = await _quizService.Create(entity);
+            var createdQuiz = await _quizService.Create(quiz);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public override async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var quiz = await _quizService.Get(id);
             if (quiz is null)
@@ -70,7 +80,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
         [HttpPost]
-        public override async Task<IActionResult> Edit(int id, Quiz entity)
+        public async Task<IActionResult> Edit(int id, Quiz entity)
         {
             if (!ModelState.IsValid)
             {
@@ -88,7 +98,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
 
         [HttpGet]
-        public override async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var quiz = await _quizService.Get(id);
             if (quiz is null)
@@ -99,7 +109,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
         [HttpPost]
-        public override async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _quizService.Delete(id);
 

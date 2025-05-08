@@ -1,23 +1,26 @@
-﻿@{
+﻿@model QuizMaster.Ui.Mvc.Models.Quizzes.CreateQuizViewModel
+@{
     ViewData["Title"] = "Create Quiz - Step 1";
 }
 
-<h2>Create Quiz - Stap 1</h2>
+<h2>Create Quiz - Step 1</h2>
 
 <form action="/Quiz/CreateQuestions" method="post" enctype="multipart/form-data">
     <div class="form-group">
-        <label for="image">Foto</label>
+        <label for="image">Image</label>
         <input type="file" class="form-control" id="image" name="image">
     </div>
 
     <div class="form-group">
-        <label for="title">Titel</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Vul de titel in">
+        <label asp-for="Title"></label>
+        <input class="form-control" asp-for="Title" placeholder="Enter the title">
+        <span asp-validation-for="Title" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label for="description">Beschrijving</label>
-        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        <label asp-for="Description"></label>
+        <textarea class="form-control" asp-for="Description" placeholder="Enter the description" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Next</button>

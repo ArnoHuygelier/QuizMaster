@@ -10,7 +10,7 @@ using QuizMaster.Services.Interfaces;
 
 namespace QuizMaster.Services
 {
-    public class QuizService : ICrudService<Quiz,int>
+    public class QuizService
     {
         private readonly QuizMasterDbContext _dbContext;
         public QuizService(QuizMasterDbContext dbContext)

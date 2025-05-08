@@ -11,7 +11,7 @@ using System.Linq;
         {
             [Key]
             public int Id { get; set; }
-            public string QuestionText { get; set; }
+            public required string QuestionText { get; set; }
 
             public ICollection<Category> Categories { get; set; } = new List<Category>();
             public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();

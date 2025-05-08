@@ -18,7 +18,7 @@ builder.Services.AddDbContext<QuizMasterDbContext>(options =>
 });
 
 builder.Services.AddDefaultIdentity<User>(options => 
-     options.SignIn.RequireConfirmedAccount = false)
+     options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
 	.AddEntityFrameworkStores<QuizMasterDbContext>();
 
@@ -52,7 +52,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=Index}/{id?}")
+    pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 // Seed the database with roles

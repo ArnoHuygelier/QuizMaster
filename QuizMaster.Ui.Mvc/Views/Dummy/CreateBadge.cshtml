@@ -1,0 +1,49 @@
+﻿@model QuizMaster.Models.Badge
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Create Badge</h2>
+    <div class="form-container" style="max-width: 600px; margin: auto;">
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                <input asp-for="ImageUrl" class="form-control" id="imageUrlInput" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <img id="imagePreview" src="" alt="Image Preview" class="img-thumbnail mt-2" style="max-width: 100px; display: none;" />
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="/Badges" class="btn btn-secondary">Back</a>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    
+    <script>
+        const imageInput = document.getElementById('imageUrlInput');
+        const preview = document.getElementById('imagePreview');
+
+        imageInput.addEventListener('input', function () {
+            if (this.value) {
+                preview.src = this.value;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+}

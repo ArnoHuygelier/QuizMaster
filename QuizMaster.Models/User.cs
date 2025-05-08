@@ -10,8 +10,6 @@ namespace QuizMaster.Models
 {
 	public class User : IdentityUser
 	{
-		[Key]
-		public int Id { get; set; }
 		public bool IsActive { get; set; }
 		public bool NewsLetter { get; set; }
 		public int? AvatarId { get; set; }

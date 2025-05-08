@@ -91,9 +91,6 @@ namespace QuizMaster.Ui.Mvc.Areas.Identity.Pages.Account
 			[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 			public string ConfirmPassword { get; set; }
 
-			[Display(Name = "Active?")]
-			public bool IsActive { get; set; }
-
 			[Display(Name = "Subscribe to Newsletter")]
 			public bool NewsLetter { get; set; }
 

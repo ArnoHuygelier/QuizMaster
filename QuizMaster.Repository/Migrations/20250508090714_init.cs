@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace QuizMaster.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,17 +26,17 @@ namespace QuizMaster.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Avatar",
+                name: "Avatars",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Avatar", x => x.Id);
+                    table.PrimaryKey("PK_Avatars", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -102,7 +102,7 @@ namespace QuizMaster.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -129,9 +129,9 @@ namespace QuizMaster.Repository.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Avatar_AvatarId",
+                        name: "FK_AspNetUsers_Avatars_AvatarId",
                         column: x => x.AvatarId,
-                        principalTable: "Avatar",
+                        principalTable: "Avatars",
                         principalColumn: "Id");
                 });
 
@@ -274,16 +274,15 @@ namespace QuizMaster.Repository.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Quizzes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Quizzes_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Quizzes_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -301,8 +300,7 @@ namespace QuizMaster.Repository.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BadgeId = table.Column<int>(type: "int", nullable: false),
                     AwardedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -310,8 +308,8 @@ namespace QuizMaster.Repository.Migrations
                 {
                     table.PrimaryKey("PK_UserBadges", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserBadges_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_UserBadges_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -412,9 +410,9 @@ namespace QuizMaster.Repository.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Quizzes_UserId1",
+                name: "IX_Quizzes_UserId",
                 table: "Quizzes",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserBadges_BadgeId",
@@ -422,9 +420,9 @@ namespace QuizMaster.Repository.Migrations
                 column: "BadgeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserBadges_UserId1",
+                name: "IX_UserBadges_UserId",
                 table: "UserBadges",
-                column: "UserId1");
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -476,7 +474,7 @@ namespace QuizMaster.Repository.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Avatar");
+                name: "Avatars");
         }
     }
 }

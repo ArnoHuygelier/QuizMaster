@@ -1,0 +1,118 @@
+﻿@model IEnumerable<QuizMaster.Models.User>
+
+@{
+    var pageSizeOptions = new[] { 5, 10, 20, 50 };
+    string sortField = Context.Request.Query["sortField"].FirstOrDefault() ?? "Id";
+    string sortOrder = Context.Request.Query["sortOrder"].FirstOrDefault() ?? "asc";
+
+    int selectedPageSize = Context.Request.Query["pageSize"].FirstOrDefault() != null ? int.Parse(Context.Request.Query["pageSize"]) : 10;
+    int page = Context.Request.Query["page"].FirstOrDefault() != null ? int.Parse(Context.Request.Query["page"]) : 1;
+
+    var modelList = Model?.ToList() ?? new List<QuizMaster.Models.User>();
+
+    modelList = sortField switch
+    {
+        "IsActive" => sortOrder == "asc" ? modelList.OrderBy(u => u.IsActive).ToList() : modelList.OrderByDescending(u => u.IsActive).ToList(),
+        "NewsLetter" => sortOrder == "asc" ? modelList.OrderBy(u => u.NewsLetter).ToList() : modelList.OrderByDescending(u => u.NewsLetter).ToList(),
+        "Avatar" => sortOrder == "asc" ? modelList.OrderBy(u => u.Avatar?.Name).ToList() : modelList.OrderByDescending(u => u.Avatar?.Name).ToList(),
+        _ => sortOrder == "asc" ? modelList.OrderBy(u => u.Id).ToList() : modelList.OrderByDescending(u => u.Id).ToList()
+    };
+
+    var totalItems = modelList.Count;
+    int totalPages = (int)Math.Ceiling((double)totalItems / selectedPageSize);
+    var pagedModel = modelList.Skip((page - 1) * selectedPageSize).Take(selectedPageSize).ToList();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <span class="fw-semibold">@totalItems total</span>
+        <button class="btn btn-danger btn-sm ms-2">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+    </div>
+    <a class="btn btn-primary" href="/Users/Create">+ Add User</a>
+</div>
+
+<div class="mb-3">
+    <form method="get" class="d-flex align-items-center gap-2">
+        <label for="pageSize" class="form-label mb-0">Items per page:</label>
+        <select name="pageSize" id="pageSize" class="form-select w-auto" onchange="this.form.submit()">
+            @foreach (var size in pageSizeOptions)
+            {
+                if (size == selectedPageSize)
+                {
+                    <option value="@size" selected>@size</option>
+                }
+                else
+                {
+                    <option value="@size">@size</option>
+                }
+            }
+        </select>
+        <input type="hidden" name="sortField" value="@sortField" />
+        <input type="hidden" name="sortOrder" value="@sortOrder" />
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle w-100">
+        <thead class="table-light">
+            <tr>
+                <th><a href="?sortField=Id&sortOrder=@(sortField == "Id" && sortOrder == "asc" ? "desc" : "asc")">#</a></th>
+                <th><a href="?sortField=IsActive&sortOrder=@(sortField == "IsActive" && sortOrder == "asc" ? "desc" : "asc")">Active</a></th>
+                <th><a href="?sortField=NewsLetter&sortOrder=@(sortField == "NewsLetter" && sortOrder == "asc" ? "desc" : "asc")">Newsletter</a></th>
+                <th><a href="?sortField=Avatar&sortOrder=@(sortField == "Avatar" && sortOrder == "asc" ? "desc" : "asc")">Avatar</a></th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in pagedModel)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>
+                        @if (user.IsActive)
+                        {
+                            <span class="badge bg-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">No</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.NewsLetter)
+                        {
+                            <span class="badge bg-info text-dark">Subscribed</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-light text-dark">Not Subscribed</span>
+                        }
+                    </td>
+                    <td>@user.Avatar?.Name ?? "N/A"</td>
+                    <td>
+                        <a href="/Users/Edit/@user.Id" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                        <a href="/Users/Delete/@user.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <div>Showing @((page - 1) * selectedPageSize + 1)-@((page - 1) * selectedPageSize + pagedModel.Count()) of @totalItems</div>
+    <div>
+        <nav>
+            <ul class="pagination mb-0">
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == page ? "active" : "")">
+                        <a class="page-link" href="?page=@i&pageSize=@selectedPageSize&sortField=@sortField&sortOrder=@sortOrder">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

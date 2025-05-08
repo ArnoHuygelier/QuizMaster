@@ -1,0 +1,71 @@
+﻿@model QuizMaster.Models.Badge
+
+@{
+    var imageUrl = Model?.ImageUrl ?? "/images/placeholder.png";
+}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Badge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .preview-image {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-top: 10px;
+        }
+    </style>
+
+    <div class="container py-5">
+        <h2 class="mb-4 text-center">Edit Badge</h2>
+        <div class="form-container">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="BadgeId" />
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                    <input asp-for="ImageUrl" class="form-control" id="imageUrlInput" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    <img id="imagePreview" src="images/@imageUrl" alt="Image Preview" class="preview-image" />
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/Badges" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const imageUrlInput = document.getElementById('imageUrlInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        imageUrlInput.addEventListener('input', function () {
+            imagePreview.src = this.value || '/images/placeholder.png';
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

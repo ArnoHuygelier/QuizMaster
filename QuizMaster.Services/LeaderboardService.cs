@@ -20,12 +20,13 @@ namespace QuizMaster.Services
 
         public ICollection<User> Find()
         {
-            var users = _dbContext.Users
-                .Include(u => u.Avatar)
-                .Include(u => u.UserScores)
-                .Include(u => u.UserBadges)
-                    .ThenInclude(ub => ub.Badge)
-                .ToList();
+
+            var users = _dbContext.Users.ToList();
+            //var users = _dbContext.Users
+            //    .Include(u => u.Avatar)
+            //    .Include(u => u.UserBadges)
+            //        .ThenInclude(ub => ub.Badge)
+            //    .ToList();
                 
             return users;
         }

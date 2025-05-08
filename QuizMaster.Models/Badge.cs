@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace QuizMaster.Models
 {
-	public partial class Badge
-	{
-		[Key]
-		[Column("BadgeID")]
-		public int BadgeId { get; set; }
+    public class Badge
+    {
+        public int Id { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
 
-		[StringLength(200)]
-		public required string BadgeName { get; set; }
-
-		public required string Description { get; set; } 
-
-		public required string Criteria { get; set; } 
-
-		[InverseProperty("Badge")]
+        public required string ImageUrl { get; set; }
 		public  ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
-	}	
+	}
 
 }

@@ -14,9 +14,10 @@
             public bool IsActive { get; set; }
             public bool NewsLetter { get; set; }
             public int? AvatarId { get; set; }
-            public Avatar Avatar { get; set; }
+            public Avatar? Avatar { get; set; }
+            public int? Score { get; set; }
 
-            public ICollection<Quiz> Quizzes { get; set; }
-            public ICollection<UserBadge> UserBadges { get; set; }
+            public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+            public ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
         }
     }

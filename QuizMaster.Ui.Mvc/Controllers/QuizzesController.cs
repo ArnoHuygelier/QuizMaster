@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
-    public class QuizzesController : Controller
+	[Authorize(Roles = "Admin")]
+	public class QuizzesController : Controller
     {
         private readonly QuizService _quizService;
 

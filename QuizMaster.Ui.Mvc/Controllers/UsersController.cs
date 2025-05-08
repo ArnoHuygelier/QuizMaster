@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
 using QuizMaster.Ui.Mvc.Controllers.ControllerBases;
 
 namespace QuizMaster.Ui.Mvc.Controllers
@@ -9,9 +10,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
     public class UsersController : CrudController<User,string>
     {
 
-        private readonly UserService _userService;
+        private readonly ICrudService<User, string> _userService;
 
-        public UsersController(UserService userService)
+        public UsersController(ICrudService<User, string> userService)
         {
             _userService = userService;
         }

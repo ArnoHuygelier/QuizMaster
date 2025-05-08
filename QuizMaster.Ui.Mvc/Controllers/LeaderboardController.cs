@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Services;
-using QuizMaster.Ui.Mvc.Models;
+using QuizMaster.Ui.Mvc.ViewModels.Leaderboard;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {

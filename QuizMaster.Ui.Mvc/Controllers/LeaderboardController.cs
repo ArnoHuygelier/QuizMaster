@@ -20,17 +20,17 @@ namespace QuizMaster.Ui.Mvc.Controllers
             List<LeaderboardViewModel> leaderboardViewModels = new List<LeaderboardViewModel>();
 
 
-            leaderboardViewModels = users.Select(x => new LeaderboardViewModel
+            leaderboardViewModels = users.Select((x, index) => new LeaderboardViewModel
             {
+                Rank = index + 1,
                 UserId = x.Id,
-                AvatarUrl = x.Avatar?.Url,
-                UserName = "Leander",  //x.Name,
-                Score = 2,
-                BadgeNames = x.UserBadges.Select(x => x.Badge.ImageUrl).ToList(),
-                CreatedAt = DateOnly.FromDateTime(DateTime.Now) //x.CreatedAt
+                AvatarUrl = x.Avatar?.AvatarUrl,
+                UserName = x.UserName,
+                Score = x.Score,
+                BadgeUrls = x.UserBadges.Select(x => x.Badge.ImageUrl).ToList()
             }).ToList();
 
-            return View(users);
+            return View(leaderboardViewModels);
         }
     }
 }

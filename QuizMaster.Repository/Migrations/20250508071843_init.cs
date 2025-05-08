@@ -29,7 +29,7 @@ namespace QuizMaster.Repository.Migrations
                 name: "Badges",
                 columns: table => new
                 {
-                    BadgeId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -37,33 +37,33 @@ namespace QuizMaster.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Badges", x => x.BadgeId);
+                    table.PrimaryKey("PK_Badges", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Questions",
                 columns: table => new
                 {
-                    QuestionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     QuestionText = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Questions", x => x.QuestionId);
+                    table.PrimaryKey("PK_Questions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,7 +74,8 @@ namespace QuizMaster.Repository.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     NewsLetter = table.Column<bool>(type: "bit", nullable: false),
-                    AvatarId = table.Column<int>(type: "int", nullable: true)
+                    AvatarId = table.Column<int>(type: "int", nullable: true),
+                    Score = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -90,7 +91,7 @@ namespace QuizMaster.Repository.Migrations
                 name: "Answers",
                 columns: table => new
                 {
-                    AnswerId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AnswerText = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsCorrect = table.Column<bool>(type: "bit", nullable: false),
@@ -98,12 +99,12 @@ namespace QuizMaster.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answers", x => x.AnswerId);
+                    table.PrimaryKey("PK_Answers", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Answers_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
-                        principalColumn: "QuestionId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -111,23 +112,23 @@ namespace QuizMaster.Repository.Migrations
                 name: "CategoryQuestion",
                 columns: table => new
                 {
-                    CategoriesCategoryId = table.Column<int>(type: "int", nullable: false),
-                    QuestionsQuestionId = table.Column<int>(type: "int", nullable: false)
+                    CategoriesId = table.Column<int>(type: "int", nullable: false),
+                    QuestionsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryQuestion", x => new { x.CategoriesCategoryId, x.QuestionsQuestionId });
+                    table.PrimaryKey("PK_CategoryQuestion", x => new { x.CategoriesId, x.QuestionsId });
                     table.ForeignKey(
-                        name: "FK_CategoryQuestion_Categories_CategoriesCategoryId",
-                        column: x => x.CategoriesCategoryId,
+                        name: "FK_CategoryQuestion_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
                         principalTable: "Categories",
-                        principalColumn: "CategoryId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CategoryQuestion_Questions_QuestionsQuestionId",
-                        column: x => x.QuestionsQuestionId,
+                        name: "FK_CategoryQuestion_Questions_QuestionsId",
+                        column: x => x.QuestionsId,
                         principalTable: "Questions",
-                        principalColumn: "QuestionId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -150,7 +151,7 @@ namespace QuizMaster.Repository.Migrations
                         name: "FK_Quizzes_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "CategoryId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Quizzes_Users_UserId",
@@ -177,7 +178,7 @@ namespace QuizMaster.Repository.Migrations
                         name: "FK_UserBadges_Badges_BadgeId",
                         column: x => x.BadgeId,
                         principalTable: "Badges",
-                        principalColumn: "BadgeId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserBadges_Users_UserId",
@@ -191,17 +192,17 @@ namespace QuizMaster.Repository.Migrations
                 name: "QuestionQuiz",
                 columns: table => new
                 {
-                    QuestionsQuestionId = table.Column<int>(type: "int", nullable: false),
+                    QuestionsId = table.Column<int>(type: "int", nullable: false),
                     QuizzesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuestionQuiz", x => new { x.QuestionsQuestionId, x.QuizzesId });
+                    table.PrimaryKey("PK_QuestionQuiz", x => new { x.QuestionsId, x.QuizzesId });
                     table.ForeignKey(
-                        name: "FK_QuestionQuiz_Questions_QuestionsQuestionId",
-                        column: x => x.QuestionsQuestionId,
+                        name: "FK_QuestionQuiz_Questions_QuestionsId",
+                        column: x => x.QuestionsId,
                         principalTable: "Questions",
-                        principalColumn: "QuestionId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_QuestionQuiz_Quizzes_QuizzesId",
@@ -217,9 +218,9 @@ namespace QuizMaster.Repository.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryQuestion_QuestionsQuestionId",
+                name: "IX_CategoryQuestion_QuestionsId",
                 table: "CategoryQuestion",
-                column: "QuestionsQuestionId");
+                column: "QuestionsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuestionQuiz_QuizzesId",
@@ -283,7 +284,7 @@ namespace QuizMaster.Repository.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Avatars");
+                name: "Avatar");
         }
     }
 }

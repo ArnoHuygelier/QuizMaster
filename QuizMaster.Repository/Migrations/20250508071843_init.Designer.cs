@@ -12,7 +12,7 @@ using QuizMaster.Repository;
 namespace QuizMaster.Repository.Migrations
 {
     [DbContext(typeof(QuizMasterDbContext))]
-    [Migration("20250507132449_init")]
+    [Migration("20250508071843_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -27,28 +27,28 @@ namespace QuizMaster.Repository.Migrations
 
             modelBuilder.Entity("CategoryQuestion", b =>
                 {
-                    b.Property<int>("CategoriesCategoryId")
+                    b.Property<int>("CategoriesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("QuestionsQuestionId")
+                    b.Property<int>("QuestionsId")
                         .HasColumnType("int");
 
-                    b.HasKey("CategoriesCategoryId", "QuestionsQuestionId");
+                    b.HasKey("CategoriesId", "QuestionsId");
 
-                    b.HasIndex("QuestionsQuestionId");
+                    b.HasIndex("QuestionsId");
 
                     b.ToTable("CategoryQuestion");
                 });
 
             modelBuilder.Entity("QuestionQuiz", b =>
                 {
-                    b.Property<int>("QuestionsQuestionId")
+                    b.Property<int>("QuestionsId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuizzesId")
                         .HasColumnType("int");
 
-                    b.HasKey("QuestionsQuestionId", "QuizzesId");
+                    b.HasKey("QuestionsId", "QuizzesId");
 
                     b.HasIndex("QuizzesId");
 
@@ -57,11 +57,11 @@ namespace QuizMaster.Repository.Migrations
 
             modelBuilder.Entity("QuizMaster.Models.Answer", b =>
                 {
-                    b.Property<int>("AnswerId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnswerId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AnswerText")
                         .IsRequired()
@@ -73,7 +73,7 @@ namespace QuizMaster.Repository.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.HasKey("AnswerId");
+                    b.HasKey("Id");
 
                     b.HasIndex("QuestionId");
 
@@ -103,11 +103,11 @@ namespace QuizMaster.Repository.Migrations
 
             modelBuilder.Entity("QuizMaster.Models.Badge", b =>
                 {
-                    b.Property<int>("BadgeId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BadgeId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -121,41 +121,41 @@ namespace QuizMaster.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("BadgeId");
+                    b.HasKey("Id");
 
                     b.ToTable("Badges");
                 });
 
             modelBuilder.Entity("QuizMaster.Models.Category", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("QuizMaster.Models.Question", b =>
                 {
-                    b.Property<int>("QuestionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("QuestionText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("QuestionId");
+                    b.HasKey("Id");
 
                     b.ToTable("Questions");
                 });
@@ -211,6 +211,9 @@ namespace QuizMaster.Repository.Migrations
                     b.Property<bool>("NewsLetter")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("Score")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
@@ -248,13 +251,13 @@ namespace QuizMaster.Repository.Migrations
                 {
                     b.HasOne("QuizMaster.Models.Category", null)
                         .WithMany()
-                        .HasForeignKey("CategoriesCategoryId")
+                        .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("QuizMaster.Models.Question", null)
                         .WithMany()
-                        .HasForeignKey("QuestionsQuestionId")
+                        .HasForeignKey("QuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -263,7 +266,7 @@ namespace QuizMaster.Repository.Migrations
                 {
                     b.HasOne("QuizMaster.Models.Question", null)
                         .WithMany()
-                        .HasForeignKey("QuestionsQuestionId")
+                        .HasForeignKey("QuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

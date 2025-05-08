@@ -21,7 +21,7 @@ namespace QuizMaster.Models
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
-        public ICollection<Question> Questions { get; set; }
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 
 }

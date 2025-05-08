@@ -9,8 +9,8 @@ namespace QuizMaster.Models
     public class Avatar
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Url { get; set; }
+        public required string Name { get; set; }
+        public required string Url { get; set; }
 
 
         public ICollection<User> Users { get; set; } = new List<User>();

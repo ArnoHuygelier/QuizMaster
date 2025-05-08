@@ -1,6 +1,7 @@
 ﻿    using System;
     using System.Collections.Generic;
-    using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -8,11 +9,13 @@
     {
         public class Question
         {
-        public int QuestionId { get; set; }
-        public string QuestionText { get; set; }
+            [Key]
+            public int Id { get; set; }
+            public required string QuestionText { get; set; }
 
-        public ICollection<Category> Categories { get; set; }
-        public ICollection<Quiz> Quizzes { get; set; }
-        public ICollection<Answer> Answers { get; set; }
+            public ICollection<Category> Categories { get; set; } = new List<Category>();
+            public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+            public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+        }
     }
-}
+

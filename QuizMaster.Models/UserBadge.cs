@@ -12,13 +12,13 @@ namespace QuizMaster.Models
         [Key]
         public int Id { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public required string UserId { get; set; }
+        public required User User { get; set; }
 
         public int BadgeId { get; set; }
-        public Badge Badge { get; set; }
+        public required Badge Badge { get; set; }
 
-        public DateTime AwardedAt { get; set; }
+        public required DateTime AwardedAt { get; set; }
     }
 
 }

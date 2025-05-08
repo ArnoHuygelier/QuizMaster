@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav ms-auto">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-1"></i>Hello, @UserManager.GetUserName(User)
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li>
+                    <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" class="dropdown-item p-0">
+                        <button type="submit" class="btn w-100 text-start p-2 border-0">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+    }
+</ul>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the dropdown elements by ID and ensure the toggle works
+        var dropdownToggle = document.getElementById('userDropdown');
+        var dropdownMenu = dropdownToggle.nextElementSibling; // This is the <ul> with class "dropdown-menu"
+
+        // Add a listener for the dropdown toggle click event
+        dropdownToggle.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            // Toggle the dropdown menu
+            dropdownMenu.classList.toggle('show');
+        });
+    });
+</script>
+

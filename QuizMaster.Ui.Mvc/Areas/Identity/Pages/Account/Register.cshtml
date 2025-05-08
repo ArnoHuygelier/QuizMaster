@@ -1,0 +1,99 @@
+﻿@page
+@using QuizMaster.Models
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container py-4">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-3 text-center">Create a new account</h4>
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                        <!-- Username -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Username" class="form-control" placeholder="Your username" autocomplete="username" />
+                            <label asp-for="Input.Username"></label>
+                            <span asp-validation-for="Input.Username" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" placeholder="name@example.com" autocomplete="email" />
+                            <label asp-for="Input.Email"></label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-floating mb-3 position-relative">
+                            <input asp-for="Input.Password" class="form-control pe-5" placeholder="Enter password" autocomplete="new-password" type="password" id="passwordInput" />
+                            <label asp-for="Input.Password"></label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
+                                    onclick="togglePassword('passwordInput', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-floating mb-3 position-relative">
+                            <input asp-for="Input.ConfirmPassword" class="form-control pe-5" placeholder="Confirm password" autocomplete="new-password" type="password" id="confirmPasswordInput" />
+                            <label asp-for="Input.ConfirmPassword"></label>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
+                                    onclick="togglePassword('confirmPasswordInput', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+
+
+                        <!-- Newsletter -->
+                        <div class="form-check mb-3">
+                            <input asp-for="Input.NewsLetter" class="form-check-input" />
+                            <label asp-for="Input.NewsLetter" class="form-check-label"></label>
+                            <span asp-validation-for="Input.NewsLetter" class="text-danger"></span>
+                        </div>
+
+                        <!-- Avatar -->
+                        <div class="mb-3">
+                            <label asp-for="Input.AvatarId" class="form-label"></label>
+                            <select asp-for="Input.AvatarId" class="form-select">                                <option value="">-- Select Avatar --</option>
+                            </select>
+                            <span asp-validation-for="Input.AvatarId" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<script>
+    function togglePassword(inputId, toggleButton) {
+        const input = document.getElementById(inputId);
+        const icon = toggleButton.querySelector('i');
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    }
+</script>
+

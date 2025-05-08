@@ -10,7 +10,7 @@ namespace QuizMaster.Models
     {
         public int Id { get; set; }
         public required string Name { get; set; }
-        public required string Url { get; set; }
+        public required string AvatarUrl { get; set; }
 
 
         public ICollection<User> Users { get; set; } = new List<User>();

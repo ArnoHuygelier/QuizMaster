@@ -1,127 +1,72 @@
 
-# 📘 QuizMaster Developer Guide
+# 🧠 QuizMaster – Developer Guide
 
-- [UI Color Scheme](#ui-color-scheme)
-- [Project Structure (ASP.NET MVC)](#project-structure-aspnet-mvc)
-- [Naming conventions](#naming-conventions)
-- [ViewModels](#viewmodels)
-- [DTOs (Data Transfer Objects)](#dtos-data-transfer-objects)
-- [Development Guidelines](#development-guidelines)
-- [Dependencies / Tools](#dependencies--tools)
-- [Configuration](#configuration)
-
-
-
-## UI Color Scheme
-
-| Element            | Color       | Use Case                                    |
-|--------------------|-------------|---------------------------------------------|
-| Primary Color      | `#007BFF`   | Buttons, key highlights                     |
-| Background         | `#F0F8FF`   | General page background                     |
-| Secondary Color    | `#0056b3`   | Hover states, active elements               |
-| Accent Color       | `#FFC107`   | Score indicators, special UI highlights     |
-| Text Color         | `#333333`   | General text for readability                |
-| Success            | `#28A745`   | Correct answers, success alerts             |
-| Error              | `#DC3545`   | Incorrect answers, validation errors        |
-
-Use consistent styling in all views to maintain UI/UX coherence.
-
-## Project Structure (ASP.NET MVC)
+## 📁 Project Structure
 
 ```
 QuizMaster.sln
 │
-├── QuizMaster.MVC/                     ← MVC UI Project (Presentation Layer)
-│   ├── Controllers/
-│   │   ├── HomeController.cs
-│   │   ├── QuizzesController.cs
-│   │   ├── UsersController.cs
-│   │   └── AdminController.cs
-│   ├── Models/
-│   │   ├── QuizViewModel.cs
-│   │   ├── UserProfileViewModel.cs
-│   │   └── LeaderboardViewModel.cs
-│   ├── Views/
-│   │   └── (Razor Views: Home, Quizzes, Users, Admin, etc.)
-│   ├── wwwroot/                       ← Static files (CSS, JS, images)
-│   └── appsettings.json
+├── QuizMaster.MVC/                  ← Presentation Layer (ASP.NET Core MVC)
+│   ├── Controllers/                 ← Web Layer Controllers
+│   ├── Models/                      ← ViewModels for Razor Views
+│   ├── Views/                       ← Razor Views (cshtml)
+│   ├── wwwroot/                     ← Static assets (CSS, JS, Images)
+│   └── appsettings.json            ← App configuration
 │
-├── QuizMaster.Services/               ← Business Logic Layer
-│   ├── Interfaces/│   
-│   │   └── IService.cs
-│   │   
-│   ├── Services/
-│   │   ├── QuizService.cs
-│   │   ├── UserService.cs
-│   │   └── LeaderboardService.cs
-├── QuizMaster.Repository/             ← Data Access Layer
-│   ├── Interfaces/
-│   │   └── IRepository.cs
-│   ├── Repositories/
-│   │   ├── QuizRepository.cs
-│   │   ├── UserRepository.cs
-│   │   └── QuestionRepository.cs
-│   ├── Data/
-│   │   └── QuizMasterDbContext.cs
-│   └── Migrations/
-├── QuizMaster.DTO/                   ← Optional: Data  Layer 
-│    └── DTOs/                         
-│       ├── QuizDto.cs
-│       ├── UserDto.cs
-│       └── AnswerDto.cs
+├── QuizMaster.Services/            ← Business Logic Layer
+│   ├── Interfaces/                 ← Service interfaces
+│   └── Services/                   ← Business logic classes
 │
-├── QuizMaster.Model/                  ← Domain Models
-│   ├── Answer.cs
-│   ├── Avatar.cs
-│   ├── Badge.cs
-│   ├── Category.cs
-│   ├── Question.cs
-│   ├── Quiz.cs
-│   ├── User.cs
-│   ├── UserBadge.cs
-│   └── Answer.cs
+├── QuizMaster.Repository/          ← Data Access Layer
+│   ├── Interfaces/                 ← Repository interfaces
+│   ├── Repositories/              ← EF Core repository implementations
+│   ├── Data/                       ← DbContext
+│   └── Migrations/                ← EF Migrations
 │
-└── QuizMaster.Tests/                  ← Optional: Unit + Integration Tests
-    ├── QuizServiceTests.cs
-    ├── UserControllerTests.cs
-    └── RepositoryTests.cs
-
+├── QuizMaster.DTO/                ← Data Transfer Objects
+│   └── DTOs/
+│
+├── QuizMaster.Model/              ← Domain Entities (EF Core models)
+│
+└── QuizMaster.Tests/              ← Unit + Integration Tests
 ```
 
-## Naming conventions
+## 🎨 UI Color Scheme
 
-### C# conventions
+| Element         | Color    | Use Case                                |
+|----------------|----------|------------------------------------------|
+| Primary Color  | #007BFF  | Buttons, key highlights                  |
+| Secondary      | #0056b3  | Hover states, active elements            |
+| Background     | #F0F8FF  | General background                       |
+| Accent         | #FFC107  | UI highlights, scoring                   |
+| Text           | #333333  | Primary readable text                    |
+| Success        | #28A745  | Correct answers, positive feedback       |
+| Error          | #DC3545  | Validation errors, wrong answers         |
 
-- **Services**: Interface prefixed with `I` (e.g., `IService`)
-- **Methods**: Use `async` methods where appropriate
-- **ViewModels**: Always suffixed with `ViewModel`
-- **DTOs**: Always suffixed with `Dto`
+> 💡 Maintain consistent styling via `_Layout.cshtml` or component partials.
 
+## 🧭 Naming Conventions
 
+| Type        | Convention        | Example                  |
+|-------------|-------------------|--------------------------|
+| Class       | PascalCase        | `QuizService`            |
+| Interface   | Prefix `I`        | `IQuizRepository`        |
+| Method      | PascalCase        | `GetQuizById()`          |
+| Parameters  | camelCase         | `int quizId`             |
+| ViewModels  | Suffix `ViewModel`| `UserProfileViewModel`   |
+| DTOs        | Suffix `Dto`      | `QuestionDto`            |
+| Controllers | PascalCase plural | `QuizzesController`      |
 
+## 🔄 CRUD Naming
 
-| Object            | Notation      | Plural? |
-|-------------------|---------------|---------|
-| Classname         | PascalCase    | No      |
-| Methodname        | PascalCase    | No      |
-| Method parameters | camelCase     | No      |
-| Controllers       | PascalCase    | Yes     |
+| Operation | Description                        |
+|-----------|------------------------------------|
+| `Find()`  | Return all records                 |
+| `Get(id)` | Return one record by ID           |
+| `Update(id)` | Update a record by ID          |
+| `Delete(id)` | Delete a record by ID          |
 
-
-
-### CRUD conventions
-| Operation         | Description                         |
-|-------------------|-------------------------------------|
-| Find()            | Return all records                  |
-| Get(int id)       | Return 1 record based on parameter  |
-| Update(int id)    | Update 1 record based on parameter  |
-| Delete(int id)    | Delete 1 record based on parameter  |
-
-##  ViewModels
-
-Used to send structured, often simplified or formatted data from controller to view.
-
-**Example:**
+## 🧱 ViewModels
 
 ```csharp
 public class QuizViewModel
@@ -132,11 +77,7 @@ public class QuizViewModel
 }
 ```
 
-## DTOs (Data Transfer Objects)
-
-Used to transport data between layers (especially service and controller), often hiding entity complexity or enforcing format.
-
-**Example:**
+## 📦 DTOs (Data Transfer Objects) (Optional)
 
 ```csharp
 public class QuestionDto
@@ -148,50 +89,103 @@ public class QuestionDto
 }
 ```
 
+## 🛠️ Setup Instructions
 
+### 1. Prerequisites
 
-## Development Guidelines
-
-- Stick to **Separation of Concerns**:
-  - Controller: Handles HTTP logic
-  - Service: Business logic
-  - Repository: Data access
-- Use **ViewModels** only in views, never in services or repositories
-
-
-Optional
-- Use **DTOs** to pass data between services and controllers
-- Write **unit tests** for services
-
-## Dependencies / Tools
-
-- ASP.NET Core MVC
-- Entity Framework Core
+- [.NET SDK 9.0+](https://dotnet.microsoft.com/)
 - SQL Server
-- Bootstrap 5
-- Git + GitHub for version control
-- Figma for UI wireframes
-Optional
-- AutoMapper (for mapping between DTOs and ViewModels)
+- Optional: Visual Studio 2022+, Rider, or VS Code
+
+### 2. Clone and Build
+
+```bash
+git clone https://github.com/your-org/QuizMaster.git
+cd QuizMaster
+dotnet build
+```
+
+### 3. DB Setup
+
+Update connection string in `appsettings.Development.json`
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=QuizMasterDb;Trusted_Connection=True;"
+  }
+}
+```
+
+Run migrations:
+
+```bash
+dotnet ef database update --project QuizMaster.Repository
+```
+
+### 4. Run the App
+
+```bash
+dotnet run --project QuizMaster.MVC
+```
+
+## 🧩 Dependencies / Tools
+
+| Tool         | Purpose                        |
+|--------------|--------------------------------|
+| ASP.NET Core | Web framework                  |
+| EF Core      | ORM / Data access              |
+| AutoMapper   | DTO mapping & ViewModels       |   (Optional)
+| Bootstrap 5  | UI Framework                   |
+| SQL Server   | Relational DBMS                |
+| Git + GitHub | Source control                 |
+| Figma        | UI Wireframes (optional)       |
+
+Install AutoMapper: (Optional)
+
+```bash
+dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
+```
+
+Register: (Optional)
+
+```csharp
+builder.Services.AddAutoMapper(typeof(Startup));
+```
+
+!
+## 🧰 AutoMapper Config
+
+```csharp
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap<Quiz, QuizDto>().ReverseMap();
+        CreateMap<Question, QuestionDto>();
+    }
+}
+```
+
+## ⚙️ Configuration
+
+Store env-specific config in appropriate `appsettings.{env}.json` files.
+  - appsettings.json: base/default config
+
+  - appsettings.Development.json: overrides for dev
+
+  - appsettings.Production.json: overrides for prod
+
+## 🧑‍💼 User Roles
+
+**Admin**: Manage quizzes, view user data.  
+**User**: Take quizzes, view scores, earn badges.
+
+## 🧼 Coding Standards
+
+- Keep controllers thin
+- Use async when you can
+- Use DI, no `new` in services
+- DTOs ≠ ViewModels
 
 
-## Configuration
-
-### Database Connection
-
-Update your personal connection string in appsettings.Development.json
-
-
-## Usage
-### Admin Users
-
-Log in with admin credentials
-Access the admin dashboard to create and manage quizzes
-Review user submissions and manage content
-
-### Regular Users
-
-Register or log in
-Browse available quizzes
-Take quizzes and view scores
-Track progress on the user dashboard

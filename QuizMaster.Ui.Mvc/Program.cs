@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Repository;
 using QuizMaster.Services;
+using Microsoft.AspNetCore.Identity;
+using QuizMaster.Models;
+using QuizMaster.Ui.Mvc.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,11 @@ builder.Services.AddDbContext<QuizMasterDbContext>(options =>
 {
 	options.UseSqlServer(connectionString);
 });
+
+builder.Services.AddDefaultIdentity<User>(options => 
+     options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+	.AddEntityFrameworkStores<QuizMasterDbContext>();
 
 // Add services here
 //builder.Services.AddScoped<FunctionService>();
@@ -47,5 +55,12 @@ app.MapControllerRoute(
     pattern: "{controller=home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Seed the database with roles
+using (var scope = app.Services.CreateScope())
+{
+	await SeedDatabaseHelper.SeedRolesAndAdmin(scope.ServiceProvider);
+}
+
+app.MapRazorPages();
 
 app.Run();

@@ -1,52 +1,59 @@
 # QuizMaster
 
-## What
+**QuizMaster** is a web-based quiz application that supports multiple play modes, real-time scoring, leaderboards, and gamified rewards. Built for both casual users and competitive players, it’s suitable for all ages and learning levels.
 
-QuizMaster is an interactive web application where users can take part in quizzes across various categories. It provides instant feedback, final scores, and multiple play modes — from casual practice to competitive challenges. Users can track their progress, earn rewards, and compete on leaderboards, while administrators can easily manage questions and quizzes. Designed for all ages, QuizMaster is perfect for fun, learning, and friendly competition.
+## 🔧 Tech Stack
 
-## Technologies
+- **Backend**: ASP.NET MVC  
+- **Database**: MS SQL Server  
+- **ORM**: Entity Framework
 
-The web app is build with following technologies
- - ASP.NET MVC
- - MS SQL
- - Entity Framework
+## 🚀 Features
 
+### 🧠 Quiz Modes
+- **Timed Mode** – Answer under time pressure.
+- **Casual Mode** – No time limit.
+- **Challenge Mode** – Harder questions, higher rewards.
 
-## Features
-### Quiz Play 
-Users can play quizzes in different modes:
-- Timed Mode – Beat the clock while answering.
-- Casual Mode – Relaxed pace, no timer.
-- Challenge Mode – Face harder questions for more points.
+Each mode has unique scoring rules.
 
-Each mode has its own rules and scoring system.
+### 📚 Quizzes & Users
+- Multiple-choice questions with optional hints
+- Quizzes organized by category/topic
 
-### Quizzes and Users
-Quizzes are organized by topic/category.
-Questions are multiple choice, with optional hints.
+**Users can:**
+- Register and log in
+- Edit profile info
+- Track quiz history and progress
+- View leaderboard standings
 
-Users can 
-- create an account and login
-- View and edit profile details
-- Track progress
-- View leaderboard
+**Admins can:**
+- Manage users (create/update/delete)
+- Manage quizzes and questions
 
-Admins can create, update, and remove:
-- Users
-- Quizzes
-- Questions
+### 🏆 Leaderboards
+- Public, real-time rankings based on quiz scores
+- Updates after every quiz completion
 
-### Leaderboard
-Public leaderboard ranks top-scoring users.
-Updates dynamically after each quiz.
+### 🎯 Gamification
+- **Achievements & Badges**  
+  - Milestones: e.g., 10 quizzes completed, perfect score
+- **Daily Challenges**  
+  - Daily quiz with bonus points/rewards
 
-### Gamification & Rewards
-- Achievements & Badges
-Earn badges for milestones (e.g., 10 quizzes completed, perfect score).
-Optional: daily streaks or trivia master badges.
+## 📦 Setup & Deployment
 
-- Daily Challenges
-Special quiz challenges released daily.
-Users who complete them get bonus points or rewards.
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/quizmaster.git
 
+# Open the solution in Visual Studio
+# Configure the connection string in appsettings.json
+
+# Run database migrations
+Update-Database
+
+# Start the application
+F5 or Ctrl+F5 in Visual Studio
+```
 

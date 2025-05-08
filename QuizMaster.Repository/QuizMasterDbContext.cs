@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 
 namespace QuizMaster.Repository
 {
-	public class QuizMasterDbContext(DbContextOptions<QuizMasterDbContext> options) : DbContext(options)
+	public class QuizMasterDbContext : IdentityDbContext<User>
 	{
         public DbSet<User> Users { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
@@ -12,5 +13,12 @@ namespace QuizMaster.Repository
         public DbSet<Category> Categories { get; set; }
         public DbSet<Badge> Badges { get; set; }
         public DbSet<UserBadge> UserBadges { get; set; }
-    }
+
+		public QuizMasterDbContext() { }
+
+		public QuizMasterDbContext(DbContextOptions<QuizMasterDbContext> options) : base(options)
+		{
+
+		}
+	}
 }

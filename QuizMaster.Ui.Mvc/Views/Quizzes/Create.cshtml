@@ -1,28 +1,47 @@
-﻿@model QuizMaster.Ui.Mvc.Models.Quizzes.CreateQuizViewModel
-@{
-    ViewData["Title"] = "Create Quiz - Step 1";
+﻿@model CreateQuizViewModel
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Create Quiz</h2>
+    <div class="form-container" style="max-width: 600px; margin: auto;">
+        <form asp-action="Create" method="post">            
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" placeholder="Enter title"/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label"></label>
+                <select asp-for="CategoryId" class="form-control">
+                    <option value="">-- Select a Category --</option>
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <option value="@category.Value">@category.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            @* <div class="mb-3">
+                <label class="form-label">Image (optional)</label>
+                <input type="file" name="image" class="form-control"/>
+            </div> *@
+
+            <div class="d-flex justify-content-between">
+                <a href="/" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
 
-<h2>Create Quiz - Step 1</h2>
-
-<form action="/Quiz/CreateQuestions" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="image">Image</label>
-        <input type="file" class="form-control" id="image" name="image">
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Title"></label>
-        <input class="form-control" asp-for="Title" placeholder="Enter the title">
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea class="form-control" asp-for="Description" placeholder="Enter the description" rows="3"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Next</button>
-    <a href="/" class="btn btn-secondary">Cancel</a>
-</form>

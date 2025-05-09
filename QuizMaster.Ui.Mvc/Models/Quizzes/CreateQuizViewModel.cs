@@ -7,16 +7,15 @@ namespace QuizMaster.Ui.Mvc.Models.Quizzes
 {
     public class CreateQuizViewModel
     {
-        public int Id { get; set; }
+        
+        
 
         [Required(ErrorMessage = "Title is required")]
         public required string Title { get; set; }
         [Required(ErrorMessage = "Description is required")]
         public required string Description { get; set; }
 
-        //[Required(ErrorMessage = "Category is required")]
+        [Required(ErrorMessage = "Category is required")]
         public int CategoryId { get; set; }
-
-        public string? UserId { get; set; }
     }
 }

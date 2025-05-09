@@ -1,22 +1,20 @@
-﻿@model QuizMaster.Models.ViewModels.QuizWithQuestionsViewModel
+﻿@model AddQuestionsViewModel
 
 <div class="container py-5">
-    <h2 class="mb-4 text-center">Step 2: Add Quiz Questions</h2>
+    <h2 class="mb-4 text-center">Step 2: Add Quiz Questions to @Model.QuizTitle</h2>
 
-    <form action="/Dummy/Save" method="post">
+    <form asp-action="AddQuestions" method="post">
+        <input type="hidden" asp-for="QuizId" />
+        <div asp-validation-summary="All" class="text-danger"></div>
         <div id="question-container"></div>
 
         <button type="button" class="btn my-3" id="add-question-btn">➕ Add Question</button>
         <br />
         <button type="submit" class="btn btn-success">Save</button>
-        <a href="/Dummy/CreateQuestionsPageOne" class="btn btn-secondary">Back</a>
+        <a asp-action="Create" class="btn btn-secondary">Back</a>
     </form>
 
     <style>
-        .card {
-            padding-left: 1.5rem;
-        }
-
         .form-check.correct-selected {
             background-color: transparent;
             border: none;
@@ -59,6 +57,10 @@
             #add-question-btn:hover {
                 background: linear-gradient(to right, #0094d9, #0051cc);
             }
+
+        .card {
+            padding-left: 1.5rem;
+        }
     </style>
 
     <script>
@@ -78,7 +80,7 @@
             card.className = 'card mb-4 pt-3 pb-3';
             card.setAttribute('data-index', questionIndex);
 
-            const namePrefix = `questions[${questionIndex}]`;
+            const namePrefix = `Questions[${questionIndex}]`;
 
             card.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center mb-2 pe-3">
@@ -88,15 +90,17 @@
 
                 <div class="form-group pe-3">
                     <label>Question Text</label>
-                    <input type="text" name="${namePrefix}[text]" class="form-control" placeholder="Enter your question">
+                    <input type="text" name="${namePrefix}.Text" class="form-control" placeholder="Enter your question">
+                    <span class="text-danger" data-valmsg-for="${namePrefix}.Text" data-valmsg-replace="true"></span>
                 </div>
 
                 <label class="mt-3 fw-bold d-block pe-3">Select the correct answer</label>
 
                 ${[0, 1, 2, 3].map(i => `
                     <div class="form-check mb-2 pe-3">
-                        <input style="margin-left:4px;border:1px solid black;" class="form-check-input" type="radio" name="${namePrefix}[correct]" value="${i}" onchange="markCorrect(this)">
-                        <input type="text" class="form-control" name="${namePrefix}[answers][${i}]" placeholder="Answer ${i + 1}">
+                        <input class="form-check-input" type="radio" name="${namePrefix}.Correct" value="${i}" onchange="markCorrect(this)">
+                        <input type="text" class="form-control" name="${namePrefix}.Answers[${i}].AnswerText" placeholder="Answer ${i + 1}">
+                        <span class="text-danger" data-valmsg-for="${namePrefix}.Answers[${i}].AnswerText" data-valmsg-replace="true"></span>
                     </div>
                 `).join('')}
             `;
@@ -120,19 +124,23 @@
                 card.setAttribute('data-index', questionIndex);
                 card.querySelector('h5').textContent = `Question ${questionIndex + 1}`;
 
-                const namePrefix = `questions[${questionIndex}]`;
+                const namePrefix = `Questions[${questionIndex}]`;
 
-                card.querySelector(`input[type="text"][name$="[text]"]`).name = `${namePrefix}[text]`;
+                card.querySelector(`input[name$=".Text"]`).name = `${namePrefix}.Text`;
 
                 const radios = card.querySelectorAll(`input[type="radio"]`);
                 radios.forEach((radio, i) => {
-                    radio.name = `${namePrefix}[correct]`;
+                    radio.name = `${namePrefix}.Correct`;
                     radio.value = i;
                 });
 
-                const texts = card.querySelectorAll(`input[type="text"][name*="[answers]"]`);
+                const texts = card.querySelectorAll(`input[type="text"]`);
+                let textCounter = 0;
                 texts.forEach((text, i) => {
-                    text.name = `${namePrefix}[answers][${i}]`;
+                    if (!text.name.endsWith(".Text")) {
+                        text.name = `${namePrefix}.Answers[${textCounter}].AnswerText`;
+                        textCounter++;
+                    }
                 });
 
                 questionIndex++;
@@ -142,12 +150,10 @@
         function markCorrect(radio) {
             const groupName = radio.name;
             const allOptions = document.querySelectorAll(`input[name="${groupName}"]`);
-
             allOptions.forEach(r => {
                 const wrapper = r.closest('.form-check');
                 wrapper.classList.remove('correct-selected');
             });
-
             radio.closest('.form-check').classList.add('correct-selected');
         }
     </script>

@@ -31,13 +31,43 @@ namespace QuizMaster.Services
         {
             return await _dbContext.Quizzes.FirstOrDefaultAsync(q => q.Id == id);
         }
-        public async Task<Quiz?> Create(Quiz entity) /// Creates a new quiz
+
+        public async Task<IList<Category>> GetCategories()
         {
-            entity.CreatedAt = DateTime.Now;
-            await _dbContext.Quizzes.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
+            return await _dbContext.Categories.ToListAsync();
         }
+
+        public async Task<Category?> GetCategoryById(int id) 
+        {
+            return await _dbContext.Categories.FirstOrDefaultAsync(q => q.Id == id);
+        }
+        public async Task<Quiz?> Create(Quiz quiz) /// Creates a new quiz
+        {
+            quiz.CreatedAt = DateTime.Now;
+            await _dbContext.Quizzes.AddAsync(quiz);
+            await _dbContext.SaveChangesAsync();
+            return quiz;
+        }
+
+        public async Task AddQuestionToQuiz(int quizId, Question question)
+        {
+
+            var quiz = await _dbContext.Quizzes
+                .Include(q => q.Questions)
+                .FirstOrDefaultAsync(q => q.Id == quizId);
+
+            if (quiz == null)
+            {
+                throw new Exception("Quiz not found");
+            }
+
+            
+            _dbContext.Questions.Add(question);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        
+
         public async Task<Quiz?> Update(int id, Quiz entity) /// Updates a specific quiz by id
         {
             var tempQuiz = await Get(id);

@@ -4,6 +4,7 @@ using QuizMaster.Services;
 using Microsoft.AspNetCore.Identity;
 using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
+using QuizMaster.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddScoped<LeaderboardService>();
 
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ICrudService<User, string>, UserService>();
 builder.Services.AddScoped<CategoryService>();
 
 var app = builder.Build();

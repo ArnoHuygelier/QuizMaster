@@ -1,0 +1,30 @@
+﻿@using QuizMaster.Ui.Mvc.ViewModels.Leaderboard
+@model List<LeaderboardViewModel>
+
+@{
+    ViewBag.Title = "Leaderboard";
+}
+
+<h2 class="my-4 text-primary">Team Standings</h2>
+
+<div class="container bg-light-subtle p-4 rounded" style="min-height: 60vh">
+    <div class="row">
+        <div class="col-12">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item bg-primary text-white fw-bold">
+                    <div class="row text-center">
+                        <div class="col-1">Rank</div>
+                        <div class="col-3 text-start">Name</div>
+                        <div class="col-5">Score</div>
+                        <div class="col-3">Badge</div>
+                    </div>
+                </li>
+
+                @foreach (var item in Model)
+                {
+                    <partial name="LeaderboardRowPartial" model="item"></partial>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

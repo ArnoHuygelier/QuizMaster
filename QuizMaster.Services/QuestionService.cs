@@ -30,6 +30,17 @@ namespace QuizMaster.Services
             return await _context.Questions.FindAsync(id);
         }
 
+        public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
+        {
+            return await _context.Questions
+                .Where(q => q.Quizzes.Any(quiz => quiz.Id == quizId))
+                .Include(q => q.Answers)
+                .ToListAsync();
+
+            
+        }
+
+
         public async Task<Question?> Create(Question question)
         {
             await _context.Questions.AddAsync(question);
@@ -55,6 +66,26 @@ namespace QuizMaster.Services
 
             await _context.SaveChangesAsync();
             return question;
+        }
+
+        public async Task AddQuestionToQuiz(int quizId, Question question)
+        {
+
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                .FirstOrDefaultAsync(q => q.Id == quizId);
+
+            if (quiz == null)
+            {
+                throw new Exception("Quiz not found");
+            }
+
+
+            quiz.Questions.Add(question);
+
+
+
+            await _context.SaveChangesAsync();
         }
 
         // Verwijderen

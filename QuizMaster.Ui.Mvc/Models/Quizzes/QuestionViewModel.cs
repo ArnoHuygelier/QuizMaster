@@ -9,7 +9,6 @@ namespace QuizMaster.Ui.Mvc.Models.Quizzes
         [Required(ErrorMessage = "At least one answer is required")]
         public List<AnswerViewModel> Answers { get; set; } = new List<AnswerViewModel>();
 
-        //[Required(ErrorMessage = "A correct answer must be selected")]
-        //public int Correct { get; set; } = -1;
+        public int CorrectAnswerIndex { get; set; }
     }
 }

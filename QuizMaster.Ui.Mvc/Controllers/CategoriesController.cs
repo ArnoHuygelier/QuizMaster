@@ -27,6 +27,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(categoriesViewModel);
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return CreateView("Create");
+        }
+
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] Category category)
         {

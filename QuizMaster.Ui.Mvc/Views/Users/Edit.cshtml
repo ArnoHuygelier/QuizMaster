@@ -1,4 +1,4 @@
-﻿@model User
+﻿@model EditUserViewModel
 
 @{
     ViewData["Title"] = "Edit User";
@@ -9,6 +9,7 @@
         <div class="col-md-6">
             <h2 class="text-center mb-4">Edit User</h2>
             <form asp-action="Edit" method="post">
+                @Html.HiddenFor(model => model.Id)
                 <div class="mb-3">
                     <label asp-for="UserName" class="form-label">Username</label>
                     <input asp-for="UserName" class="form-control" />

@@ -10,7 +10,7 @@ using QuizMaster.Services.Interfaces;
 
 namespace QuizMaster.Services
 {
-    public class UserService : ICrudService<User,string>
+    public class UserService
     {
         private readonly QuizMasterDbContext _dbContext;
 
@@ -44,14 +44,6 @@ namespace QuizMaster.Services
         public async Task<User?> Update(string id, User entity)
         {
             var tempUser = await Get(id);
-
-            if (tempUser is null)
-            {
-                return null;
-            }
-
-            //Update properties
-
             await _dbContext.SaveChangesAsync();
             return tempUser;
         }

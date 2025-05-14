@@ -16,7 +16,7 @@ namespace QuizMaster.Models
         public required bool IsCorrect { get; set; }
 
         public int QuestionId { get; set; }
-        public required Question Question { get; set; }
+        public Question Question { get; set; }
     }
 
 

@@ -1,16 +1,18 @@
-﻿@model CreateQuizViewModel
+﻿@model EditQuizViewModel
 @{
-    ViewBag.Title = "Create Quiz";
+    ViewBag.Title = "Edit Quiz";
 }
 
 <div class="container py-5">
     <h2 class="mb-4 text-center">@ViewBag.Title</h2>
     <div class="form-container" style="max-width: 600px; margin: auto;">
-        <form asp-action="Create" method="post">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="UserId" />
             <partial name="CreateEditPartial" model="Model" />
             <div class="d-flex justify-content-between">
                 <a href="/" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Next</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>

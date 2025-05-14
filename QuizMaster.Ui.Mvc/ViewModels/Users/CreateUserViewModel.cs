@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuizMaster.Ui.Mvc.Models.Users
+namespace QuizMaster.Ui.Mvc.ViewModels.Users
 {
     public class CreateUserViewModel
     {

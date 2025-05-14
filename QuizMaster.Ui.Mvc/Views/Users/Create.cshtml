@@ -2,47 +2,20 @@
 
 @{
     ViewData["Title"] = "Create User";
+    var roles = ViewBag.Roles as List<string>;
 }
 
-<div class="container mt-5">
+<div class="d-flex flex-column flex-shrink-0 bg-dark text-white" style="position: fixed; top: 0; left: 0; width: 280px; height: 100vh;">
+    <partial name="SidebarPartial" />
+</div>
+
+<div class="container mt-5 vh-100">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center mb-4">Create User</h2>
             <form asp-action="Create" method="post">
-                <div class="mb-3">
-                    <label asp-for="UserName" class="form-label">Username</label>
-                    <input asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Password</label>
-                    <input asp-for="Password" class="form-control" type="password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Role" class="form-label">Role</label>
-                    <select asp-for="Role" class="form-select">
-                        <option value="Admin">Admin</option>
-                        <option value="User">User</option>
-                    </select>
-                    <span asp-validation-for="Role" class="text-danger"></span>
-                </div>
-
-                <div class="mb-4">
-                    <label asp-for="IsActive" class="form-label">Is Active</label>
-                    <select asp-for="IsActive" class="form-select">
-                        <option value="true" selected="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                </div>
+                
+                <partial name="CreateEditUserFormPartial" model="@Model"></partial>
 
                 <div class="d-flex justify-content-center gap-2">
                     <button type="submit" class="btn btn-success">Create User</button>

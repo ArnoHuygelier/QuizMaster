@@ -35,7 +35,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete this category?</p>
+                    <p>Are you sure you want to delete this category "<span id="categoryName"></span>"?</p>
                 </div>
                 <div class="modal-footer">
                     <form asp-action="Delete" method="post">
@@ -52,11 +52,16 @@
 @section Scripts
 {
     <script>
-        $(function () {
-            $("[data-type='deleteButton']").on("click", function () {
+        $(function ()
+        {
+            $("[data-type='deleteButton']").on("click", function ()
+            {
                 let id = $(this).data("id");
                 let input = $("input[name='Id']", "#deleteModal");
                 $(input).val(id);
+
+                let name = $(this).data("name");
+                $("#categoryName").html(name);
             });
         });
     </script>

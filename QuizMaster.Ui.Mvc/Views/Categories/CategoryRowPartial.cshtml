@@ -1,4 +1,5 @@
-﻿@model Category
+﻿@using System.Web
+@model Category
 
 <tr>
     <td class="w-25">@Model.Name</td>
@@ -12,7 +13,8 @@
                 data-bs-toggle="modal"
                 data-bs-target="#deleteModal"
                 data-id="@Model.Id"
-                data-type="deleteButton">
+                data-type="deleteButton"
+                data-name="@HttpUtility.HtmlAttributeEncode(Model.Name)">
             Delete
         </button>
     </td>

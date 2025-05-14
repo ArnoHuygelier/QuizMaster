@@ -212,7 +212,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             var quiz = new Quiz
             {
                 Id = viewModel.Id,
-                CategoryId = viewModel.CategoryId,
+                CategoryId = viewModel.CategoryId.Value,
                 Title = viewModel.Title,
                 Description = viewModel.Description,
                 UserId = viewModel.UserId,

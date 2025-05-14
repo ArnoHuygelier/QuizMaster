@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using QuizMaster.Models;
 using System.ComponentModel.DataAnnotations;
+using QuizMaster.Ui.Mvc.Models.Quizzes.Interfaces;
 
 namespace QuizMaster.Ui.Mvc.Models.Quizzes
 {
-    public class EditQuizViewModel
+    public class EditQuizViewModel : IQuizFormViewModel
     {
         [Required]
         public int Id { get; set; }
@@ -20,7 +21,7 @@ namespace QuizMaster.Ui.Mvc.Models.Quizzes
 
         [Required(ErrorMessage = "Category is required")]
         [Display(Name = "Category")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         
         public string UserId { get; set; }
         public DateTime CreatedAt { get; set; }

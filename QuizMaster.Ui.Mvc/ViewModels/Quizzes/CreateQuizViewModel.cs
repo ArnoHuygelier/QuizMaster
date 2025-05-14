@@ -2,10 +2,11 @@
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using QuizMaster.Models;
 using System.ComponentModel.DataAnnotations;
+using QuizMaster.Ui.Mvc.Models.Quizzes.Interfaces;
 
 namespace QuizMaster.Ui.Mvc.Models.Quizzes
 {
-    public class CreateQuizViewModel
+    public class CreateQuizViewModel : IQuizFormViewModel
     {
         
         

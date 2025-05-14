@@ -1,43 +1,18 @@
 ﻿@model EditQuizViewModel
+@{
+    ViewBag.Title = "Edit Quiz";
+}
 
 <div class="container py-5">
-    <h2 class="mb-4 text-center">Create Quiz</h2>
+    <h2 class="mb-4 text-center">@ViewBag.Title</h2>
     <div class="form-container" style="max-width: 600px; margin: auto;">
         <form asp-action="Edit" method="post">
-            <div asp-validation-summary="All"></div>
-            <input type="hidden" asp-for="UserId"/>
-            <div class="mb-3">
-                <label asp-for="Title" class="form-label"></label>
-                <input asp-for="Title" class="form-control" placeholder="Enter title"/>
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="CategoryId" class="form-label"></label>
-                <select asp-for="CategoryId" class="form-control">
-                    <option value="">-- Select a Category --</option>
-                    @foreach (var category in ViewBag.Categories)
-                    {
-                        <option value="@category.Value">@category.Text</option>
-                    }
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-
-            @* <div class="mb-3">
-                <label class="form-label">Image (optional)</label>
-                <input type="file" name="image" class="form-control"/>
-            </div> *@
-
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="UserId" />
+            <partial name="CreateEditPartial" model="Model" />
             <div class="d-flex justify-content-between">
                 <a href="/" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Next</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>
@@ -46,5 +21,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
-

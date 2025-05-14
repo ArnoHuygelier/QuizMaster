@@ -28,6 +28,7 @@ builder.Services.AddScoped<LeaderboardService>();
 
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<QuestionService>();
 
 var app = builder.Build();
 

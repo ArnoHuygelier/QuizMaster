@@ -30,6 +30,13 @@ namespace QuizMaster.Services
             return await _context.Questions.FindAsync(id);
         }
 
+        public async Task<Question?> Create(Question question)
+        {
+            await _context.Questions.AddAsync(question);
+            await _context.SaveChangesAsync();
+            return question;
+        }
+
         // Bijwerken
         public async Task<Question?> Update(int id, Question updated)
         {
@@ -42,27 +49,30 @@ namespace QuizMaster.Services
 
             // Velden handmatig bijwerken
             question.QuestionText = updated.QuestionText;
+            question.Categories = updated.Categories;
+            question.Answers = updated.Answers;
             
-            // Voeg hier andere velden toe...
 
             await _context.SaveChangesAsync();
-            return updated;
+            return question;
         }
 
         // Verwijderen
         public async Task<bool> Delete(int id)
         {
-            var entity = await _context.Questions.FindAsync(id);
-            if (entity == null)
+            var question = await Get(id);
+            if (question == null)
             {
                 return false;
             }
                 
 
-            _context.Questions.Remove(entity);
+            _context.Questions.Remove(question);
             await _context.SaveChangesAsync();
 
             return true;
         }
+
+
     }
 }

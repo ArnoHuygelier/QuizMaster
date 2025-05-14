@@ -19,14 +19,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         private readonly QuizService _quizService;
         private readonly UserService _userService;
+        private readonly QuestionService _questionService;
 
 
-
-        public QuizzesController(QuizService quizService, UserService userService)
+        public QuizzesController(QuizService quizService, UserService userService, QuestionService questionService)
         {
             _quizService = quizService;
             _userService = userService;
-
+            _questionService = questionService;
         }
 
         [HttpGet]
@@ -114,8 +114,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 
                 return View(viewModel);
             }
-            var quizEntity = await _quizService.Get(viewModel.QuizId);
-            if (quizEntity == null)
+            var quiz = await _quizService.Get(viewModel.QuizId);
+            if (quiz == null)
                 return NotFound();
 
             foreach (var questionVM in viewModel.Questions)
@@ -128,7 +128,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 var question = new Question
                 {
                     QuestionText = questionVM.Text,
-                    Quizzes = new List<Quiz> { quizEntity },
+                    Quizzes = new List<Quiz> { quiz },
                     Answers = new List<Answer>()
                 };
 
@@ -141,10 +141,10 @@ namespace QuizMaster.Ui.Mvc.Controllers
                         IsCorrect = (i == questionVM.Correct),
                         Question = question
                     };
-                    question.Answers.Add(answer);
+                    await _questionService.Create(question);
                 }
 
-                await _quizService.AddQuestionToQuiz(quizEntity.Id, question);
+                await _quizService.AddQuestionToQuiz(quiz.Id, question);
             }
 
             return RedirectToAction("Index");

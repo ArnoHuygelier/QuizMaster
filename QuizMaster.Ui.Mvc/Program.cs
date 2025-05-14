@@ -23,9 +23,11 @@ builder.Services.AddDefaultIdentity<User>(options =>
 	.AddEntityFrameworkStores<QuizMasterDbContext>();
 
 // Add services here
-//builder.Services.AddScoped<FunctionService>();
-builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<LeaderboardService>();
+
+
+builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

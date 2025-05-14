@@ -59,14 +59,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromForm] Category category)
+        public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] Category category)
         {
             if (!ModelState.IsValid)
             {
                 return CreateView("Create", category);
             }
 
-            await _categoryService.Create(category);
+            await _categoryService.Update(id, category);
 
             return RedirectToAction("Index");
         }

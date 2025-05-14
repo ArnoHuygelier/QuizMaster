@@ -1,0 +1,15 @@
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Categories.CategoriesViewModel
+
+<tr>
+    <td>@Model.Name</td>
+    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <!-- Button trigger modal -->
+    <button type="button"
+            class="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteModal"
+            data-id="@Model.Id"
+            data-type="deleteButton">
+        Delete with modal
+    </button>
+</tr>

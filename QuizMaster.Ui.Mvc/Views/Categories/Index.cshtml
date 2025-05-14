@@ -1,0 +1,67 @@
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Categories.CategoriesViewModel
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>@ViewBag.Title</h1>
+
+<a asp-action="Create" class="btn btn-primary">New Category</a>
+<table class="table table-striped">
+    <thead>
+        <th>Name</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        @foreach(var category in Model.Categories)
+        {
+           <partial name="CategoryRowPartial" model="category"/>
+        }
+    </tbody>
+
+</table>
+
+
+
+@section Modals
+{
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Category</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this Category?</p>
+                </div>
+                <div class="modal-footer">
+                    <form asp-action="DeleteConfirmed" method="post">
+                        <input type="hidden" name="Id" />
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-primary">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <script>
+        $(function(){
+            $("[data-type='deleteButton']").on("click", function(){
+
+                let id = $(this).data("id");
+
+                let input = $("input[name='Id']", "#deleteModal")
+
+                $(input).val(id);
+
+            });
+        });
+    </script>
+}

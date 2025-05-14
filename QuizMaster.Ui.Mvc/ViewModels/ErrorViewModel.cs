@@ -1,4 +1,4 @@
-namespace QuizMaster.Ui.Mvc.Models
+namespace QuizMaster.Ui.Mvc.ViewModels
 {
     public class ErrorViewModel
     {

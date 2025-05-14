@@ -3,12 +3,12 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using QuizMaster.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace QuizMaster.Ui.Mvc.Models.Quizzes
+namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
 {
     public class CreateQuizViewModel
     {
-        
-        
+
+
 
         [Required(ErrorMessage = "Title is required")]
         public required string Title { get; set; }

@@ -6,7 +6,7 @@ namespace QuizMaster.ViewModels
 {
     public class QuizWithQuestionsViewModel
     {
-        public Quiz Quiz { get; set; } = new Quiz();
+        //public Quiz Quiz { get; set; } = new Quiz();
 
         [Required]
         public List<QuestionInputModel> Questions { get; set; } = new List<QuestionInputModel>();

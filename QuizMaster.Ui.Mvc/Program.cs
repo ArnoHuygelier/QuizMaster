@@ -25,9 +25,10 @@ builder.Services.AddDefaultIdentity<User>(options =>
 
 // Add services here
 
-builder.Services.AddScoped<ICrudService<Quiz, int>, QuizService>();
-builder.Services.AddScoped<ICrudService<User, string>, UserService>();
-builder.Services.AddScoped<UserService>(); 
+builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<UserService>();
+
+
 
 var app = builder.Build();
 

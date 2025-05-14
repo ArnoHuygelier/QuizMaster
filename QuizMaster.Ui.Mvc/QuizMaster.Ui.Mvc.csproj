@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <Folder Include="ViewModels\" />
+      <Folder Include="Views\Categories\" />
     </ItemGroup>
 
 </Project>

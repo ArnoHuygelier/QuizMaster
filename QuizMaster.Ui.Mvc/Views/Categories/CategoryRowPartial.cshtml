@@ -1,7 +1,8 @@
 ﻿@model Category
 
 <tr>
-    <td>Name</td>
+    <td>@Model.Name</td>
+    <td>
     <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
     <!-- Button trigger modal -->
     <button type="button"
@@ -10,6 +11,7 @@
             data-bs-target="#deleteModal"
             data-id="@Model.Id"
             data-type="deleteButton">
-        Delete with modal
+        Delete
     </button>
+    </td>
 </tr>

@@ -12,7 +12,6 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Categories
     {
         public int Id { get; set; }
         public List<Category> Categories { get; set; } 
-        public required string Name { get; set; }
 
     }
 

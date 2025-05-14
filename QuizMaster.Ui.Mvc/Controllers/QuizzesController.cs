@@ -67,17 +67,15 @@ namespace QuizMaster.Ui.Mvc.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userService.Get(userId);
-            var category = await _quizService.GetCategoryById(viewModel.CategoryId);
+
+
             var quiz = new Quiz
             {
                 Title = viewModel.Title,
                 Description = viewModel.Description,
                 CategoryId = viewModel.CategoryId,
-                Category = category,
                 CreatedAt = DateTime.Now,
-                UserId = userId,
-                User = user
+                UserId = userId
             };
 
             var createdQuiz = await _quizService.Create(quiz);
@@ -111,41 +109,38 @@ namespace QuizMaster.Ui.Mvc.Controllers
         {
             if (!ModelState.IsValid)
             {
-                
                 return View(viewModel);
             }
             var quiz = await _quizService.Get(viewModel.QuizId);
             if (quiz == null)
-                return NotFound();
-
-            foreach (var questionVM in viewModel.Questions)
             {
-                if (questionVM.Correct < 0 || questionVM.Correct >= questionVM.Answers.Count)
+                return NotFound();
+            }
+
+
+            foreach (var questionViewModel in viewModel.Questions)
+            {
+                // Check if one correct answer is marked
+                if (!questionViewModel.Answers.Any(a => a.IsCorrect))
                 {
-                    ModelState.AddModelError(string.Empty, "A correct answer must be selected for each question.");
+                    ModelState.AddModelError(string.Empty, "Each question must have one correct answer.");
                     return View(viewModel);
                 }
+
                 var question = new Question
                 {
-                    QuestionText = questionVM.Text,
-                    Quizzes = new List<Quiz> { quiz },
-                    Answers = new List<Answer>()
+                    QuestionText = questionViewModel.Text,
+                    QuizId = quiz.Id,
+                    Answers = questionViewModel.Answers.Select(a => new Answer
+                    {
+                        AnswerText = a.AnswerText,
+                        IsCorrect = a.IsCorrect
+                    }).ToList()
                 };
 
-                for (int i = 0; i < questionVM.Answers.Count; i++)
-                {
-                    var answerVM = questionVM.Answers[i];
-                    var answer = new Answer
-                    {
-                        AnswerText = answerVM.AnswerText,
-                        IsCorrect = (i == questionVM.Correct),
-                        Question = question
-                    };
-                    await _questionService.Create(question);
-                }
-
-                await _quizService.AddQuestionToQuiz(quiz.Id, question);
+                await _questionService.Create(question);
             }
+        
 
             return RedirectToAction("Index");
         }

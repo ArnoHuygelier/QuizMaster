@@ -45,6 +45,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            var category = await _categoryService.Get(id);
+            if (category == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return CreateView("Edit", category);
+        }
+
+
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromForm] Category category)
         {

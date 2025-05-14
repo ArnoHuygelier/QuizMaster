@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuizMaster.Models;
 using QuizMaster.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Categories;
+using System;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
@@ -25,20 +27,48 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(categoriesViewModel);
         }
 
-        public IActionResult Create()
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([FromForm] Category category)
         {
-            
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return CreateView("Create", category);
+            }
+            await _categoryService.Create(category);
+
+            return RedirectToAction("Index");
         }
 
-        public IActionResult Edit()
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromForm] Category category)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return CreateView("Create", category);
+            }
+
+            await _categoryService.Create(category);
+
+            return RedirectToAction("Index");
         }
 
-        public IActionResult Delete()
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+           await _categoryService.Delete(id);
+
+            return RedirectToAction("Index");
+        }
+
+        private IActionResult CreateView(string viewName, Category? category = null)
+        {
+            var categories = _categoryService.Find();
+
+            if (category is null)
+            {
+                return View(viewName);
+            }
+            return View(viewName, category);
         }
     }
 }

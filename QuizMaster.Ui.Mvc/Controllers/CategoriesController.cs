@@ -27,6 +27,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(categoriesViewModel);
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return CreateView("Create");
+        }
+
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] Category category)
         {
@@ -38,6 +44,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            var category = await _categoryService.Get(id);
+            if (category == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return CreateView("Edit", category);
+        }
+
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromForm] Category category)

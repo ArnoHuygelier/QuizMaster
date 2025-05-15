@@ -19,14 +19,14 @@ function addQuestion() {
 
     const namePrefix = `Questions[${questionIndex}]`;
 
-    card.innerHTML = `
+    card.innerHTML = `<input type="hidden" name="Id" id="Id" >
             <div class="d-flex justify-content-between align-items-center mb-2 pe-3">
                 <h5>Question ${questionIndex + 1}</h5>
                 <button type="button" class="btn btn-danger btn-sm" onclick="removeQuestion(this)">Remove</button>
             </div>
 
             <div class="form-group pe-3">
-                <label>Question Text</label>
+                <label class=form-label>Question Text</label>
                 <input type="text" name="${namePrefix}.Text" class="form-control" placeholder="Enter your question">
                 <span class="text-danger" data-valmsg-for="${namePrefix}.Text" data-valmsg-replace="true"></span>
             </div>

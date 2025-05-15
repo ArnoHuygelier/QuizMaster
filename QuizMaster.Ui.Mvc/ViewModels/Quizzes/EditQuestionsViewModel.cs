@@ -2,8 +2,9 @@
 
 namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
 {
-    public class AddQuestionsViewModel
+    public class EditQuestionsViewModel
     {
+        
         public int QuizId { get; set; }
         public string QuizTitle { get; set; } = string.Empty;
 
@@ -11,5 +12,6 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
         [Required]
         public List<QuestionViewModel> Questions { get; set; } = new();
 
+        
     }
 }

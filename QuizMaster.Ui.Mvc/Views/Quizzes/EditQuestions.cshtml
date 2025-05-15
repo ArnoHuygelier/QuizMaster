@@ -1,16 +1,17 @@
-@model QuizMaster.Ui.Mvc.ViewModels.Quizzes.AddQuestionsViewModel
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Quizzes.EditQuestionsViewModel
 
 @section Styles {
     <link href="~/css/add-questions.css" rel="stylesheet" />
-    
+
 }
 
 <div class="container py-5">
     <h2 class="mb-4 text-center">Step 2: Add Quiz Questions to @Model.QuizTitle</h2>
 
-    <form asp-action="AddQuestions" method="post">
+    <form asp-action="EditQuestions" method="post">
         <div asp-validation-summary="All" class="text-danger"></div>
-        <input type="hidden" asp-for="QuizId"/>
+        <input type="hidden" asp-for="QuizId" />
+        
 
         <div id="question-container" data-question-count="@Model.Questions.Count">
             @for (int i = 0; i < Model.Questions.Count; i++)
@@ -24,7 +25,8 @@
 
                     <div class="form-group pe-3">
                         <label>Question Text</label>
-                        <input type="text" name="Questions[@i].Text" value="@question.Text" class="form-control" placeholder="Enter your question"/>
+                        <input type="text" name="Questions[@i].Text" value="@question.Text" class="form-control" placeholder="Enter your question" />
+                        <input type="hidden" name="Questions[@i].QuestionId" value="@question.QuestionId" />
                         <span class="text-danger" data-valmsg-for="Questions[@i].Text" data-valmsg-replace="true"></span>
                     </div>
 
@@ -36,7 +38,7 @@
                         var isCorrect = j == question.CorrectAnswerIndex;
                         <div class="form-check mb-2 pe-3 @(isCorrect ? "correct-selected" : "")">
                             <input class="form-check-input" type="radio" name="Questions[@i].Correct" value="@j" @(isCorrect ? "checked" : "") onchange="markCorrect(this)">
-                            <input type="text" class="form-control" name="Questions[@i].Answers[@j].AnswerText" value="@answer.AnswerText" placeholder="Answer @(j + 1)"/>
+                            <input type="text" class="form-control" name="Questions[@i].Answers[@j].AnswerText" value="@answer.AnswerText" placeholder="Answer @(j + 1)" />
                             <span class="text-danger" data-valmsg-for="Questions[@i].Answers[@j].AnswerText" data-valmsg-replace="true"></span>
                         </div>
                     }
@@ -45,20 +47,21 @@
         </div>
 
         <button type="button" class="btn my-3" id="add-question-btn">➕ Add Question</button>
-        <br/>
+        <br />
         <button type="submit" class="btn btn-success">Save</button>
         <a asp-action="Create" class="btn btn-secondary">Back</a>
     </form>
 </div>
-    <style>
-        
-    </style>
+<style>
+
+</style>
 
 
-   
+
 
 @section Scripts
 {
     <script src="~/js/addQuestion.js" asp-append-version="true"></script>
-    <partial name="_ValidationScriptsPartial"/>
+    <partial name="_ValidationScriptsPartial" />
 }
+

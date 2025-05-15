@@ -22,25 +22,19 @@ namespace QuizMaster.Services
             return await _dbContext.Quizzes.Include(q => q.User).ToListAsync();
         }
 
+        public async Task<IList<Quiz>> FindWithQuestions() /// Gets all quizzes
+        {
+            return await _dbContext.Quizzes
+                .Include(q => q.Questions) 
+                .ToListAsync();
+        }
+
         public async Task<Quiz?> Get(int id) /// Gets a specific quiz by id
         {
             return await _dbContext.Quizzes.Include(q => q.Questions).FirstOrDefaultAsync(q => q.Id == id);
         }
 
-        public async Task<Quiz?> GetQuizzesWithQuestions(int id) /// Gets a specific quiz with questions by id
-        {
-            return await _dbContext.Quizzes.FirstOrDefaultAsync(q => q.Id == id);
-        }
 
-        public async Task<IList<Category>> GetCategories()
-        {
-            return await _dbContext.Categories.ToListAsync();
-        }
-
-        public async Task<Category?> GetCategoryById(int id) 
-        {
-            return await _dbContext.Categories.FirstOrDefaultAsync(q => q.Id == id);
-        }
         public async Task<Quiz?> Create(Quiz quiz) /// Creates a new quiz
         {
             quiz.CreatedAt = DateTime.Now;

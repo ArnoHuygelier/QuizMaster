@@ -57,7 +57,7 @@
     </tbody>
 </table>
 
-@section ModalsSection {
+@section Modals {
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -70,7 +70,7 @@
                 </div>
                 <div class="modal-footer">
                     <form asp-action="DeleteConfirmed" method="post">
-                        <input type="hidden" name="id" value="" />
+                        <input type="hidden" name="id" id="id="delete-user-id" value="" />
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                         <button type="submit" class="btn btn-danger">Yes</button>
                     </form>
@@ -88,8 +88,7 @@
                 $("#data-function-name").text(name);
 
                 let id = $(this).data("id");
-                let input = $("input[name=id]", "#deleteModal");
-                $(input).val(id);
+                $(id="delete-user-id").val(id);
             });
         });
     </script>

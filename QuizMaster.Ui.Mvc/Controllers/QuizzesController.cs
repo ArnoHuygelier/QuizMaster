@@ -298,9 +298,11 @@ namespace QuizMaster.Ui.Mvc.Controllers
                     var answers = q.Answers.ToList();
                     return new QuestionViewModel
                     {
+                        QuestionId = q.Id,
                         Text = q.QuestionText,
                         Answers = answers.Select(a => new AnswerViewModel
                         {
+                            Id = a.Id,
                             AnswerText = a.AnswerText,
                             IsCorrect = a.IsCorrect
                         }).ToList(),
@@ -348,7 +350,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
         public async Task<IActionResult> EditQuestions([FromForm] EditQuestionsViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -364,12 +365,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
             foreach (var qvm in viewModel.Questions)
             {
-                if (qvm.CorrectAnswerIndex < 0 || qvm.CorrectAnswerIndex >= qvm.Answers.Count)
+                if (qvm.Answers == null || qvm.Answers.Count == 0)
                 {
-                    ModelState.AddModelError("", "Each question must have one correct answer.");
+                    ModelState.AddModelError("", $"Vraag '{qvm.Text}' moet minstens één antwoord hebben.");
                     return View(viewModel);
                 }
 
+                if (qvm.CorrectAnswerIndex < 0 || qvm.CorrectAnswerIndex >= qvm.Answers.Count)
+                {
+                    ModelState.AddModelError("", $"Vraag '{qvm.Text}' moet één correct antwoord hebben.");
+                    return View(viewModel);
+                }
+
+                // Markeer correcte antwoord
                 for (int i = 0; i < qvm.Answers.Count; i++)
                 {
                     qvm.Answers[i].IsCorrect = (i == qvm.CorrectAnswerIndex);
@@ -381,17 +389,25 @@ namespace QuizMaster.Ui.Mvc.Controllers
                     QuestionText = qvm.Text,
                     Answers = qvm.Answers.Select(a => new Answer
                     {
-                        Id = a.Id,
+                        Id = a.Id, // 0 voor nieuw antwoord
                         AnswerText = a.AnswerText,
                         IsCorrect = a.IsCorrect
                     }).ToList()
                 };
 
-                await _questionService.Update(qvm.QuestionId,updatedQuestion);
+                // Laat de service alles regelen: add/update/delete answers
+                var result = await _questionService.Update(qvm.QuestionId, updatedQuestion);
+
+                if (result == null)
+                {
+                    ModelState.AddModelError("", $"Vraag met ID {qvm.QuestionId} kon niet geüpdatet worden.");
+                    return View(viewModel);
+                }
             }
 
             return RedirectToAction("Index");
         }
+
 
 
         [HttpGet]

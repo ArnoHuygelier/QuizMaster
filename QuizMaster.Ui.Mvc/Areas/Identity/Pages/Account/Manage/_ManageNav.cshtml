@@ -3,14 +3,67 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+
+<style>
+    .nav-link-manage {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 1rem;
+        font-weight: 500;
+        color: #212529;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .nav-link-manage:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+        }
+
+        .nav-link-manage.active {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link-manage i {
+            font-size: 1.2rem;
+        }
+</style>
+
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link-manage @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index">
+            <i class="bi bi-person-circle"></i> Profile
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link-manage @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email">
+            <i class="bi bi-envelope"></i> Email
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link-manage @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword">
+            <i class="bi bi-lock"></i> Password
+        </a>
+    </li>
     @if (hasExternalLogins)
     {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+        <li class="nav-item">
+            <a class="nav-link-manage @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">
+                <i class="bi bi-box-arrow-in-right"></i> External Logins
+            </a>
+        </li>
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+    <li class="nav-item">
+        <a class="nav-link-manage @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" asp-page="./TwoFactorAuthentication">
+            <i class="bi bi-shield-lock"></i> Two-Factor Auth
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link-manage @ManageNavPages.PersonalDataNavClass(ViewContext)" asp-page="./PersonalData">
+            <i class="bi bi-database"></i> Personal Data
+        </a>
+    </li>
 </ul>

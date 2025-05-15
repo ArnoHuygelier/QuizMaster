@@ -5,23 +5,92 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+<style>
+    .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s ease;
+        width: 100%;
+        max-width: 1000px; /* Doubled width */
+        margin: 0 auto;
+    }
+
+        .profile-card:hover {
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+    .profile-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-floating label {
+        color: #666;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        border-radius: 0.5rem;
+    }
+
+        .form-control:focus {
+            border-color: #4e54c8;
+            box-shadow: 0 0 0 0.2rem rgba(78, 84, 200, 0.25);
+        }
+
+    #update-profile-button {
+        background: linear-gradient(to right, #4e54c8, #8f94fb);
+        border: none;
+        transition: background 0.3s ease;
+        padding: 0.75rem;
+    }
+
+        #update-profile-button:hover {
+            background: linear-gradient(to right, #3e44a8, #6f74db);
+        }
+</style>
+
+<div class="container px-4">
+    <div class="profile-title">
+        <i class="bi bi-person-circle"></i> @ViewData["Title"]
+    </div>
+
+    <partial name="_StatusMessage" for="StatusMessage" />
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="profile-card">
+                <form id="profile-form" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="Username" class="form-control" placeholder="Username" disabled />
+                        <label asp-for="Username" class="form-label"></label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone number" />
+                        <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <button id="update-profile-button" type="submit" class="btn btn-lg w-100 text-white">
+                        <i class="bi bi-save me-1"></i> Save Changes
+                    </button>
+                </form>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </form>
+        </div>
     </div>
 </div>
 

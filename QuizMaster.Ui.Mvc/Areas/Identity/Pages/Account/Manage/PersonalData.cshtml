@@ -5,20 +5,75 @@
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
-<h3>@ViewData["Title"]</h3>
+<style>
+    .data-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s ease;
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-<div class="row">
-    <div class="col-md-6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
-        <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+        .data-card:hover {
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+    .data-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(to right, #4e54c8, #8f94fb);
+        border: none;
+        color: white !important;
+        transition: background 0.3s ease;
+    }
+
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #3e44a8, #6f74db);
+        }
+
+    .btn-danger {
+        background-color: #dc3545 !important;
+        border: none;
+    }
+
+        .btn-danger:hover {
+            background-color: #bb2d3b !important;
+        }
+
+    .data-warning {
+        font-weight: 600;
+        color: #dc3545;
+    }
+</style>
+
+<div class="container px-4">
+    <div class="data-title">
+        <i class="bi bi-shield-lock"></i> @ViewData["Title"]
+    </div>
+
+    <div class="data-card">
+        <p>Your account contains personal data that you have provided to us. You can download or delete this data.</p>
+        <p class="data-warning">
+            Deleting this data will permanently remove your account and cannot be undone.
         </p>
-        <form id="download-data" asp-page="DownloadPersonalData" method="post">
-            <button class="btn btn-primary" type="submit">Download</button>
+
+        <form id="download-data" asp-page="DownloadPersonalData" method="post" class="mb-3">
+            <button class="btn btn-gradient w-100 btn-lg" type="submit">Download Personal Data</button>
         </form>
-        <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Delete</a>
-        </p>
+
+        <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger w-100 btn-lg">Delete My Account</a>
     </div>
 </div>
 

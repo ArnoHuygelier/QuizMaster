@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
 using QuizMaster.Services.Interfaces;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +30,10 @@ builder.Services.AddScoped<LeaderboardService>();
 
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IdentityRole>();
+
 builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<AnswerService>();
-builder.Services.AddScoped<ICrudService<User, string>, UserService>();
 builder.Services.AddScoped<CategoryService>();
 
 var app = builder.Build();
@@ -52,6 +54,10 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.MapControllerRoute(
+    name: "profile",
+    pattern: "{naam}",
+    defaults: new { controller = "Users", action = "Profile" });
 
 app.UseAuthorization();
 

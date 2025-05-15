@@ -1,4 +1,3 @@
-﻿//using Microsoft.Build.Framework;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using QuizMaster.Models;
 using System.ComponentModel.DataAnnotations;
@@ -21,3 +20,4 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
         public int? CategoryId { get; set; }
     }
 }
+

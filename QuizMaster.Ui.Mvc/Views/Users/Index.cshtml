@@ -1,26 +1,27 @@
-﻿@model List<User>
+﻿@model UsersViewModel
 
-@{
-    ViewData["Title"] = "Users";
-}
+<div class="d-flex flex-column flex-shrink-0 bg-dark text-white" style="position: fixed; top: 0; left: 0; width: 280px; height: 100vh;">
+    <partial name="SidebarPartial" />
+</div>
 
-<table class="table">
-    <thead class="thead-dark">
+<table class="table vh-100">
+    <thead>
         <tr>
             <th>Username</th>
             <th>Email</th>
             <th>Is Active</th>
+            <th>Role</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model)
+        @foreach (var item in Model.Users)
         {
             <tr>
-                <td>@user.UserName.</td>
-                <td>@user.Email</td>
+                <td>@item.User.UserName</td>
+                <td>@item.User.Email</td>
                 <td>
-                    @if (user.IsActive)
+                    @if (item.User.IsActive)
                     {
                         <span class="badge bg-success">Yes</span>
                     }
@@ -30,10 +31,66 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-nickname="@user.UserName" class="btn btn-sm btn-primary me-1">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-danger">Delete</a>
+                    @if (item.Role == "Admin")
+                    {
+                        <span class="badge bg-primary">Admin</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@item.Role</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.User.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <button type="button"
+                            class="btn btn-sm btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            data-id="@item.User.Id"
+                            data-type="deleteButton"
+                            data-name="@item.User.UserName">
+                        Delete
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section ModalsSection {
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Person</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this user: <span id="data-function-name"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <form asp-action="DeleteConfirmed" method="post">
+                        <input type="hidden" name="id" value="" />
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("[data-type=deleteButton]").on("click", function () {
+                let name = $(this).data("name");
+                $("#data-function-name").text(name);
+
+                let id = $(this).data("id");
+                let input = $("input[name=id]", "#deleteModal");
+                $(input).val(id);
+            });
+        });
+    </script>
+}

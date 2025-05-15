@@ -1,6 +1,8 @@
-﻿@{
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Quizzes.HomeQuizViewmodel
+@{
     ViewData["Title"] = "Home Page";
 }
+
 
 <div class="container py-4">
     <!-- Header Carousel -->
@@ -30,22 +32,24 @@
         <button class="btn btn-outline-secondary btn-sm me-2">Search</button>
     </div>
 
-    <!-- Popular Quiz Topics -->
-    <h4>Popular Quiz Topics</h4>
+    <!-- All Quizes -->
+    <h4>All Quizzes</h4>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mb-5">
-        @for (int i = 0; i < 4; i++)
+        @foreach (var quiz in Model.Quizzes)
         {
             <div class="col">
                 <div class="card quiz-card h-100">
                     <img src="images/homeImageBlokken.png" class="card-img-top" alt="Quiz">
                     <div class="card-body">
-                        <h6 class="card-title">Vue JS Quiz</h6>
-                        <p class="card-text small text-muted">Master the fundamentals of Vue JS through interactive questions.</p>
+                        <h6 class="card-title">@quiz.Title</h6>
+                        <p class="card-text small text-muted">@quiz.Description</p>
                     </div>
                 </div>
             </div>
         }
     </div>
+
+
 
     <!-- Trending Course -->
     <h4>Trending Course</h4>

@@ -1,9 +1,11 @@
 ﻿@using System.Web
-@model Quiz
+@model QuizMaster.Ui.Mvc.ViewModels.Quizzes.QuizViewModel
 
 <tr>
     <td class="w-25">@Model.Title</td>
-    <td class="w-25">@Model.Questions.Count</td>
+    <td class="w-25">@Model.Description</td>
+
+    <td class="w-25">@Model.NumberOfQuestions</td>
     <td class="w-25">
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-primary me-1">Edit</a>
 

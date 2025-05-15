@@ -33,11 +33,17 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var quizzes = await _quizService.Find();
+            var quizzes = await _quizService.FindWithQuestions();
 
             var viewModel = new QuizzesViewModel()
             {
-                Quizzes = quizzes.ToList()
+                Quizzes = quizzes.Select(q => new QuizViewModel
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Description = q.Description,
+                    NumberOfQuestions = q.Questions?.Count ?? 0  
+                }).ToList()
             };
 
             return View(viewModel);

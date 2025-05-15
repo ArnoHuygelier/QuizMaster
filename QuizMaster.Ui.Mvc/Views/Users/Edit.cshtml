@@ -16,7 +16,7 @@
             <form asp-action="Edit" method="post">
                 @Html.HiddenFor(model => model.Id)
 
-                <partial name="CreateEditUserFormPartial" model="@Model"></partial>
+                <partial name="EditUserFormPartial" model="@Model"></partial>
 
                 <div class="d-flex justify-content-center gap-2">
                     <button type="submit" class="btn btn-success">Save Changes</button>

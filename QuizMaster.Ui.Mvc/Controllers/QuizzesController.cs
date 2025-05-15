@@ -99,14 +99,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             var viewModel = new AddQuestionsViewModel
             {
                 QuizId = quiz.Id,
-                QuizTitle = quiz.Title,
-                Questions = new List<QuestionViewModel> {
-                    new QuestionViewModel {
-                        Answers = new List<AnswerViewModel> {
-                            new(), new(), new(), new() // assuming 4 answers per question
-                        }
-                    }
-                }
+                QuizTitle = quiz.Title
             };
 
             return View(viewModel);

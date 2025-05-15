@@ -35,7 +35,7 @@
                         var answer = question.Answers[j];
                         var isCorrect = j == question.CorrectAnswerIndex;
                         <div class="form-check mb-2 pe-3 @(isCorrect ? "correct-selected" : "")">
-                            <input class="form-check-input" type="radio" name="Questions[@i].Correct" value="@j" @(isCorrect ? "checked" : "") onchange="markCorrect(this)">
+                            <input class="form-check-input" type="radio" name="Questions[@i].CorrectAnswerIndex" value="@j" @(isCorrect ? "checked" : "") onchange="markCorrect(this)">
                             <input type="text" class="form-control" name="Questions[@i].Answers[@j].AnswerText" value="@answer.AnswerText" placeholder="Answer @(j + 1)"/>
                             <span class="text-danger" data-valmsg-for="Questions[@i].Answers[@j].AnswerText" data-valmsg-replace="true"></span>
                         </div>

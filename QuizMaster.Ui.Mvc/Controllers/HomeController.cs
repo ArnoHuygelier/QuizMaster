@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using QuizMaster.Ui.Mvc.Models;
+using QuizMaster.Ui.Mvc.ViewModels;
 
 namespace QuizMaster.Ui.Mvc.Controllers;
 

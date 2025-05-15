@@ -1,0 +1,35 @@
+﻿@model EditUserViewModel
+@{
+    var roles = ViewBag.Roles as List<string>;
+}
+
+<div class="mb-3">
+    <label asp-for="UserName" class="form-label">Username</label>
+    <input asp-for="UserName" class="form-control" />
+    <span asp-validation-for="UserName" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Email" class="form-label">Email</label>
+    <input asp-for="Email" class="form-control" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="IsActive" class="form-label">Is Active</label>
+    <select asp-for="IsActive" class="form-select">
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Role" class="form-label">Role</label>
+    <select asp-for="Role" class="form-select">
+        @foreach (var role in roles)
+        {
+            <option value="@role">@role</option>
+        }
+    </select>
+    <span asp-validation-for="Role" class="text-danger"></span>
+</div>

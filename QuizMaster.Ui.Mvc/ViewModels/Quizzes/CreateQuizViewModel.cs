@@ -1,15 +1,14 @@
-﻿//using Microsoft.Build.Framework;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using QuizMaster.Models;
 using System.ComponentModel.DataAnnotations;
 using QuizMaster.Ui.Mvc.Models.Quizzes.Interfaces;
 
-namespace QuizMaster.Ui.Mvc.Models.Quizzes
+namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
 {
     public class CreateQuizViewModel : IQuizFormViewModel
     {
-        
-        
+
+
 
         [Required(ErrorMessage = "Title is required")]
         public required string Title { get; set; }
@@ -21,3 +20,4 @@ namespace QuizMaster.Ui.Mvc.Models.Quizzes
         public int? CategoryId { get; set; }
     }
 }
+

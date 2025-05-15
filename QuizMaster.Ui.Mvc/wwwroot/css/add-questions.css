@@ -1,0 +1,46 @@
+﻿.form-check.correct-selected {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.form-check.correct-selected input[type="text"] {
+    background-color: white;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.form-check-input {
+    margin-right: 15px;
+    margin-left: 6px;
+    accent-color: #007bff;
+    width: 1.2em;
+    height: 1.2em;
+    flex-shrink: 0;
+}
+
+.form-check input[type="text"] {
+    flex: 1;
+}
+
+#add-question-btn {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+    #add-question-btn:hover {
+        background: linear-gradient(to right, #0094d9, #0051cc);
+    }
+
+.card {
+    padding-left: 1.5rem;
+}

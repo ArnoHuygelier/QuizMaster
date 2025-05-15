@@ -23,4 +23,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
 
+<<<<<<< HEAD
+=======
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
+>>>>>>> dev
 </Project>

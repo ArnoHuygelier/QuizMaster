@@ -65,7 +65,8 @@ QuizMaster.sln
 | `Get(id)` | Return one record by ID           |
 | `Update(id)` | Update a record by ID          |
 | `Delete(id)` | Delete a record by ID          |
-
+| `Create(id)` | Create a record by ID          |    
+ 
 ## 🧱 ViewModels
 
 ```csharp

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace QuizMaster.Ui.Mvc.Models.Quizzes
+namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
 {
     public class QuestionViewModel
     {

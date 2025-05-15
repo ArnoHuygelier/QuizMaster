@@ -10,63 +10,60 @@ using QuizMaster.Services.Interfaces;
 
 namespace QuizMaster.Services
 {
-    public class UserService : ICrudService<User,string>
+    public class UserService
     {
-        private readonly QuizMasterDbContext _dbContext;
 
-        public UserService(QuizMasterDbContext dbContext)
+
+        private readonly QuizMasterDbContext _context;
+
+        public UserService(QuizMasterDbContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
         }
 
-        public async Task<IList<User>> Find()
+        // Alles opvragen
+        public async Task<IEnumerable<User>> Find()
         {
-            return await _dbContext.Users.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
+        // Eén item opvragen via ID
         public async Task<User?> Get(string id)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users.FindAsync(id);
         }
 
-        public async Task<User?> GetByNickname(string nickname)
+        // Nieuw item aanmaken
+        public async Task<User> Create(User entity)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == nickname);
-        }
-
-        public async Task<User?> Create(User entity)
-        {
-            await _dbContext.Users.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            _context.Users.Add(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<User?> Update(string id, User entity)
+        // Bestaand item bijwerken
+        public async Task<User?> Update(string id, User updated)
         {
-            var tempUser = await Get(id);
+            var entity = await _context.Users.FindAsync(id);
+            if (entity == null) return null;
 
-            if (tempUser is null)
-            {
-                return null;
-            }
+            entity.UserName = updated.UserName;
+            entity.Email = updated.Email;
+            entity.IsActive = updated.IsActive;
 
-            //Update properties
-
-            await _dbContext.SaveChangesAsync();
-            return tempUser;
+            await _context.SaveChangesAsync();
+            return entity;
         }
-        public async Task Delete(string id)
+
+        // Verwijderen op ID
+        public async Task<bool> Delete(string id)
         {
-            var user = await Get(id);
+            var entity = await _context.Users.FindAsync(id);
+            if (entity == null) return false;
 
-            if (user is null)
-            {
-                return;
-            }
-
-            _dbContext.Users.Remove(user);
-
-            await _dbContext.SaveChangesAsync();
+            _context.Users.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

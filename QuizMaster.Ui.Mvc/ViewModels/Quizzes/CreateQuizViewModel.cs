@@ -4,7 +4,7 @@ using QuizMaster.Models;
 using System.ComponentModel.DataAnnotations;
 using QuizMaster.Ui.Mvc.Models.Quizzes.Interfaces;
 
-namespace QuizMaster.Ui.Mvc.Models.Quizzes
+namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
 {
     public class CreateQuizViewModel : IQuizFormViewModel
     {

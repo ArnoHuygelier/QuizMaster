@@ -5,11 +5,11 @@ using QuizMaster.Services;
 using QuizMaster.Ui.Mvc.Controllers.ControllerBases;
 using System;
 using QuizMaster.Services.Interfaces;
-using QuizMaster.Ui.Mvc.Models.Quizzes;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {

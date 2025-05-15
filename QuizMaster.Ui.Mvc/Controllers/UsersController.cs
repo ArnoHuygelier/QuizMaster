@@ -1,124 +1,204 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 using QuizMaster.Services;
-using QuizMaster.Services.Interfaces;
-using QuizMaster.Ui.Mvc.Controllers.ControllerBases;
+using QuizMaster.Ui.Mvc.ViewModels.Users;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
-    public class UsersController : CrudController<User,string>
+    [Authorize(Roles = "Admin")]
+    public class UsersController : Controller
     {
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserService _userService;
 
-        private readonly ICrudService<User, string> _userService;
-        private readonly UserService _userServiceWithoutInterface;
-
-        public UsersController(ICrudService<User, string> userService, UserService service)
+        public UsersController(UserService service, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _userService = userService;
-            _userServiceWithoutInterface = service;
+            _userService = service;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public override async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            var users = await _userService.Find();
-            return View(users);
-        }
+            var users = await _userManager.Users.ToListAsync();
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
 
-        [HttpGet]
-        public override async Task<IActionResult> Detail(string id)
-        {
-            var user = await _userService.Get(id);
-            if (user == null)
+            var userList = new List<UserWithRoleViewModel>();
+
+            foreach (var user in users)
             {
-                return NotFound();
+                var userRoles = await _userManager.GetRolesAsync(user);
+                userList.Add(new UserWithRoleViewModel
+                {
+                    User = user,
+                    Role = userRoles.FirstOrDefault() ?? "Geen rol"
+                });
             }
-            return View(user);
+
+            var viewModel = new UsersViewModel
+            {
+                Users = userList,
+                Roles = roles
+            };
+
+            return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-        public override IActionResult Create()
+        public async Task<IActionResult> Detail(string id)
         {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var viewModel = new UserWithRoleViewModel
+            {
+                User = user,
+                Role = roles.FirstOrDefault() ?? "Geen rol"
+            };
+
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            ViewBag.Roles = roles;
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public override async Task<IActionResult> Create(User entity)
+        public async Task<IActionResult> Create(CreateUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    IsActive = model.IsActive,
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = true
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    if (await _roleManager.RoleExistsAsync(model.Role))
+                    {
+                        await _userManager.AddToRoleAsync(user, model.Role);
+                    }
+                    return RedirectToAction("Index");
+                }
+            }
+
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            ViewBag.Roles = roles;
+
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var viewModel = new EditUserViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                IsActive = user.IsActive,
+                Role = userRoles.FirstOrDefault() ?? ""
+            };
+
+            ViewBag.Roles = roles;
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditUserViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(entity);
+                ViewBag.Roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+                return View(model);
             }
 
-            var createdUser = await _userService.Create(entity);
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null) return NotFound();
+
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+            user.IsActive = model.IsActive;
+
+            await _userManager.UpdateAsync(user);
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!string.IsNullOrEmpty(model.Role) && await _roleManager.RoleExistsAsync(model.Role))
+            {
+                await _userManager.AddToRoleAsync(user, model.Role);
+            }
+
             return RedirectToAction("Index");
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-        public override async Task<IActionResult> Edit(string nickname)
+        public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userServiceWithoutInterface.GetByNickname(nickname);
-            if (user is null)
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return RedirectToAction("Index");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var viewModel = new UserWithRoleViewModel
             {
-                return RedirectToAction("Index");
-            }
+                User = user,
+                Role = roles.FirstOrDefault() ?? "No role"
+            };
 
-
-
-            return View(user);
+            return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public override async Task<IActionResult> Edit([FromRoute]string id, [FromForm]User entity)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            User? user = await _userService.Get(id);
-
-            if(user is null)
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
             {
-                return View(entity);
+                await _userManager.DeleteAsync(user);
             }
-
-            user.UserName = entity.UserName;
-            user.Email = entity.Email;
-            user.IsActive = entity.IsActive;
-
-            if (!ModelState.IsValid)
-            {
-                return View(entity);
-            }
-
-            var updatedUser = await _userService.Update(id, entity);
-            if (updatedUser == null)
-            {
-                return NotFound();
-            }
-
-           
 
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-        public override async Task<IActionResult> Delete(string id)
+        [Route("Dashboard")]
+        public async Task<IActionResult> Dashboard()
         {
-            var user = await _userService.Get(id);
-            if (user is null)
-            {
-                return RedirectToAction("Index");
-            }
-            return View(user);
+            var userInfo = await _userManager.GetUserAsync(User);
+            return View(userInfo);
         }
-
-        [HttpPost]
-        public override async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            await _userService.Delete(id);
-
-            return RedirectToAction("Index");
-        }
-
     }
 }

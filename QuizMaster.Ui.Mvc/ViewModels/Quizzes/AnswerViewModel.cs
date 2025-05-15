@@ -4,6 +4,7 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
 {
     public class AnswerViewModel
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Answer Text is required")]
         public string AnswerText { get; set; } = string.Empty;
 

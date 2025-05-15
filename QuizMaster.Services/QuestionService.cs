@@ -49,21 +49,52 @@ namespace QuizMaster.Services
         }
 
         // Bijwerken
-        public async Task<Question?> Update(int id, Question updated)
+        public async Task<Question?> Update(int? id, Question updated)
         {
-            var question = await _context.Questions.FindAsync(id);
-            if (question == null)
-            {
-                return null;
-            }
-                
+            var question = await _context.Questions
+                .Include(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id); 
 
-            // Velden handmatig bijwerken
+            if (question == null)
+                return null;
+
+            // Update question fields
             question.QuestionText = updated.QuestionText;
             question.Categories = updated.Categories;
-            question.Answers = updated.Answers;
-            
 
+            // Update existing answers and track changes
+            foreach (var updatedAnswer in updated.Answers)
+            {
+                var existingAnswer = question.Answers.FirstOrDefault(a => a.Id == updatedAnswer.Id);
+
+                if (existingAnswer != null)
+                {
+                    // Update existing
+                    existingAnswer.AnswerText = updatedAnswer.AnswerText;
+                    existingAnswer.IsCorrect = updatedAnswer.IsCorrect;
+                }
+                else
+                {
+                    // Add new answer
+                    question.Answers.Add(new Answer
+                    {
+                        AnswerText = updatedAnswer.AnswerText,
+                        IsCorrect = updatedAnswer.IsCorrect
+                    });
+                }
+            }
+
+            // Optionally remove deleted answers
+            var updatedAnswerIds = updated.Answers.Where(a => a.Id != 0).Select(a => a.Id).ToList();
+            var answersToRemove = question.Answers
+                .Where(a => !updatedAnswerIds.Contains(a.Id))
+                .ToList();
+
+            foreach (var answer in answersToRemove)
+            {
+                _context.Answers.Remove(answer);
+            }
+            
             await _context.SaveChangesAsync();
             return question;
         }

@@ -71,47 +71,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> Create()
-        {
-            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
-            ViewBag.Roles = roles;
-            return View();
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateUserViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new User
-                {
-                    UserName = model.UserName,
-                    Email = model.Email,
-                    IsActive = model.IsActive,
-                    EmailConfirmed = true,
-                    PhoneNumberConfirmed = true
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    if (await _roleManager.RoleExistsAsync(model.Role))
-                    {
-                        await _userManager.AddToRoleAsync(user, model.Role);
-                    }
-                    return RedirectToAction("Index");
-                }
-            }
-
-            var roles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
-            ViewBag.Roles = roles;
-
-            return View(model);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

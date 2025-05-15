@@ -1,6 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model QuizMaster.Ui.Mvc.Models.Quizzes.Interfaces.IQuizFormViewModel
 
+@{
+    var categories = (ICollection<Category>)ViewBag.Categories;
+}
+
 <div class="mb-3">
     <label asp-for="Title" class="form-label"></label>
     <input asp-for="Title" class="form-control" placeholder="Enter title" />
@@ -17,9 +21,9 @@
     <label asp-for="CategoryId" class="form-label"></label>
     <select asp-for="CategoryId" class="form-control">
         <option value="">-- Select a Category --</option>
-        @foreach (var category in ViewBag.Categories)
+        @foreach (var category in categories)
         {
-            <option value="@category.Value">@category.Text</option>
+            <option value="@category.Id">@category.Name</option>
         }
     </select>
     <span asp-validation-for="CategoryId" class="text-danger"></span>

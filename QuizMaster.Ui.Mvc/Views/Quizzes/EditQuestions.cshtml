@@ -2,7 +2,6 @@
 
 @section Styles {
     <link href="~/css/add-questions.css" rel="stylesheet" />
-
 }
 
 <div class="container py-5">
@@ -11,7 +10,6 @@
     <form asp-action="EditQuestions" method="post">
         <div asp-validation-summary="All" class="text-danger"></div>
         <input type="hidden" asp-for="QuizId" />
-        
 
         <div id="question-container" data-question-count="@Model.Questions.Count">
             @for (int i = 0; i < Model.Questions.Count; i++)
@@ -37,7 +35,11 @@
                         var answer = question.Answers[j];
                         var isCorrect = j == question.CorrectAnswerIndex;
                         <div class="form-check mb-2 pe-3 @(isCorrect ? "correct-selected" : "")">
-                            <input class="form-check-input" type="radio" name="Questions[@i].Correct" value="@j" @(isCorrect ? "checked" : "") onchange="markCorrect(this)">
+                            <input class="form-check-input" type="radio" name="Questions[@i].CorrectAnswerIndex" value="@j" @(isCorrect ? "checked" : "") onchange="markCorrect(this)" />
+
+                            <!-- FIXED: include answer ID as hidden -->
+                            <input type="hidden" name="Questions[@i].Answers[@j].Id" value="@answer.Id" />
+
                             <input type="text" class="form-control" name="Questions[@i].Answers[@j].AnswerText" value="@answer.AnswerText" placeholder="Answer @(j + 1)" />
                             <span class="text-danger" data-valmsg-for="Questions[@i].Answers[@j].AnswerText" data-valmsg-replace="true"></span>
                         </div>
@@ -52,16 +54,9 @@
         <a asp-action="Create" class="btn btn-secondary">Back</a>
     </form>
 </div>
-<style>
-
-</style>
-
-
-
 
 @section Scripts
 {
     <script src="~/js/addQuestion.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
 }
-

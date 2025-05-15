@@ -26,15 +26,12 @@ builder.Services.AddDefaultIdentity<User>(options =>
 
 // Add services here
 builder.Services.AddScoped<LeaderboardService>();
-
-
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IdentityRole>();
-
 builder.Services.AddScoped<QuestionService>();
-builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<AnswerService>();
 
 var app = builder.Build();
 

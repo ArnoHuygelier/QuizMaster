@@ -29,15 +29,9 @@ builder.Services.AddScoped<LeaderboardService>();
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IdentityRole>();
-<<<<<<< HEAD
 builder.Services.AddScoped<QuestionService>();
-builder.Services.AddScoped<AnswerService>();
-=======
-
-builder.Services.AddScoped<QuestionService>();
-builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<CategoryService>();
->>>>>>> dev
+builder.Services.AddScoped<AnswerService>();
 
 var app = builder.Build();
 

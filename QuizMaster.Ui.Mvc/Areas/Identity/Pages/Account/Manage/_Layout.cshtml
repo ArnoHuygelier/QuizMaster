@@ -1,5 +1,5 @@
 ﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
     {
         Layout = parentLayout.ToString();
     }
@@ -9,17 +9,80 @@
     }
 }
 
-<h1>Manage your account</h1>
+<!-- ✨ Custom Styling -->
+<style>
+    .blur-card {
+        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
 
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
+    .fade-in {
+        animation: fadeIn 0.7s ease-out;
+    }
+
+    .gradient-bar {
+        height: 4px;
+        background: linear-gradient(to right, #4e54c8, #8f94fb);
+        border-radius: 2px;
+    }
+
+    .nav-link-manage {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        color: #212529;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .nav-link-manage:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+        }
+
+    .section-header h1 {
+        font-weight: 700;
+        font-size: 2.2rem;
+    }
+
+    .section-header p {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+</style>
+
+<!-- 🔥 Page Structure -->
+<div class="container py-5 fade-in">
+    <!-- Header -->
+    <div class="section-header text-center mb-5">
+        <h1>Manage Your Account</h1>
+        <p>Update your details, review settings, and control your preferences.</p>
+        <div class="gradient-bar mx-auto mt-3" style="width: 80px;"></div>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="row g-4">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3">
+            <div class="blur-card p-3">
+                <h5 class="fw-bold text-primary mb-3"><i class="bi bi-sliders2 me-2"></i> Account Panel</h5>
+                <div class="d-flex flex-column">
+                    <!-- You can keep _ManageNav partial, or paste static links here -->
+                    <partial name="_ManageNav" />
+                </div>
+            </div>
         </div>
-        <div class="col-md-9">
-            @RenderBody()
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <div class="blur-card p-4">
+                @RenderBody()
+            </div>
         </div>
     </div>
 </div>

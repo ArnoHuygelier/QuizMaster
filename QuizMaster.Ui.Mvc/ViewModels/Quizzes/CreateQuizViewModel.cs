@@ -2,10 +2,11 @@
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using QuizMaster.Models;
 using System.ComponentModel.DataAnnotations;
+using QuizMaster.Ui.Mvc.Models.Quizzes.Interfaces;
 
 namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
 {
-    public class CreateQuizViewModel
+    public class CreateQuizViewModel : IQuizFormViewModel
     {
 
 
@@ -16,6 +17,7 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
         public required string Description { get; set; }
 
         [Required(ErrorMessage = "Category is required")]
-        public int CategoryId { get; set; }
+        [Display(Name = "Category")]
+        public int? CategoryId { get; set; }
     }
 }

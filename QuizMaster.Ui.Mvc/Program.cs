@@ -29,6 +29,8 @@ builder.Services.AddScoped<LeaderboardService>();
 
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<QuestionService>();
+builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<ICrudService<User, string>, UserService>();
 builder.Services.AddScoped<CategoryService>();
 

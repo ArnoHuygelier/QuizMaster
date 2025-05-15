@@ -15,10 +15,10 @@ namespace QuizMaster.Models
         public required string Description { get; set; }
         public required DateTime CreatedAt { get; set; }
         public required string UserId { get; set; }
-        public required User User { get; set; }
+        public  User User { get; set; }
 
         public int CategoryId { get; set; }
-        public required Category Category { get; set; }
+        public  Category Category { get; set; }
 
         public ICollection<Question> Questions { get; set; } = new List<Question>();
     }

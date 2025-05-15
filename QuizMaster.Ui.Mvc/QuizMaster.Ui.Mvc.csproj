@@ -6,6 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
     <ItemGroup>
     <ProjectReference Include="..\QuizMaster.Services\QuizMaster.Services.csproj" />
     <ProjectReference Include="..\QuizMaster.Repository\QuizMaster.Repository.csproj" />
@@ -22,7 +29,4 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
 </Project>

@@ -29,13 +29,12 @@ builder.Services.AddScoped<LeaderboardService>();
 
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
-<<<<<<< HEAD
 builder.Services.AddScoped<IdentityRole>();
 
-=======
 builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<AnswerService>();
->>>>>>> dev
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

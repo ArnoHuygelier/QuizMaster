@@ -19,7 +19,7 @@ namespace QuizMaster.Services
         }
         public async Task<IList<Quiz>> Find() /// Gets all quizzes
         {
-            return await _dbContext.Quizzes.Include(q => q.User).ToListAsync();
+            return await _dbContext.Quizzes.Include(q => q.User).Include(c => c.Category).ToListAsync();
         }
 
         public async Task<IList<Quiz>> FindWithQuestions() /// Gets all quizzes
@@ -31,7 +31,7 @@ namespace QuizMaster.Services
 
         public async Task<Quiz?> Get(int id) /// Gets a specific quiz by id
         {
-            return await _dbContext.Quizzes.Include(q => q.Questions).FirstOrDefaultAsync(q => q.Id == id);
+            return await _dbContext.Quizzes.Include(q => q.Questions).Include(c => c.Category).FirstOrDefaultAsync(q => q.Id == id);
         }
 
 

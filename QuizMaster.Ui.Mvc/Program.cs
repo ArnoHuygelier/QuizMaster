@@ -4,6 +4,7 @@ using QuizMaster.Services;
 using Microsoft.AspNetCore.Identity;
 using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
+using QuizMaster.Services.Interfaces;
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,7 @@ builder.Services.AddScoped<IdentityRole>();
 
 builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<AnswerService>();
-
+builder.Services.AddScoped<CategoryService>();
 
 var app = builder.Build();
 

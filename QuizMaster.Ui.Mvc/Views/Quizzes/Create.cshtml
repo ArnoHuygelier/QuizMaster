@@ -1,17 +1,26 @@
 @model QuizMaster.Ui.Mvc.ViewModels.Quizzes.CreateQuizViewModel
 
 @{
-    ViewBag.Title = "Create Quiz";
+    ViewData["Title"] = "Create Quiz";
 }
 
-<div class="container py-5">
-    <h2 class="mb-4 text-center">@ViewBag.Title</h2>
-    <div class="form-container" style="max-width: 600px; margin: auto;">
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">@ViewData["Title"]</h5>
+    </div>
+    <div class="card-body">
         <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
             <partial name="CreateEditPartial" model="Model" />
-            <div class="d-flex justify-content-between">
-                <a href="/" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Next</button>
+
+            <div class="d-flex justify-content-between gap-2 mt-4">
+                <a href="/" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-success ms-auto">
+                    <i class="bi bi-plus-circle"></i> Create
+                </button>
             </div>
         </form>
     </div>

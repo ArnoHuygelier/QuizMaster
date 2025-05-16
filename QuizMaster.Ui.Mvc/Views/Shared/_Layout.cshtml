@@ -13,6 +13,14 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuizMaster.Ui.Mvc.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
+
+    <style>
+        .footer a.nav-link:hover,
+        .footer a.text-light:hover {
+            color: #0d6efd; /* Bootstrap primary blue */
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -48,28 +56,36 @@
         @RenderBody()
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer bg-dark text-light pt-4 pb-3 mt-auto">
-        <div class="container text-center">
-            <div class="mb-3">
-                <a href="/Home/Contact" class="text-light text-decoration-none me-4">Contact Us</a>
-                <a href="/Home/Privacy" class="text-light text-decoration-none me-4">Privacy Policy</a>
-                <a href="/Home/Tos" class="text-light text-decoration-none me-4">Terms of Service</a>
-                <a href="/Home/About" class="text-light text-decoration-none">About Us</a>
-            </div>
+    <footer class="footer bg-dark text-light py-4 mt-auto">
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
 
-            <hr class="border-secondary" />
-
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-                <p class="mb-2 mb-md-0 small">&copy; <strong>QuizMaster.io</strong> 2025. All Rights Reserved</p>
-                <div class="social-icons">
-                    <a href="#" class="text-light me-3"><i class="bi bi-twitter"></i></a>
-                    <a href="#" class="text-light me-3"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-light"><i class="bi bi-facebook"></i></a>
+                <!-- Left: Copyright -->
+                <div class="mb-3 mb-md-0 flex-grow-1 text-md-start">
+                    <p class="mb-0 small">&copy; <strong>QuizMaster.io</strong> 2025. All Rights Reserved</p>
                 </div>
+
+                <!-- Center: Links -->
+                <div class="mb-3 mb-md-0 flex-grow-1">
+                    <nav class="nav justify-content-center">
+                        <a href="/Home/Contact" class="nav-link px-3 text-light text-decoration-none">Contact Us</a>
+                        <a href="/Home/Privacy" class="nav-link px-3 text-light text-decoration-none">Privacy Policy</a>
+                        <a href="/Home/Tos" class="nav-link px-3 text-light text-decoration-none">Terms of Service</a>
+                        <a href="/Home/About" class="nav-link px-3 text-light text-decoration-none">About Us</a>
+                    </nav>
+                </div>
+
+                <!-- Right: Social Icons -->
+                <div class="flex-grow-1 text-md-end">
+                    <a href="#" class="text-light mx-2 fs-5" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-light mx-2 fs-5" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-light mx-2 fs-5" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                </div>
+
             </div>
         </div>
     </footer>
+
 
     @await RenderSectionAsync("Modals", required: false)
     <!-- JQuery -->

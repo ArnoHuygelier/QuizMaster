@@ -33,11 +33,24 @@ namespace QuizMaster.Services
         public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
         {
             var a = await _context.Questions
-                .Include(q => q.QuizId == quizId)
+                .Include(q => q.Quiz).Where(q => q.QuizId == quizId)
                 .Include(q => q.Answers)
                 .ToListAsync();
             return a;
 
+        }
+
+        /// <summary>
+        /// Get the all the questions linked to a quiz, delete the ones that are not present in the viewodel
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Question>> GetToBeDeletedQuestions(int quizId, List<Question> questionsToKeep)
+        {
+            var allQuestions = await _context.Questions.Include(x => x.Answers).Where(x => x.QuizId == quizId).ToListAsync();
+            
+            var QuestionsBeDeleted = allQuestions.Where(x => !questionsToKeep.Any(y => y.Id == x.Id)).ToList();
+
+            return QuestionsBeDeleted;
         }
 
 

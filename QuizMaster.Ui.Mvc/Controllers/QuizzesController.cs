@@ -231,7 +231,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuestions([FromForm] EditQuestionsViewModel viewModel, List<int> QuestionIds)
+        public async Task<IActionResult> EditQuestions([FromForm] EditQuestionsViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -244,9 +244,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return NotFound();
             }
 
+
+            List<Question> updatedQuestions = new List<Question>();
+
             foreach (var qvm in viewModel.Questions)
             {
-                Question returnedQuestion;
+                Question returningQuestion;
 
                 //Set the correct answer to true via the CorrectAnswerIndex
                 qvm.Answers[qvm.CorrectAnswerIndex].IsCorrect = true;
@@ -257,6 +260,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 {
                     var newQuestion = new Question
                     {
+                        QuizId = viewModel.QuizId,
                         QuestionText = qvm.Text,
                         Answers = qvm.Answers.Select(a => new Answer
                         {
@@ -266,7 +270,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                         }).ToList()
                     };
 
-                    returnedQuestion = await _questionService.Create(newQuestion);
+                    returningQuestion = await _questionService.Create(newQuestion);
                 }
                 else
                 {
@@ -282,16 +286,21 @@ namespace QuizMaster.Ui.Mvc.Controllers
                         }).ToList()
                     };
 
-                    returnedQuestion = await _questionService.Update(qvm.QuestionId, updatedQuestion);
+                    returningQuestion = await _questionService.Update(qvm.QuestionId, updatedQuestion);
                 }
 
 
-                if (returnedQuestion == null)
+                if (returningQuestion == null)
                 {
                     ModelState.AddModelError("", $"Question with Id {qvm.QuestionId} could need be updated.");
                     return View(viewModel);
                 }
             }
+
+            //Delete all removed questions and answers linked to the quiz
+            var questions =  await _questionService.GetToBeDeletedQuestions(viewModel.QuizId, updatedQuestions);
+            await 
+
 
             return RedirectToAction("Index");
         }

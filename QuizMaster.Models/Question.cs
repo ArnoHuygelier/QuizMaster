@@ -1,21 +1,24 @@
-﻿    using System;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+using System.Text;
+using System.Threading.Tasks;
 
-    namespace QuizMaster.Models
+namespace QuizMaster.Models
+{
+    [Table(nameof(Question))]
+    public class Question
     {
-        public class Question
-        {
-            [Key]
-            public int Id { get; set; }
-            public required string QuestionText { get; set; }
+        [Key]
+        public int Id { get; set; }
+        public required string QuestionText { get; set; }
 
-            public ICollection<Category> Categories { get; set; } = new List<Category>();
-            public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
-            public ICollection<Answer> Answers { get; set; } = new List<Answer>();
-        }
+        public int QuizId { get; set; }
+        public Quiz Quiz { get; set; }
+        
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
     }
+}
 

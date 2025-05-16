@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace QuizMaster.Models
 {
+    [Table(nameof(Category))]
     public class Category
     {
         [Key]
@@ -14,7 +16,7 @@ namespace QuizMaster.Models
         public required string Name { get; set; }
 
         public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
-        public ICollection<Question> Questions { get; set; } = new List<Question>();
+        
     }
 
 }

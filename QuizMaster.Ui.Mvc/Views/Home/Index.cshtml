@@ -1,10 +1,140 @@
-﻿@model IEnumerable<Quiz>
+﻿@model IEnumerable<QuizMaster.Models.Quiz>
 @{
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    .hide-scrollbar {
+        scrollbar-width: none;
+    }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+    .category-tag {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 999px;
+        background-color: #f1f3f5;
+        color: #333;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        font-size: 0.875rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+        .category-tag:hover,
+        .category-tag.active {
+            background-color: #333;
+            color: #fff;
+        }
+
+    .arrow-btn {
+        background-color: transparent;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+        transition: color 0.2s ease;
+        user-select: none;
+    }
+
+        .arrow-btn:hover {
+            color: #000;
+        }
+
+    .quiz-card {
+        border: 1px solid #eaeaea;
+        border-radius: 16px;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        overflow: hidden;
+        background: #fff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .quiz-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .quiz-card img {
+            object-fit: cover;
+            height: 160px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .quiz-card .card-body {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-card .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            flex-grow: 0;
+        }
+
+        .quiz-card .card-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            flex-grow: 1;
+        }
+
+    .container.py-4 {
+        padding-bottom: 4rem;
+    }
+
+    .tag-filter-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    #tagScroll {
+        flex-grow: 1;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        gap: 0.5rem;
+        display: flex;
+        white-space: nowrap;
+    }
+
+    #noQuizzesMsg {
+        display: none;
+        text-align: center;
+        color: #888;
+        font-style: italic;
+        margin-top: 2rem;
+        font-size: 1rem;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #000;
+        border-color: #000;
+        color: #fff;
+    }
+
+    .pagination .page-link {
+        color: #000;
+    }
+
+        .pagination .page-link:hover {
+            color: #000;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+</style>
+
 <div class="container py-4">
-    <!-- Header Carousel -->
     <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -22,31 +152,132 @@
         </button>
     </div>
 
-    <!-- Filter Tags -->
-    <div class="mb-4">
-        <button class="btn btn-outline-secondary btn-sm me-2">All Recommendations</button>
-        <button class="btn btn-outline-secondary btn-sm me-2">History</button>
-        <button class="btn btn-outline-secondary btn-sm me-2">Vue JS</button>
-        <button class="btn btn-outline-secondary btn-sm me-2">Music</button>
-        <button class="btn btn-outline-secondary btn-sm me-2">Search</button>
+    <div class="tag-filter-wrapper">
+        <button class="arrow-btn" onclick="scrollTags(-200)">&#8249;</button>
+        <div id="tagScroll" class="hide-scrollbar">
+            <button class="category-tag active" data-category-id="0">All</button>
+            @foreach (var category in (IEnumerable<Category>)ViewData["Categories"])
+            {
+                <button class="category-tag" data-category-id="@category.Id">@category.Name</button>
+            }
+
+        </div>
+        <button class="arrow-btn" onclick="scrollTags(200)">&#8250;</button>
     </div>
 
-    <!-- Popular Quiz Topics -->
-    <h4>Popular Quiz Topics</h4>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mb-5">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="quizContainer">
         @foreach (var quiz in Model)
         {
-            <div class="col">
+            <div class="col quiz-item" data-category-id="@quiz.CategoryId">
                 <a asp-controller="Home" asp-action="Details" asp-route-id="@quiz.Id" class="text-decoration-none text-dark">
                     <div class="card quiz-card h-100">
-                        <img src="images/homeImageBlokken.png" class="card-img-top" alt="Quiz image">
+                        <img src="/images/homeImageBlokken.png" class="card-img-top" alt="Quiz image">
                         <div class="card-body">
                             <h6 class="card-title">@quiz.Title</h6>
-                            <p class="card-text small text-muted">@quiz.Description</p>
+                            <p class="card-text">@quiz.Description</p>
                         </div>
                     </div>
                 </a>
             </div>
         }
     </div>
+
+    <nav aria-label="Quiz pagination" class="mt-4">
+        <ul class="pagination justify-content-center" id="quizPagination">
+        </ul>
+    </nav>
+
+    <div id="noQuizzesMsg">No quizzes found in this category.</div>
 </div>
+
+@section Scripts {
+    <script>
+        function scrollTags(amount) {
+            const container = document.getElementById("tagScroll");
+            container.scrollLeft += amount;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tags = document.querySelectorAll('.category-tag');
+            const allQuizzes = Array.from(document.querySelectorAll('.quiz-item'));
+            const noQuizzesMsg = document.getElementById('noQuizzesMsg');
+            const paginationContainer = document.getElementById('quizPagination');
+            const quizzesPerPage = 8;
+
+            let filteredQuizzes = allQuizzes;
+            let currentPage = 1;
+
+            function showPage(page) {
+                currentPage = page;
+                const start = (page - 1) * quizzesPerPage;
+                const end = start + quizzesPerPage;
+
+                filteredQuizzes.forEach((quiz, i) => {
+                    quiz.style.display = (i >= start && i < end) ? '' : 'none';
+                });
+
+                Array.from(paginationContainer.children).forEach(li => li.classList.remove('active'));
+                if (paginationContainer.children[page - 1]) {
+                    paginationContainer.children[page - 1].classList.add('active');
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function buildPagination() {
+                paginationContainer.innerHTML = '';
+                const pageCount = Math.ceil(filteredQuizzes.length / quizzesPerPage);
+
+                if (pageCount <= 1) {
+                    paginationContainer.style.display = 'none';
+                } else {
+                    paginationContainer.style.display = 'flex';
+                    for (let i = 1; i <= pageCount; i++) {
+                        const li = document.createElement('li');
+                        li.classList.add('page-item');
+                        if (i === 1) li.classList.add('active');
+
+                        const a = document.createElement('a');
+                        a.classList.add('page-link');
+                        a.href = "#";
+                        a.textContent = i;
+
+                        a.addEventListener('click', e => {
+                            e.preventDefault();
+                            showPage(i);
+                        });
+
+                        li.appendChild(a);
+                        paginationContainer.appendChild(li);
+                    }
+                }
+            }
+
+            function filterQuizzes(selectedCategoryId) {
+                if (selectedCategoryId === '0') {
+                    filteredQuizzes = allQuizzes;
+                } else {
+                    filteredQuizzes = allQuizzes.filter(q =>
+                        q.getAttribute('data-category-id') === selectedCategoryId
+                    );
+                }
+
+                noQuizzesMsg.style.display = filteredQuizzes.length === 0 ? 'block' : 'none';
+                buildPagination();
+                showPage(1);
+            }
+
+            tags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    tags.forEach(t => t.classList.remove('active'));
+                    tag.classList.add('active');
+
+                    const selectedCategoryId = tag.getAttribute('data-category-id');
+                    filterQuizzes(selectedCategoryId);
+                });
+            });
+
+            filterQuizzes('0'); // Default to 'All'
+        });
+    </script>
+}

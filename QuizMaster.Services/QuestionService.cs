@@ -32,12 +32,12 @@ namespace QuizMaster.Services
 
         public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
         {
-            return await _context.Questions
-                .Where(q => q.Quizzes.Any(quiz => quiz.Id == quizId))
+            var a = await _context.Questions
+                .Include(q => q.QuizId == quizId)
                 .Include(q => q.Answers)
                 .ToListAsync();
+            return a;
 
-            
         }
 
 
@@ -63,7 +63,7 @@ namespace QuizMaster.Services
 
             // Update question fields
             question.QuestionText = updated.QuestionText;
-            question.Categories = updated.Categories;
+            
 
 
             // Update existing answers and track changes

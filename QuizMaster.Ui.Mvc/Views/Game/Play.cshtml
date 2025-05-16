@@ -1,0 +1,46 @@
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Game.PlayQuestionViewModel
+
+@{
+    ViewData["Title"] = "Speel Quiz";
+}
+
+<div class="container mt-5">
+    <h2>@Model.Question.QuestionText</h2>
+    <p class="text-muted">Vraag @Model.CurrentIndex van @Model.TotalQuestions</p>
+
+    <form method="post" asp-action="Next">
+        <input type="hidden" name="QuizId" value="@Model.QuizId" />
+        <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
+
+        <div class="list-group mt-4">
+            @foreach (var answer in Model.Question.Answers)
+            {
+                <label class="list-group-item">
+                    <input class="form-check-input me-1" type="radio" name="SelectedAnswerId" value="@answer.Id" required>
+                    @answer.AnswerText
+                </label>
+            }
+        </div>
+
+        <div class="mt-4 d-flex justify-content-between align-items-center">
+            <div id="timer" class="text-danger fw-bold">⏳ 15</div>
+            <button type="submit" class="btn btn-primary">Volgende</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let seconds = 15;
+        const timer = document.getElementById("timer");
+
+        const countdown = setInterval(() => {
+            seconds--;
+            timer.textContent = `⏳ ${seconds}`;
+            if (seconds <= 0) {
+                clearInterval(countdown);
+                document.forms[0].submit(); // auto submit when time is up
+            }
+        }, 1000);
+    </script>
+}

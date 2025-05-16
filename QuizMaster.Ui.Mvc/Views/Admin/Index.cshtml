@@ -1,0 +1,41 @@
+﻿@model IdentityUser
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="row">
+    <div class="col-md-9 col-lg-10 pt-4 ps-5">
+        <h2 class="mb-3">Welcome, @Model.UserName!</h2>
+        <p class="text-muted">You're logged in to the admin dashboard.</p>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Users</h5>
+                        <p class="card-text">Manage all registered users.</p>
+                        <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">Go to Users</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Categories</h5>
+                        <p class="card-text">Manage quiz categories.</p>
+                        <a asp-controller="Admin" asp-action="Categories" class="btn btn-primary">Go to Categories</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Quizzes</h5>
+                        <p class="card-text">Manage all quizzes.</p>
+                        <a asp-controller="Admin" asp-action="Quizzes" class="btn btn-primary">Go to Quizzes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

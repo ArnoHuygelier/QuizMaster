@@ -35,7 +35,7 @@ function addQuestion() {
 
             ${[0, 1, 2, 3].map(i => `
                 <div class="form-check mb-2 pe-3">
-                    <input class="form-check-input" type="radio" name="${namePrefix}.Correct" value="${i}" onchange="markCorrect(this)">
+                    <input class="form-check-input" type="radio" name="${namePrefix}.CorrectAnswerIndex" value="${i}" ${i === 0 ? 'checked' : ''} onchange="markCorrect(this)">
                     <input type="text" class="form-control" name="${namePrefix}.Answers[${i}].AnswerText" placeholder="Answer ${i + 1}">
                     <span class="text-danger" data-valmsg-for="${namePrefix}.Answers[${i}].AnswerText" data-valmsg-replace="true"></span>
                 </div>

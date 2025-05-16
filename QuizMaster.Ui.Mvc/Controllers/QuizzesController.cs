@@ -109,8 +109,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
             };
 
             return View(viewModel);
-
-
         }
 
         [HttpPost]
@@ -118,22 +116,15 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         public async Task<IActionResult> AddQuestions([FromForm] AddQuestionsViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-                return View(viewModel);
+            if (!ModelState.IsValid) return View(viewModel);
 
             var quiz = await _quizService.Get(viewModel.QuizId);
             if (quiz == null) return NotFound();
 
             foreach (var qvm in viewModel.Questions)
             {
-                if (qvm.CorrectAnswerIndex < 0 || qvm.CorrectAnswerIndex >= qvm.Answers.Count)
-                {
-                    ModelState.AddModelError("", "Each question must have one correct answer.");
-                    return View(viewModel);
-                }
-
-                for (int i = 0; i < qvm.Answers.Count; i++)
-                    qvm.Answers[i].IsCorrect = (i == qvm.CorrectAnswerIndex);
+                //Set the correct answer to true via the CorrectAnswerIndex
+                qvm.Answers[qvm.CorrectAnswerIndex].IsCorrect = true;
 
                 var question = new Question
                 {
@@ -149,13 +140,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             }
 
             return RedirectToAction("Index");
-
-
         }
-
-
-
-
 
 
         [HttpGet]
@@ -246,7 +231,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuestions([FromForm] EditQuestionsViewModel viewModel)
+        public async Task<IActionResult> EditQuestions([FromForm] EditQuestionsViewModel viewModel, List<int> QuestionIds)
         {
             if (!ModelState.IsValid)
             {
@@ -261,40 +246,47 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
             foreach (var qvm in viewModel.Questions)
             {
-                if (qvm.Answers == null || qvm.Answers.Count == 0)
-                {
-                    ModelState.AddModelError("", $"Question '{qvm.Text}' must have at least one answer.");
-                    return View(viewModel);
-                }
+                Question returnedQuestion;
 
-                if (qvm.CorrectAnswerIndex < 0 || qvm.CorrectAnswerIndex >= qvm.Answers.Count)
-                {
-                    ModelState.AddModelError("", $"Question '{qvm.Text}' must have at least one correct answer.");
-                    return View(viewModel);
-                }
+                //Set the correct answer to true via the CorrectAnswerIndex
+                qvm.Answers[qvm.CorrectAnswerIndex].IsCorrect = true;
 
-                
-                for (int i = 0; i < qvm.Answers.Count; i++)
-                {
-                    qvm.Answers[i].IsCorrect = (i == qvm.CorrectAnswerIndex);
-                }
 
-                var updatedQuestion = new Question
+                //Checks if the question is a new one or not
+                if (qvm.QuestionId == 0)
                 {
-                    Id = qvm.QuestionId,
-                    QuestionText = qvm.Text,
-                    Answers = qvm.Answers.Select(a => new Answer
+                    var newQuestion = new Question
                     {
-                        Id = a.Id, 
-                        AnswerText = a.AnswerText,
-                        IsCorrect = a.IsCorrect
-                    }).ToList()
-                };
+                        QuestionText = qvm.Text,
+                        Answers = qvm.Answers.Select(a => new Answer
+                        {
+                            Id = a.Id,
+                            AnswerText = a.AnswerText,
+                            IsCorrect = a.IsCorrect
+                        }).ToList()
+                    };
 
-                
-                var result = await _questionService.Update(qvm.QuestionId, updatedQuestion);
+                    returnedQuestion = await _questionService.Create(newQuestion);
+                }
+                else
+                {
+                    var updatedQuestion = new Question
+                    {
+                        Id = qvm.QuestionId,
+                        QuestionText = qvm.Text,
+                        Answers = qvm.Answers.Select(a => new Answer
+                        {
+                            Id = a.Id,
+                            AnswerText = a.AnswerText,
+                            IsCorrect = a.IsCorrect
+                        }).ToList()
+                    };
 
-                if (result == null)
+                    returnedQuestion = await _questionService.Update(qvm.QuestionId, updatedQuestion);
+                }
+
+
+                if (returnedQuestion == null)
                 {
                     ModelState.AddModelError("", $"Question with Id {qvm.QuestionId} could need be updated.");
                     return View(viewModel);
@@ -313,9 +305,5 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
             return RedirectToAction("Index");
         }
-
-
-        
     }
 }
-

@@ -51,6 +51,8 @@ namespace QuizMaster.Services
         // Bijwerken
         public async Task<Question?> Update(int? id, Question updated)
         {
+
+            //Get all questions
             var question = await _context.Questions
                 .Include(q => q.Answers)
                 .FirstOrDefaultAsync(q => q.Id == id); 
@@ -58,13 +60,16 @@ namespace QuizMaster.Services
             if (question == null)
                 return null;
 
+
             // Update question fields
             question.QuestionText = updated.QuestionText;
             question.Categories = updated.Categories;
 
+
             // Update existing answers and track changes
             foreach (var updatedAnswer in updated.Answers)
             {
+
                 var existingAnswer = question.Answers.FirstOrDefault(a => a.Id == updatedAnswer.Id);
 
                 if (existingAnswer != null)

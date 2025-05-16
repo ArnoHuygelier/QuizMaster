@@ -39,6 +39,7 @@
                             <input type="text" class="form-control" name="Questions[@i].Answers[@j].AnswerText" value="@answer.AnswerText" placeholder="Answer @(j + 1)"/>
                             <span class="text-danger" data-valmsg-for="Questions[@i].Answers[@j].AnswerText" data-valmsg-replace="true"></span>
                         </div>
+                        <span></span>
                     }
                 </div>
             }
@@ -59,6 +60,6 @@
 
 @section Scripts
 {
-    <script src="~/js/addQuestion.js" asp-append-version="true"></script>
+    <script src="~/js/Questions.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial"/>
 }

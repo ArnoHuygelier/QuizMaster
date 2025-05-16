@@ -1,4 +1,6 @@
-﻿@model IEnumerable<QuizMaster.Models.Quiz>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QuizMaster.Ui.Mvc.Helpers
+@model IEnumerable<QuizMaster.Models.Quiz>
 @{
     ViewData["Title"] = "Home Page";
      
@@ -172,7 +174,7 @@
             <div class="col quiz-item" data-category-id="@quiz.CategoryId">
                 <a asp-controller="Home" asp-action="Details" asp-route-id="@quiz.Id" class="text-decoration-none text-dark">
                     <div class="card quiz-card h-100">
-                        <img src="~/images/quizimage/@(quiz.ImageUrl ?? "defaultQuiz.png")" class="card-img-top" alt="Quiz image">
+                        <img src="@Url.Content(ImageHelper.GetQuizImageUrl(quiz.ImageUrl))" class="card-img-top" alt="Quiz image">
                         <div class="card-body">
                             <h6 class="card-title">@quiz.Title</h6>
                             <p class="card-text">@quiz.Description</p>

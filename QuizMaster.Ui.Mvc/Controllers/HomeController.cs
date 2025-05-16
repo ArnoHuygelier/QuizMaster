@@ -1,21 +1,36 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using QuizMaster.Services;
 using QuizMaster.Ui.Mvc.ViewModels;
+using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
 
 namespace QuizMaster.Ui.Mvc.Controllers;
 
 public class HomeController : Controller
 {
-	private readonly ILogger<HomeController> _logger;
+    private readonly QuizService _quizService;
 
-	public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, QuizService quizService)
 	{
-		_logger = logger;
-	}
+        _quizService = quizService;
+    }
 
-	public IActionResult Index()
+
+
+
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var quizzes = await _quizService.Find();
+
+        return View(quizzes);
+    }
+
+	[HttpGet]
+	public async Task<IActionResult> Details(int id)
 	{
-		return View();
+		var quiz = await _quizService.Get(id);
+		return View(quiz);
 	}
 
 	public IActionResult Privacy()

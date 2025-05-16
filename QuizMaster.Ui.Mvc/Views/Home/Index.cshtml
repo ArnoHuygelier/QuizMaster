@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<Quiz>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -33,59 +34,19 @@
     <!-- Popular Quiz Topics -->
     <h4>Popular Quiz Topics</h4>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mb-5">
-        @for (int i = 0; i < 4; i++)
+        @foreach (var quiz in Model)
         {
             <div class="col">
-                <div class="card quiz-card h-100">
-                    <img src="images/homeImageBlokken.png" class="card-img-top" alt="Quiz">
-                    <div class="card-body">
-                        <h6 class="card-title">Vue JS Quiz</h6>
-                        <p class="card-text small text-muted">Master the fundamentals of Vue JS through interactive questions.</p>
+                <a asp-controller="Home" asp-action="Details" asp-route-id="@quiz.Id" class="text-decoration-none text-dark">
+                    <div class="card quiz-card h-100">
+                        <img src="images/homeImageBlokken.png" class="card-img-top" alt="Quiz image">
+                        <div class="card-body">
+                            <h6 class="card-title">@quiz.Title</h6>
+                            <p class="card-text small text-muted">@quiz.Description</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         }
-    </div>
-
-    <!-- Trending Course -->
-    <h4>Trending Course</h4>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mb-5">
-        @for (int i = 0; i < 4; i++)
-        {
-            <div class="col">
-                <div class="card quiz-card h-100">
-                    <img src="images/homeImageBlokken.png" class="card-img-top" alt="Course">
-                    <div class="card-body">
-                        <h6 class="card-title">History Quiz</h6>
-                        <p class="card-text small text-muted">Challenge your knowledge of global history.</p>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-    <!-- Popular Players -->
-    <h4>Popular Players</h4>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 mb-5">
-        <div class="col text-center player-card">
-            <img src="images/person.png" alt="" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" />
-            <div class="fw-bold">Alexander Bastian</div>
-            <div class="text-muted small">Quiz Challenger</div>
-        </div>
-        <div class="col text-center player-card">
-            <img src="images/person.png" alt="" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" />
-            <div class="fw-bold">Labie Carthaline</div>
-            <div class="text-muted small">Morning Sprinter</div>
-        </div>
-        <div class="col text-center player-card">
-            <img src="images/person.png" alt="" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" />
-            <div class="fw-bold">Jonathan Doe</div>
-            <div class="text-muted small">Focused & Steady</div>
-        </div>
-        <div class="col text-center player-card">
-            <img src="images/person.png" alt="" class="rounded-circle mb-2" style="width:100px;height:100px;object-fit:cover;" />
-            <div class="fw-bold">Kitani Saraswati</div>
-            <div class="text-muted small">Top Global Player</div>
-        </div>
     </div>
 </div>

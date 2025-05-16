@@ -1,0 +1,159 @@
+﻿@model QuizMaster.Models.Quiz
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = Model.Title;
+    var isSignedIn = SignInManager.IsSignedIn(User);
+}
+
+<!-- Animate.css + Bootstrap Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    .neon-button {
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 10px #0d6efd;
+    }
+
+        .neon-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px #0d6efd, 0 0 40px #0d6efd;
+        }
+
+    .timer-box {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.25rem;
+        background-color: #f8f9fa;
+        border: 1px dashed #0d6efd;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        display: inline-block;
+    }
+
+    .card-highlight {
+        border-left: 5px solid #0d6efd;
+    }
+
+    .stats-title {
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .leaderboard-icon {
+        font-size: 1.25rem;
+        color: gold;
+    }
+</style>
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <!-- Quiz Header -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-3 text-center mb-4 mb-md-0">
+            <img src="/images/homeImageBlokken.png" class="img-fluid rounded shadow-lg" alt="@Model.Title Image">
+        </div>
+        <div class="col-md-9">
+            <h1 class="fw-bold display-4">@Model.Title</h1>
+            <p class="text-muted fs-5">@Model.Description</p>
+            <div class="d-flex flex-wrap gap-4 text-secondary mt-3">
+                <div><i class="bi bi-tag-fill me-1"></i><strong>@Model.Category?.Name</strong></div>
+                <div><i class="bi bi-calendar-event me-1"></i>@Model.CreatedAt.ToString("dd MMM yyyy")</div>
+                <div><i class="bi bi-person-circle me-1"></i>By: <strong>@Model.User?.UserName</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Stats -->
+    <div class="bg-white rounded shadow-sm p-4 mb-5 text-center border">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="text-muted stats-title">Total Questions</div>
+                <div class="fs-4 fw-bold">@Model.Questions.Count</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-muted stats-title">Remaining</div>
+                <div class="fs-4 fw-bold">@Model.Questions.Count</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-muted stats-title">Score</div>
+                <div class="fs-4 fw-bold">0 / @Model.Questions.Count</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-muted stats-title">Timer</div>
+                <div class="timer-box" id="timer">01:00</div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            @if (isSignedIn)
+            {
+                <a asp-controller="Quiz" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
+                    <i class="bi bi-play-circle-fill me-2"></i>Play Quiz
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-lg btn-secondary px-5" disabled>
+                    <i class="bi bi-lock-fill me-2"></i>Please sign in to play
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- Leaderboard (Optional Placeholder) -->
+    <div class="card shadow-sm mb-5 card-highlight">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-trophy-fill leaderboard-icon me-2"></i>Top Scorers</h5>
+            <a href="#" class="text-decoration-none small text-muted">View All</a>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-star-fill text-warning me-2"></i><strong>PlayerOne</strong></span>
+                    <span class="badge bg-primary rounded-pill">98 pts</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-star-fill text-secondary me-2"></i>QuizQueen</span>
+                    <span class="badge bg-secondary rounded-pill">89 pts</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-star me-2"></i>FastThinker</span>
+                    <span class="badge bg-dark text-white rounded-pill">85 pts</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Quiz Modes -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-semibold">Quiz Modes</h5>
+            <div>
+                <a href="#" class="text-muted me-3 text-decoration-none"><i class="bi bi-flag"></i> Report</a>
+                <i class="bi bi-three-dots-vertical text-muted"></i>
+            </div>
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled">
+                <li class="mb-3">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Multiple Choice:</strong> Choose from provided options.
+                </li>
+                <li class="mb-3">
+                    <i class="bi bi-arrow-down-up text-primary me-2"></i>
+                    <strong>Forced Order:</strong> Must answer in sequence.
+                </li>
+                <li class="mb-3">
+                    <i class="bi bi-exclamation-circle-fill text-danger me-2"></i>
+                    <strong>Minefield:</strong> One wrong answer ends the quiz.
+                </li>
+                <li>
+                    <i class="bi bi-shuffle text-warning me-2"></i>
+                    <strong>Random Order:</strong> Questions are shuffled randomly.
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

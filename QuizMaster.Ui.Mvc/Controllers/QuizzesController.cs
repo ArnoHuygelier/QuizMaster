@@ -10,6 +10,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
+using QuizMaster.Ui.Mvc.ViewModels.Categories;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
@@ -32,8 +33,20 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var quizzes = await _quizService.Find();
-            return View(quizzes);
+            var quizzes = await _quizService.FindWithQuestions();
+
+            var viewModel = new QuizzesViewModel()
+            {
+                Quizzes = quizzes.Select(q => new QuizViewModel
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Description = q.Description,
+                    NumberOfQuestions = q.Questions?.Count ?? 0  
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -92,53 +105,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
             var viewModel = new AddQuestionsViewModel
             {
                 QuizId = quiz.Id,
-                QuizTitle = quiz.Title,
-                Questions = new List<QuestionViewModel> {
-                    new QuestionViewModel {
-                        Answers = new List<AnswerViewModel> {
-                            new(), new(), new(), new() // assuming 4 answers per question
-                        }
-                    }
-                }
+                QuizTitle = quiz.Title
             };
 
             return View(viewModel);
 
 
-
-
-            //var quiz = await _quizService.Get(id);
-            //if (quiz == null)
-            //{
-            //    return NotFound();
-            //}
-
-            
-            //var questions = await _questionService.GetQuestionsByQuizId(id);
-
-            //var questionViewModels = questions.Select(q =>
-            //{
-            //    var answerList = q.Answers.ToList();
-            //    return new QuestionViewModel
-            //    {
-            //        Text = q.QuestionText,
-            //        Answers = answerList.Select(a => new AnswerViewModel
-            //        {
-            //            AnswerText = a.AnswerText,
-            //            IsCorrect = a.IsCorrect
-            //        }).ToList(),
-            //        CorrectAnswerIndex = answerList.FindIndex(a => a.IsCorrect)
-            //    };
-            //}).ToList();
-
-            //var viewModel = new AddQuestionsViewModel
-            //{
-            //    QuizId = quiz.Id,
-            //    QuizTitle = quiz.Title,
-            //    Questions = questionViewModels
-            //};
-
-            //return View(viewModel);
         }
 
         [HttpPost]
@@ -179,50 +151,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return RedirectToAction("Index");
 
 
-
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(viewModel);
-            //}
-            //var quiz = await _quizService.Get(viewModel.QuizId);
-            //if (quiz == null)
-            //{
-            //    return NotFound();
-            //}
-
-
-            //foreach (var questionViewModel in viewModel.Questions)
-            //{
-            //    if (questionViewModel.CorrectAnswerIndex < 0 ||
-            //        questionViewModel.CorrectAnswerIndex >= questionViewModel.Answers.Count)
-            //    {
-            //        ModelState.AddModelError(string.Empty, "Each question must have one correct answer.");
-            //        return View(viewModel);
-            //    }
-
-            //    // Set the correct answer manually
-            //    for (int i = 0; i < questionViewModel.Answers.Count; i++)
-            //    {
-            //        questionViewModel.Answers[i].IsCorrect = (i == questionViewModel.CorrectAnswerIndex);
-            //    }
-
-            //    var question = new Question
-            //    {
-            //        QuestionText = questionViewModel.Text,
-            //        Answers = questionViewModel.Answers.Select(a => new Answer
-            //        {
-            //            AnswerText = a.AnswerText,
-            //            IsCorrect = a.IsCorrect
-            //        }).ToList()
-            //    };
-            //    await _questionService.AddQuestionToQuiz(viewModel.QuizId, question);
-                
-            
-            
-            //}
-
-
-            //return RedirectToAction("Index");
         }
 
 
@@ -314,38 +242,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(viewModel);
 
 
-            //var quiz = await _quizService.Get(id);
-            //if (quiz == null)
-            //{
-            //    return NotFound();
-            //}
-
-
-            //var questions = await _questionService.GetQuestionsByQuizId(id);
-
-            //var questionViewModels = questions.Select(q =>
-            //{
-            //    var answerList = q.Answers.ToList();
-            //    return new QuestionViewModel
-            //    {
-            //        Text = q.QuestionText,
-            //        Answers = answerList.Select(a => new AnswerViewModel
-            //        {
-            //            AnswerText = a.AnswerText,
-            //            IsCorrect = a.IsCorrect
-            //        }).ToList(),
-            //        CorrectAnswerIndex = answerList.FindIndex(a => a.IsCorrect)
-            //    };
-            //}).ToList();
-
-            //var viewModel = new EditQuestionsViewModel
-            //{
-            //    QuizId = quiz.Id,
-            //    QuizTitle = quiz.Title,
-            //    Questions = questionViewModels
-            //};
-
-            //return View(viewModel);
         }
 
         [HttpPost]
@@ -367,17 +263,17 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 if (qvm.Answers == null || qvm.Answers.Count == 0)
                 {
-                    ModelState.AddModelError("", $"Vraag '{qvm.Text}' moet minstens één antwoord hebben.");
+                    ModelState.AddModelError("", $"Question '{qvm.Text}' must have at least one answer.");
                     return View(viewModel);
                 }
 
                 if (qvm.CorrectAnswerIndex < 0 || qvm.CorrectAnswerIndex >= qvm.Answers.Count)
                 {
-                    ModelState.AddModelError("", $"Vraag '{qvm.Text}' moet één correct antwoord hebben.");
+                    ModelState.AddModelError("", $"Question '{qvm.Text}' must have at least one correct answer.");
                     return View(viewModel);
                 }
 
-                // Markeer correcte antwoord
+                
                 for (int i = 0; i < qvm.Answers.Count; i++)
                 {
                     qvm.Answers[i].IsCorrect = (i == qvm.CorrectAnswerIndex);
@@ -389,18 +285,18 @@ namespace QuizMaster.Ui.Mvc.Controllers
                     QuestionText = qvm.Text,
                     Answers = qvm.Answers.Select(a => new Answer
                     {
-                        Id = a.Id, // 0 voor nieuw antwoord
+                        Id = a.Id, 
                         AnswerText = a.AnswerText,
                         IsCorrect = a.IsCorrect
                     }).ToList()
                 };
 
-                // Laat de service alles regelen: add/update/delete answers
+                
                 var result = await _questionService.Update(qvm.QuestionId, updatedQuestion);
 
                 if (result == null)
                 {
-                    ModelState.AddModelError("", $"Vraag met ID {qvm.QuestionId} kon niet geüpdatet worden.");
+                    ModelState.AddModelError("", $"Question with Id {qvm.QuestionId} could need be updated.");
                     return View(viewModel);
                 }
             }
@@ -410,19 +306,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
 
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var quiz = await _quizService.Get(id);
-            if (quiz is null)
-            {
-                return RedirectToAction("Index");
-            }
-            return View(quiz);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             await _quizService.Delete(id);
 

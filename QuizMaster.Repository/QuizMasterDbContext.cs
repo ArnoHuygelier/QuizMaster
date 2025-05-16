@@ -14,8 +14,10 @@ namespace QuizMaster.Repository
         public DbSet<Badge> Badges { get; set; }
         public DbSet<UserBadge> UserBadges { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
+        public DbSet<QuizResult> QuizResults { get; set; }
 
-		public QuizMasterDbContext() { }
+
+        public QuizMasterDbContext() { }
 
 		public QuizMasterDbContext(DbContextOptions<QuizMasterDbContext> options) : base(options)
 		{

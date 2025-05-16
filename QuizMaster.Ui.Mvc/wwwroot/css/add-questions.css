@@ -4,9 +4,9 @@
     padding: 0;
 }
 
-.form-check.correct-selected input[type="text"] {
-    background-color: white;
-}
+    .form-check.correct-selected input[type="text"] {
+        background-color: white;
+    }
 
 .form-check {
     display: flex;
@@ -15,30 +15,36 @@
 }
 
 .form-check-input {
-    margin-right: 15px;
-    margin-left: 6px;
+    margin: 0 10px 0 6px; /* consistent margin rondom */
     accent-color: #007bff;
     width: 1.2em;
     height: 1.2em;
     flex-shrink: 0;
+    /* voorkom verschuiving door focus outline */
+    outline-offset: 0;
 }
+
+    .form-check-input:focus {
+        outline-offset: 0;
+    }
 
 .form-check input[type="text"] {
     flex: 1;
+    margin: 0; /* verwijder eventuele marge die verschuiving kan veroorzaken */
 }
 
 #add-question-btn {
-    background: linear-gradient(to right, #00c6ff, #0072ff);
+    background-color: #0072ff; /* vaste blauwe kleur */
     color: white;
     font-weight: bold;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
-    transition: background 0.3s ease;
+    /* geen transition */
 }
 
     #add-question-btn:hover {
-        background: linear-gradient(to right, #0094d9, #0051cc);
+        background-color: #0051cc; /* donkerdere blauwe kleur bij hover */
     }
 
 .card {

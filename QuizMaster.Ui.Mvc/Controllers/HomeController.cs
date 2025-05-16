@@ -9,20 +9,19 @@ namespace QuizMaster.Ui.Mvc.Controllers;
 public class HomeController : Controller
 {
     private readonly QuizService _quizService;
+	private readonly CategoryService _categoryService;
 
-    public HomeController(ILogger<HomeController> logger, QuizService quizService)
+    public HomeController(QuizService quizService, CategoryService categoryService)
 	{
         _quizService = quizService;
+		_categoryService = categoryService;
     }
-
-
-
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
         var quizzes = await _quizService.Find();
-
+		ViewData["Categories"] = await _categoryService.Find();
         return View(quizzes);
     }
 

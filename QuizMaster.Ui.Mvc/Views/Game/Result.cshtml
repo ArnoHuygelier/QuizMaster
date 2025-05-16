@@ -1,0 +1,17 @@
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Game.QuizResultViewModel
+
+@{
+    ViewData["Title"] = "Resultaat";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-success text-center">
+        <h2 class="mb-3">🎉 Quiz voltooid!</h2>
+        <p class="lead">Je behaalde een score van</p>
+        <h3 class="display-4">@Model.Score / @Model.Total</h3>
+    </div>
+
+    <div class="text-center">
+        <a class="btn btn-outline-primary" href="@Url.Action("Index", "Home")">Terug naar Home</a>
+    </div>
+</div>

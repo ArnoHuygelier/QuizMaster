@@ -6,6 +6,7 @@ using QuizMaster.Ui.Mvc.ViewModels.Game;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
@@ -22,7 +23,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Start(int id)
         {
-            var quiz = await _gameService.StartQuizAsync(id);
+            var quiz = await _gameService.Get(id);
             if (quiz == null) return RedirectToAction("Index", "Home");
 
             var firstQuestion = quiz.Questions.OrderBy(q => q.Id).FirstOrDefault();
@@ -32,12 +33,10 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 QuizId = quiz.Id,
                 Question = firstQuestion,
-                CurrentIndex = 1,
-                TotalQuestions = quiz.Questions.Count
+                CurrentIndex = 0,
+                TotalQuestions = quiz.Questions.Count,
+                CorrectCount = 0
             };
-
-            // Reset score teller
-            TempData["CorrectCount"] = 0;
 
             return View("Play", viewModel);
         }
@@ -45,62 +44,71 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Next([FromForm] AnswerSubmissionViewModel submission)
         {
-            if (!ModelState.IsValid)
-                return RedirectToAction("Start", new { id = submission.QuizId });
+            Console.WriteLine($"Ontvangen submission - QuizId: {submission.QuizId}, QuestionId: {submission.QuestionId}, IsTimedOut: {submission.IsTimedOut}");
 
-            var isCorrect = await _gameService.IsAnswerCorrectAsync(submission.QuestionId, submission.SelectedAnswerId);
+            int correctCount = submission.CorrectCount;
 
-            // Update correct count in TempData
-            int correctCount = TempData.ContainsKey("CorrectCount") ? (int)TempData["CorrectCount"] : 0;
-            if (isCorrect) correctCount++;
-            TempData["CorrectCount"] = correctCount;
-
-            var quiz = await _gameService.StartQuizAsync(submission.QuizId);
-            var questions = quiz?.Questions.OrderBy(q => q.Id).ToList();
-            int currentIndex = questions?.FindIndex(q => q.Id == submission.QuestionId) ?? -1;
-
-            if (currentIndex + 1 >= questions?.Count)
+            if (!submission.IsTimedOut && submission.SelectedAnswerId.HasValue)
             {
-                // einde quiz
-                return RedirectToAction("Finish", new { id = submission.QuizId });
+                bool isCorrect = await _gameService.IsAnswerCorrect(submission.QuestionId, submission.SelectedAnswerId.Value);
+                if (isCorrect) correctCount++;
             }
 
-            var nextQuestion = questions![currentIndex + 1];
+            var quiz = await _gameService.Get(submission.QuizId);
+            if (quiz == null)
+            {
+                Console.WriteLine($"Quiz met ID {submission.QuizId} niet gevonden");
+                return RedirectToAction("Error", "Home");
+            }
+
+            if (quiz.Questions == null || !quiz.Questions.Any())
+            {
+                Console.WriteLine($"Geen vragen gevonden voor quiz {submission.QuizId}");
+                return RedirectToAction("Error", "Home");
+            }
+
+            var questions = quiz.Questions.OrderBy(q => q.Id).ToList();
+            int currentIndex = submission.CurrentIndex;
+
+            Console.WriteLine($"Huidige index: {currentIndex}, Totaal vragen: {questions.Count}");
+
+            if (currentIndex + 1 >= questions.Count)
+            {
+                Console.WriteLine("Alle vragen beantwoord - doorsturen naar Finish");
+                return RedirectToAction("Finish", new { id = submission.QuizId, correctCount });
+            }
+
+            var nextQuestion = questions[currentIndex + 1];
+
             var viewModel = new PlayQuestionViewModel
             {
                 QuizId = submission.QuizId,
                 Question = nextQuestion,
-                CurrentIndex = currentIndex + 2,
-                TotalQuestions = questions.Count
+                CurrentIndex = currentIndex + 1,
+                TotalQuestions = questions.Count,
+                CorrectCount = correctCount
             };
 
             return View("Play", viewModel);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Finish(int id)
+        public async Task<IActionResult> Finish(int id, int correctCount = 0)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return RedirectToAction("Login", "Account");
 
-            int correctCount = TempData.ContainsKey("CorrectCount") ? (int)TempData["CorrectCount"] : 0;
-
-            var score = await _gameService.FinishQuizAsync(id, userId, correctCount);
+            var result = await _gameService.CreateResult(id, userId, correctCount);
+            var quiz = await _gameService.Get(id);
 
             var viewModel = new QuizResultViewModel
             {
                 QuizId = id,
-                Score = score,
-                Total = await GetTotalQuestions(id)
+                Score = result.Score,
+                Total = quiz?.Questions.Count ?? 0
             };
 
             return View("Result", viewModel);
-        }
-
-        private async Task<int> GetTotalQuestions(int quizId)
-        {
-            var quiz = await _gameService.StartQuizAsync(quizId);
-            return quiz?.Questions.Count ?? 0;
         }
     }
 }

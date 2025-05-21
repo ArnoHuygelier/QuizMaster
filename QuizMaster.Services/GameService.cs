@@ -1,8 +1,9 @@
 ﻿using QuizMaster.Models;
-using QuizMaster.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using QuizMaster.Repository;
 
 namespace QuizMaster.Services
 {
@@ -15,7 +16,7 @@ namespace QuizMaster.Services
             _context = context;
         }
 
-        public async Task<Quiz?> StartQuizAsync(int quizId)
+        public async Task<Quiz?> Get(int quizId)
         {
             return await _context.Quizzes
                 .Include(q => q.Questions)
@@ -23,21 +24,21 @@ namespace QuizMaster.Services
                 .FirstOrDefaultAsync(q => q.Id == quizId);
         }
 
-        public async Task<Question?> GetQuestionAsync(int questionId)
+        public async Task<Question?> GetQuestion(int questionId)
         {
             return await _context.Questions
                 .Include(q => q.Answers)
                 .FirstOrDefaultAsync(q => q.Id == questionId);
         }
 
-        public async Task<bool> IsAnswerCorrectAsync(int questionId, int answerId)
+        public async Task<bool> IsAnswerCorrect(int questionId, int answerId)
         {
             var answer = await _context.Answers
                 .FirstOrDefaultAsync(a => a.Id == answerId && a.QuestionId == questionId);
             return answer != null && answer.IsCorrect;
         }
 
-        public async Task<int> FinishQuizAsync(int quizId, string userId, int correctCount)
+        public async Task<QuizResult> CreateResult(int quizId, string userId, int correctCount)
         {
             var quizResult = new QuizResult
             {
@@ -56,8 +57,48 @@ namespace QuizMaster.Services
             }
 
             await _context.SaveChangesAsync();
+            return quizResult;
+        }
 
-            return correctCount;
+        public async Task<IEnumerable<Quiz>> Find()
+        {
+            return await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .ToListAsync();
+        }
+
+        public async Task<Quiz> Create(Quiz quiz)
+        {
+            _context.Quizzes.Add(quiz);
+            await _context.SaveChangesAsync();
+            return quiz;
+        }
+
+        public async Task<Quiz?> Update(int id, Quiz updated)
+        {
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            if (quiz == null) return null;
+
+            quiz.Title = updated.Title;
+            quiz.Description = updated.Description;
+
+            await _context.SaveChangesAsync();
+            return quiz;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var quiz = await _context.Quizzes.FindAsync(id);
+            if (quiz == null) return false;
+
+            _context.Quizzes.Remove(quiz);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

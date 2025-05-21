@@ -6,12 +6,12 @@
 
 <div class="container mt-5">
     <div class="alert alert-success text-center">
-        <h2 class="mb-3">🎉 Quiz voltooid!</h2>
-        <p class="lead">Je behaalde een score van</p>
+        <h2 class="mb-3">🎉 Quiz Completed!</h2>
+        <p class="lead">You achieved a score of</p>
         <h3 class="display-4">@Model.Score / @Model.Total</h3>
     </div>
 
     <div class="text-center">
-        <a class="btn btn-outline-primary" href="@Url.Action("Index", "Home")">Terug naar Home</a>
+        <a class="btn btn-outline-primary" asp-action="Index" asp-controller="Home">Back to Home</a>
     </div>
 </div>

@@ -8,5 +8,7 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Game
         public Question Question { get; set; }
         public int CurrentIndex { get; set; }
         public int TotalQuestions { get; set; }
+        public int CorrectCount { get; set; }
     }
+
 }

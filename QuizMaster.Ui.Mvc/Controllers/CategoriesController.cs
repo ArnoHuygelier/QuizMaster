@@ -3,6 +3,7 @@ using QuizMaster.Models;
 using QuizMaster.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Categories;
 using System;
+using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
@@ -19,12 +20,17 @@ namespace QuizMaster.Ui.Mvc.Controllers
         {
             var categories = await _categoryService.Find();
 
-            var categoriesViewModel = new CategoriesViewModel
+            var viewModel = new CategoriesViewModel()
             {
-                Categories = categories.ToList()
+                Categories = categories.Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    NumberOfQuizzes = c.Quizzes?.Count ?? 0
+                }).ToList()
             };
 
-            return View(categoriesViewModel);
+            return View(viewModel);
         }
 
         [HttpGet]

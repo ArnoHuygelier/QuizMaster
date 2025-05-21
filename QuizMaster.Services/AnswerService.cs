@@ -56,5 +56,18 @@ namespace QuizMaster.Services
 			await _context.SaveChangesAsync();
 			return true;
 		}
-	}
+
+        /// <summary>
+        /// Get all the answers that need to be deleted by making a temporary questionIds list
+        /// </summary>
+        /// <param name="questionsIds">the questionsIds that need to be deleted</param>
+        /// <returns></returns>
+        public async Task<bool> BulkDelete(List<int> questionsIds)
+        {
+            _context.Answers.RemoveRange(_context.Answers.Where(a => questionsIds.Contains(a.QuestionId)));
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+    }
 }

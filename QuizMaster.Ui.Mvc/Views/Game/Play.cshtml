@@ -1,46 +1,86 @@
 ﻿@model QuizMaster.Ui.Mvc.ViewModels.Game.PlayQuestionViewModel
 
 @{
-    ViewData["Title"] = "Speel Quiz";
+    ViewData["Title"] = "Play Quiz";
 }
 
 <div class="container mt-5">
     <h2>@Model.Question.QuestionText</h2>
-    <p class="text-muted">Vraag @Model.CurrentIndex van @Model.TotalQuestions</p>
+    <p class="text-muted">Vraag @(Model.CurrentIndex + 1) van @Model.TotalQuestions</p>
 
-    <form method="post" asp-action="Next">
+    <form method="post" asp-action="Next" asp-controller="Game" id="quizForm">
+        @Html.AntiForgeryToken()
+
         <input type="hidden" name="QuizId" value="@Model.QuizId" />
         <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
+        <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
+        <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
+        <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
 
         <div class="list-group mt-4">
             @foreach (var answer in Model.Question.Answers)
             {
                 <label class="list-group-item">
-                    <input class="form-check-input me-1" type="radio" name="SelectedAnswerId" value="@answer.Id" required>
+                    <input class="form-check-input me-1" type="radio" name="SelectedAnswerId" value="@answer.Id" />
                     @answer.AnswerText
                 </label>
             }
         </div>
 
         <div class="mt-4 d-flex justify-content-between align-items-center">
-            <div id="timer" class="text-danger fw-bold">⏳ 15</div>
-            <button type="submit" class="btn btn-primary">Volgende</button>
+            <div id="timer" class="text-danger fw-bold">⏳ 20</div>
+            <button type="submit" class="btn btn-primary" id="submitButton">Next</button>
         </div>
     </form>
 </div>
 
 @section Scripts {
     <script>
-        let seconds = 15;
+        let seconds = 20;
         const timer = document.getElementById("timer");
+        const isTimedOutInput = document.getElementById("IsTimedOut");
+        const form = document.getElementById("quizForm");
+        const submitButton = document.getElementById("submitButton");
+        let isSubmitting = false;
+
+        console.log("Timer script geladen");
 
         const countdown = setInterval(() => {
             seconds--;
             timer.textContent = `⏳ ${seconds}`;
-            if (seconds <= 0) {
+            console.log(`Timer: ${seconds} seconden over`);
+
+            if (seconds <= 0 && !isSubmitting) {
+                console.log("Timer afgelopen - formulier verzenden");
                 clearInterval(countdown);
-                document.forms[0].submit(); // auto submit when time is up
+                isTimedOutInput.value = "true";
+                isSubmitting = true;
+                submitButton.disabled = true;
+                form.submit();
             }
         }, 1000);
+
+        form.addEventListener('submit', function(e) {
+            console.log("Formulier submit event");
+            if (isSubmitting) {
+                console.log("Formulier al aan het verzenden - voorkomen");
+                e.preventDefault();
+                return;
+            }
+
+            if (seconds > 0) {
+                console.log("Handmatige submit - timer nog niet afgelopen");
+                isTimedOutInput.value = "false";
+            }
+
+            isSubmitting = true;
+            submitButton.disabled = true;
+        });
+
+        form.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
     </script>
 }

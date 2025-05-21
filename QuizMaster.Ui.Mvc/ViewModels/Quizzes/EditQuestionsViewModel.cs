@@ -11,7 +11,6 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
         [MinLength(1, ErrorMessage = "You must add at least one question")]
         [Required]
         public List<QuestionViewModel> Questions { get; set; } = new();
-
-        
+        List<int> QuestionIds { get; set; }
     }
 }

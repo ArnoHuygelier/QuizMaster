@@ -20,13 +20,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         private readonly QuizService _quizService;
         private readonly QuestionService _questionService;
+        private readonly AnswerService _answerService;
         private readonly CategoryService _categoryService;
 
-
-        public QuizzesController(QuizService quizService, QuestionService questionService, CategoryService categoryService)
+        public QuizzesController(QuizService quizService, QuestionService questionService, AnswerService answerService, CategoryService categoryService)
         {
             _quizService = quizService;
             _questionService = questionService;
+            _answerService = answerService;
             _categoryService = categoryService; 
         }
 
@@ -109,8 +110,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
             };
 
             return View(viewModel);
-
-
         }
 
         [HttpPost]
@@ -118,22 +117,15 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         public async Task<IActionResult> AddQuestions([FromForm] AddQuestionsViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-                return View(viewModel);
+            if (!ModelState.IsValid) return View(viewModel);
 
             var quiz = await _quizService.Get(viewModel.QuizId);
             if (quiz == null) return NotFound();
 
             foreach (var qvm in viewModel.Questions)
             {
-                if (qvm.CorrectAnswerIndex < 0 || qvm.CorrectAnswerIndex >= qvm.Answers.Count)
-                {
-                    ModelState.AddModelError("", "Each question must have one correct answer.");
-                    return View(viewModel);
-                }
-
-                for (int i = 0; i < qvm.Answers.Count; i++)
-                    qvm.Answers[i].IsCorrect = (i == qvm.CorrectAnswerIndex);
+                //Set the correct answer to true via the CorrectAnswerIndex
+                qvm.Answers[qvm.CorrectAnswerIndex].IsCorrect = true;
 
                 var question = new Question
                 {
@@ -149,13 +141,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             }
 
             return RedirectToAction("Index");
-
-
         }
-
-
-
-
 
 
         [HttpGet]
@@ -205,7 +191,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return NotFound();
             }
 
-            return RedirectToAction("EditQuestions", new { id = viewModel.Id });
+            return RedirectToAction("Index");
         }
 
 
@@ -259,47 +245,75 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return NotFound();
             }
 
+
+            List<Question> updatedQuestions = new List<Question>();
+
             foreach (var qvm in viewModel.Questions)
             {
-                if (qvm.Answers == null || qvm.Answers.Count == 0)
-                {
-                    ModelState.AddModelError("", $"Question '{qvm.Text}' must have at least one answer.");
-                    return View(viewModel);
-                }
+                Question returningQuestion;
 
-                if (qvm.CorrectAnswerIndex < 0 || qvm.CorrectAnswerIndex >= qvm.Answers.Count)
-                {
-                    ModelState.AddModelError("", $"Question '{qvm.Text}' must have at least one correct answer.");
-                    return View(viewModel);
-                }
+                //Set the correct answer to true via the CorrectAnswerIndex
+                qvm.Answers[qvm.CorrectAnswerIndex].IsCorrect = true;
 
-                
-                for (int i = 0; i < qvm.Answers.Count; i++)
-                {
-                    qvm.Answers[i].IsCorrect = (i == qvm.CorrectAnswerIndex);
-                }
 
-                var updatedQuestion = new Question
+                //Checks if the question is a new one or not
+                if (qvm.QuestionId == 0)
                 {
-                    Id = qvm.QuestionId,
-                    QuestionText = qvm.Text,
-                    Answers = qvm.Answers.Select(a => new Answer
+                    var newQuestion = new Question
                     {
-                        Id = a.Id, 
-                        AnswerText = a.AnswerText,
-                        IsCorrect = a.IsCorrect
-                    }).ToList()
-                };
+                        QuizId = viewModel.QuizId,
+                        QuestionText = qvm.Text,
+                        Answers = qvm.Answers.Select(a => new Answer
+                        {
+                            Id = a.Id,
+                            AnswerText = a.AnswerText,
+                            IsCorrect = a.IsCorrect
+                        }).ToList()
+                    };
 
-                
-                var result = await _questionService.Update(qvm.QuestionId, updatedQuestion);
+                    returningQuestion = await _questionService.Create(newQuestion);
+                }
+                else
+                {
+                    var updatedQuestion = new Question
+                    {
+                        Id = qvm.QuestionId,
+                        QuestionText = qvm.Text,
+                        Answers = qvm.Answers.Select(a => new Answer
+                        {
+                            Id = a.Id,
+                            AnswerText = a.AnswerText,
+                            IsCorrect = a.IsCorrect
+                        }).ToList()
+                    };
 
-                if (result == null)
+                    returningQuestion = await _questionService.Update(qvm.QuestionId, updatedQuestion);
+                }
+
+
+                if (returningQuestion == null)
                 {
                     ModelState.AddModelError("", $"Question with Id {qvm.QuestionId} could need be updated.");
                     return View(viewModel);
                 }
+
+                //Add the updated question to the list
+                updatedQuestions.Add(returningQuestion);
             }
+
+
+            //Get all questions that need to be deleted
+            var questions =  await _questionService.GetToBeDeletedQuestions(viewModel.QuizId, updatedQuestions);
+
+            //Get a list with all the questionsIds
+            List<int> questionsIds = questions.Select(q => q.Id).ToList();
+
+            //First delete the answers linked to a question
+            await _answerService.BulkDelete(questionsIds);
+
+            //Then delete questions
+            await _questionService.BulkDelete(questionsIds);
+
 
             return RedirectToAction("Index");
         }
@@ -313,9 +327,5 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
             return RedirectToAction("Index");
         }
-
-
-        
     }
 }
-

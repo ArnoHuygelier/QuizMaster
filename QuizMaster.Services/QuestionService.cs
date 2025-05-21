@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
+using System.Runtime.CompilerServices;
 
 namespace QuizMaster.Services
 {
@@ -33,11 +34,24 @@ namespace QuizMaster.Services
         public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
         {
             var a = await _context.Questions
-                .Include(q => q.QuizId == quizId)
+                .Include(q => q.Quiz).Where(q => q.QuizId == quizId)
                 .Include(q => q.Answers)
                 .ToListAsync();
             return a;
 
+        }
+
+        /// <summary>
+        /// Get the all the questions linked to a quiz, delete the ones that are not present in the viewmodel
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Question>> GetToBeDeletedQuestions(int quizId, List<Question> questionsToKeep)
+        {
+            var allQuestions = await _context.Questions.Include(x => x.Answers).Where(x => x.QuizId == quizId).ToListAsync();
+            
+            var QuestionsBeDeleted = allQuestions.Where(x => !questionsToKeep.Any(y => y.Id == x.Id)).ToList();
+
+            return QuestionsBeDeleted;
         }
 
 
@@ -51,6 +65,8 @@ namespace QuizMaster.Services
         // Bijwerken
         public async Task<Question?> Update(int? id, Question updated)
         {
+
+            //Get all questions
             var question = await _context.Questions
                 .Include(q => q.Answers)
                 .FirstOrDefaultAsync(q => q.Id == id); 
@@ -58,13 +74,16 @@ namespace QuizMaster.Services
             if (question == null)
                 return null;
 
+
             // Update question fields
             question.QuestionText = updated.QuestionText;
             
 
+
             // Update existing answers and track changes
             foreach (var updatedAnswer in updated.Answers)
             {
+
                 var existingAnswer = question.Answers.FirstOrDefault(a => a.Id == updatedAnswer.Id);
 
                 if (existingAnswer != null)
@@ -135,6 +154,17 @@ namespace QuizMaster.Services
             return true;
         }
 
+        /// <summary>
+        /// Get all the questions that need to be deleted
+        /// </summary>
+        /// <param name="questionsIds">the questions that need to be deleted</param>
+        /// <returns></returns>
+        public async Task<bool> BulkDelete(List<int> questionsIds)
+        {
+            _context.Questions.RemoveRange(_context.Questions.Where(a => questionsIds.Contains(a.Id)));
+            await _context.SaveChangesAsync();
 
+            return true;
+        }
     }
 }

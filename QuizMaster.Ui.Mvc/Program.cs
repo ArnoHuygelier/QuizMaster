@@ -6,6 +6,7 @@ using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
 
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,11 @@ var connectionString = builder.Configuration.GetConnectionString(nameof(QuizMast
 
 builder.Services.AddDbContext<QuizMasterDbContext>(options =>
 {
-	options.UseSqlServer(connectionString);
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException("Connection string is empty");
+    }
+    options.UseSqlServer(connectionString);
 });
 
 builder.Services.AddDefaultIdentity<User>(options => 
@@ -36,8 +41,19 @@ builder.Services.AddScoped<GameService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
+{
+    var dbcontext = scope.ServiceProvider.GetService<QuizMasterDbContext>();
+
+    if (!dbcontext.Database.CanConnect())
+    {
+        throw new InvalidOperationException("Cannot connect to the database, check the connection string.");
+    }
+}
+
+
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -63,7 +79,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=quizzes}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 // Seed the database with roles

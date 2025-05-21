@@ -39,7 +39,11 @@ namespace QuizMaster.Ui.Mvc.TagHelpers
         [HtmlAttributeName("loading")]
         public string Loading { get; set; } = "lazy";
 
-        
+        [HtmlAttributeName("width")]
+        public string? Width { get; set; }
+
+        [HtmlAttributeName("height")]
+        public string? Height { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -57,7 +61,11 @@ namespace QuizMaster.Ui.Mvc.TagHelpers
             if (!string.IsNullOrWhiteSpace(CssClass))
                 output.Attributes.SetAttribute("class", CssClass);
 
-            
+            if (!string.IsNullOrWhiteSpace(Width))
+                output.Attributes.SetAttribute("width", Width);
+
+            if (!string.IsNullOrWhiteSpace(Height))
+                output.Attributes.SetAttribute("height", Height);
         }
     }
 }

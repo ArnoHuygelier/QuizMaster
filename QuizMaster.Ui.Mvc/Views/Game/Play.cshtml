@@ -4,35 +4,53 @@
     ViewData["Title"] = "Play Quiz";
 }
 
-<div class="container mt-5">
-    <h2>@Model.Question.QuestionText</h2>
-    <p class="text-muted">Vraag @(Model.CurrentIndex + 1) van @Model.TotalQuestions</p>
+<div class="container my-5">
 
-    <form method="post" asp-action="Next" asp-controller="Game" id="quizForm">
-        @Html.AntiForgeryToken()
+    
 
-        <input type="hidden" name="QuizId" value="@Model.QuizId" />
-        <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
-        <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
-        <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
-        <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
+    <div class="text-center mb-4">
+        <h2 class="mb-2">@Model.Title</h2>
+        <quiz-image image-url="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded mb-3" width="250" height="250" />
+        <p class="text-muted">Question @(Model.CurrentIndex + 1) of @Model.TotalQuestions</p>
+    </div>
 
-        <div class="list-group mt-4">
-            @foreach (var answer in Model.Question.Answers)
-            {
-                <label class="list-group-item">
-                    <input class="form-check-input me-1" type="radio" name="SelectedAnswerId" value="@answer.Id" />
-                    @answer.AnswerText
-                </label>
-            }
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title mb-4">@Model.Question.QuestionText</h4>
+
+            <form method="post" asp-action="Next" asp-controller="Game" id="quizForm">
+                @Html.AntiForgeryToken()
+
+                <!-- Hidden Fields -->
+                <input type="hidden" name="QuizId" value="@Model.QuizId" />
+                <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
+                <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
+                <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
+                <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
+
+                <!-- Answer Options (no "required") -->
+                <div class="list-group mb-4">
+                    @foreach (var answer in Model.Question.Answers)
+                    {
+                        <label class="list-group-item d-flex align-items-center">
+                            <input class="form-check-input me-2" type="radio" name="SelectedAnswerId" value="@answer.Id" />
+                            @answer.AnswerText
+                        </label>
+                    }
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    
+                    <div id="timer" class="fw-bold text-danger fs-4"></div>
+
+                    
+                    <button type="submit" class="btn btn-primary" id="submitButton">Next</button>
+                </div>
+            </form>
         </div>
-
-        <div class="mt-4 d-flex justify-content-between align-items-center">
-            <div id="timer" class="text-danger fw-bold">⏳ 20</div>
-            <button type="submit" class="btn btn-primary" id="submitButton">Next</button>
-        </div>
-    </form>
+    </div>
 </div>
+
 
 @section Scripts {
     <script>
@@ -42,7 +60,7 @@
         const form = document.getElementById("quizForm");
         const submitButton = document.getElementById("submitButton");
         let isSubmitting = false;
-
+        timer.textContent ="⏳ " + seconds;
         console.log("Timer script geladen");
 
         const countdown = setInterval(() => {

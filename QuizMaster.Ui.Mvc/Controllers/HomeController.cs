@@ -17,13 +17,19 @@ public class HomeController : Controller
 		_categoryService = categoryService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Index()
-    {
-        var quizzes = await _quizService.Find();
+	[HttpGet]
+	public async Task<IActionResult> Index(int? categoryId)
+	{
+		var quizzes = categoryId.HasValue 
+			? await _quizService.FindQuizzesByCategory(categoryId.Value)
+			: await _quizService.Find();
+
 		ViewData["Categories"] = await _categoryService.Find();
-        return View(quizzes);
-    }
+		ViewData["SelectedCategoryId"] = categoryId ?? 0;
+
+		return View(quizzes);
+	}
+
 
 	[HttpGet]
 	public async Task<IActionResult> Details(int id)

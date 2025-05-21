@@ -38,6 +38,8 @@ builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<AvatarService>();
+
 
 var app = builder.Build();
 

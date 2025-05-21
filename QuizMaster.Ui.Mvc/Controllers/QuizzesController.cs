@@ -305,25 +305,42 @@ namespace QuizMaster.Ui.Mvc.Controllers
             //Get all questions that need to be deleted
             var questions =  await _questionService.GetToBeDeletedQuestions(viewModel.QuizId, updatedQuestions);
 
-            //Get a list with all the questionsIds
-            List<int> questionsIds = questions.Select(q => q.Id).ToList();
+            if (questions.Count() != 0)
+            {
+                //Get a list with all the questionsIds
+                List<int> questionsIds = questions.Select(q => q.Id).ToList();
 
-            //First delete the answers linked to a question
-            await _answerService.BulkDelete(questionsIds);
+                //First delete the answers linked to a question
+                await _answerService.BulkDelete(questionsIds);
 
-            //Then delete questions
-            await _questionService.BulkDelete(questionsIds);
-
+                //Then delete questions
+                await _questionService.BulkDelete(questionsIds);
+            }
 
             return RedirectToAction("Index");
         }
 
 
-
+        /// <summary>
+        /// Delete a quiz and it subsequent questions and answers
+        /// </summary>
+        /// <param name="id">quizId</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _quizService.Delete(id);
+            var quiz = await _quizService.Get(id);
+
+            if (quiz != null)
+            {
+                //List with all the questionsIds
+                List<int> questionsIds = quiz.Questions.Select(q => q.Id).ToList();
+
+                //Delete the anwers then questions then quiz
+                await _answerService.BulkDelete(questionsIds);
+                await _questionService.BulkDelete(questionsIds);
+                await _quizService.Delete(id);
+            }
 
             return RedirectToAction("Index");
         }

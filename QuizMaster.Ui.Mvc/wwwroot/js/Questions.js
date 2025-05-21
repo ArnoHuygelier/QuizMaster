@@ -77,7 +77,7 @@ function renumberQuestions() {
         const answerValidations = card.querySelectorAll('span[data-valmsg-for*="Answers"]');
 
         radios.forEach((radio, idx) => {
-            radio.name = `${namePrefix}.Correct`;
+            radio.name = `${namePrefix}.CorrectAnswerIndex`;
             radio.value = idx;
         });
 

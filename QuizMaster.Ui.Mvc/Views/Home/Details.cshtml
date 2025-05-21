@@ -89,7 +89,7 @@
         <div class="mt-4">
             @if (isSignedIn)
             {
-                <a asp-controller="Quiz" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
+                <a asp-controller="Game" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
                     <i class="bi bi-play-circle-fill me-2"></i>Play Quiz
                 </a>
             }

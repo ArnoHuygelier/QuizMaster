@@ -41,7 +41,7 @@
 
                 <div class="mt-4 d-flex justify-content-between align-items-center">
                     
-                    <div id="timer" class="fw-bold text-danger fs-4"></div>
+                    <div id="timer" class="fw-bold text-success fs-4"></div>
 
                     
                     <button type="submit" class="btn btn-primary" id="submitButton">Next</button>
@@ -67,6 +67,10 @@
             seconds--;
             timer.textContent = `⏳ ${seconds}`;
             console.log(`Timer: ${seconds} seconden over`);
+
+            if(seconds <= 5) {
+                timer.classList.add("text-danger");
+            }
 
             if (seconds <= 0 && !isSubmitting) {
                 console.log("Timer afgelopen - formulier verzenden");

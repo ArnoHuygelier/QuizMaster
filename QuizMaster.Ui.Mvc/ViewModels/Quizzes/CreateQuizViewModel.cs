@@ -16,7 +16,6 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
         [Required(ErrorMessage = "Description is required")]
         public required string Description { get; set; }
 
-        [Required(ErrorMessage = "Category is required")]
         [Display(Name = "Category")]
         public int? CategoryId { get; set; }
 

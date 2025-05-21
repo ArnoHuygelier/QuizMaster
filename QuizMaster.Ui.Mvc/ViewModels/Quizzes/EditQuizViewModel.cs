@@ -20,7 +20,7 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Category is required")]
+        
         [Display(Name = "Category")]
         public int? CategoryId { get; set; }
         

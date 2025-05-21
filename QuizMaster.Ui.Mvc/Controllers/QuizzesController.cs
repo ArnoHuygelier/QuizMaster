@@ -2,15 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
-
-using System;
-
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
-using QuizMaster.Ui.Mvc.ViewModels.Categories;
+
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
@@ -45,23 +39,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
                     Id = q.Id,
                     Title = q.Title,
                     Description = q.Description,
-                    NumberOfQuestions = q.Questions?.Count ?? 0  
+                    NumberOfQuestions = q.Questions?.Count ?? 0
                 }).ToList()
             };
 
             return View(viewModel);
         }
 
+
+
         [HttpGet]
-        public async Task<IActionResult> Create(int? id = null)
+        public async Task<IActionResult> Create()
         {
             ViewBag.Categories = await _categoryService.Find();
-
-            
-
-            
-            
-
             return View();
         }
 
@@ -77,7 +67,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateQuizViewModel viewModel)
         {
-            
+
 
             if (!ModelState.IsValid)
             {
@@ -111,7 +101,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 Title = viewModel.Title,
                 Description = viewModel.Description,
-                CategoryId = viewModel.CategoryId.Value,
+                CategoryId = viewModel.CategoryId,
                 CreatedAt = DateTime.Now,
                 UserId = userId,
                 ImageUrl = imageName
@@ -139,12 +129,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> AddQuestions([FromForm] AddQuestionsViewModel viewModel)
         {
-            if (!ModelState.IsValid) return View(viewModel);
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
 
             var quiz = await _quizService.Get(viewModel.QuizId);
-            if (quiz == null) return NotFound();
+            if (quiz == null)
+            {
+                return NotFound();
+            }
 
             foreach (var qvm in viewModel.Questions)
             {
@@ -285,9 +282,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
             };
 
             return View(viewModel);
-
-
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -352,7 +348,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
                 if (returningQuestion == null)
                 {
-                    ModelState.AddModelError("", $"Question with Id {qvm.QuestionId} could need be updated.");
+                    ModelState.AddModelError("", $"Question with Id {qvm.QuestionId} could not be updated.");
                     return View(viewModel);
                 }
 
@@ -362,7 +358,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
 
             //Get all questions that need to be deleted
-            var questions =  await _questionService.GetToBeDeletedQuestions(viewModel.QuizId, updatedQuestions);
+            var questions = await _questionService.GetToBeDeletedQuestions(viewModel.QuizId, updatedQuestions);
 
             if (questions.Count() != 0)
             {
@@ -377,29 +373,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
             }
 
             return RedirectToAction("Index");
+
         }
 
 
-        /// <summary>
-        /// Delete a quiz and it subsequent questions and answers
-        /// </summary>
-        /// <param name="id">quizId</param>
-        /// <returns></returns>
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
 
             var quiz = await _quizService.Get(id);
-            
-
-            
-
-            
-            
 
             if (quiz != null)
             {
-                
                 //List with all the questionsIds
                 List<int> questionsIds = quiz.Questions.Select(q => q.Id).ToList();
 
@@ -417,7 +403,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 await _answerService.BulkDelete(questionsIds);
                 await _questionService.BulkDelete(questionsIds);
                 await _quizService.Delete(id);
-                return RedirectToAction("Index")
+
+                return RedirectToAction("Index");
             }
 
             return NotFound();
@@ -436,11 +423,11 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 return null;
             }
-                
 
-            var imageName = title.Replace(" ","").ToLower() + Path.GetExtension(imageFile.FileName);
 
-            
+            var imageName = title.Replace(" ", "").ToLower() + Path.GetExtension(imageFile.FileName);
+
+
             var filePath = Path.Combine(_env.WebRootPath, "images/quizimage", imageName);
 
 
@@ -448,7 +435,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 await imageFile.CopyToAsync(stream);
             }
-            
+
 
             return imageName;
         }

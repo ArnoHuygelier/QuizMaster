@@ -2,8 +2,7 @@
 using QuizMaster.Models;
 using QuizMaster.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Categories;
-using System;
-using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
+
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {

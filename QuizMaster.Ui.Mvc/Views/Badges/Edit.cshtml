@@ -1,0 +1,44 @@
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Badges.EditBadgeViewModel
+
+@{
+    ViewData["Title"] = "Edit Badge";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">Edit Badge</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageUrl" />
+
+            <div>
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+
+            <div>
+                <label asp-for="Description"></label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+
+            <div>
+                <label>Current Image</label><br />
+                <img src="@Model.ImageUrl" style="max-height: 60px;" />
+            </div>
+
+            <div>
+                <label asp-for="ImageFile">New Image (optional)</label>
+                <input asp-for="ImageFile" type="file" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

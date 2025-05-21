@@ -114,7 +114,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> AddQuestions([FromForm] AddQuestionsViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);

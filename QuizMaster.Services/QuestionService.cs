@@ -92,26 +92,6 @@ namespace QuizMaster.Services
                     existingAnswer.AnswerText = updatedAnswer.AnswerText;
                     existingAnswer.IsCorrect = updatedAnswer.IsCorrect;
                 }
-                else
-                {
-                    // Add new answer
-                    question.Answers.Add(new Answer
-                    {
-                        AnswerText = updatedAnswer.AnswerText,
-                        IsCorrect = updatedAnswer.IsCorrect
-                    });
-                }
-            }
-
-            // Optionally remove deleted answers
-            var updatedAnswerIds = updated.Answers.Where(a => a.Id != 0).Select(a => a.Id).ToList();
-            var answersToRemove = question.Answers
-                .Where(a => !updatedAnswerIds.Contains(a.Id))
-                .ToList();
-
-            foreach (var answer in answersToRemove)
-            {
-                _context.Answers.Remove(answer);
             }
             
             await _context.SaveChangesAsync();

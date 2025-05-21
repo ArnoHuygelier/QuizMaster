@@ -52,7 +52,7 @@
     <!-- Quiz Header -->
     <div class="row align-items-center mb-5">
         <div class="col-md-3 text-center mb-4 mb-md-0">
-            <img src="/images/homeImageBlokken.png" class="img-fluid rounded shadow-lg" alt="@Model.Title Image">
+            <quiz-image image-url="@Model.ImageUrl" class="img-fluid rounded shadow-lg" alt="@Model.Title" />
         </div>
         <div class="col-md-9">
             <h1 class="fw-bold display-4">@Model.Title</h1>
@@ -89,7 +89,7 @@
         <div class="mt-4">
             @if (isSignedIn)
             {
-                <a asp-controller="Quiz" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
+                <a asp-controller="Game" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
                     <i class="bi bi-play-circle-fill me-2"></i>Play Quiz
                 </a>
             }

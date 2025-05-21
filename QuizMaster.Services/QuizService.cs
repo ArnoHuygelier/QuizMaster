@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 using QuizMaster.Repository;
-using QuizMaster.Services.Interfaces;
+
 
 namespace QuizMaster.Services
 {
@@ -17,12 +17,12 @@ namespace QuizMaster.Services
         {
             _dbContext = dbContext;
         }
-        public async Task<IList<Quiz>> Find() /// Gets all quizzes
+        public async Task<IList<Quiz>> Find() // Gets all quizzes
         {
             return await _dbContext.Quizzes.Include(q => q.User).Include(c => c.Category).ToListAsync();
         }
 
-        public async Task<IList<Quiz>> FindWithQuestions() /// Gets all quizzes
+        public async Task<IList<Quiz>> FindWithQuestions() // Gets all quizzes
         {
             return await _dbContext.Quizzes
                 .Include(q => q.Questions) 
@@ -39,13 +39,17 @@ namespace QuizMaster.Services
 
 
 
-		public async Task<Quiz?> Get(int id) /// Gets a specific quiz by id
+		public async Task<Quiz?> Get(int id) // Gets a specific quiz by id
         {
             return await _dbContext.Quizzes.Include(q => q.Questions).Include(c => c.Category).FirstOrDefaultAsync(q => q.Id == id);
         }
 
+        public async Task<Quiz?> GetByTitle(string title) // Gets a specific quiz by title
+        {
+            return await _dbContext.Quizzes.FirstOrDefaultAsync(q => q.Title == title);
+        }
 
-        public async Task<Quiz?> Create(Quiz quiz) /// Creates a new quiz
+        public async Task<Quiz?> Create(Quiz quiz) // Creates a new quiz
         {
             quiz.CreatedAt = DateTime.Now;
             await _dbContext.Quizzes.AddAsync(quiz);

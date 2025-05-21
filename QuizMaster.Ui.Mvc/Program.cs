@@ -4,7 +4,7 @@ using QuizMaster.Services;
 using Microsoft.AspNetCore.Identity;
 using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
-using QuizMaster.Services.Interfaces;
+
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -82,7 +82,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=quizzes}/{action=Index}/{id?}")
+    pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 // Seed the database with roles

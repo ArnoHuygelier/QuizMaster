@@ -9,13 +9,19 @@
         <h5 class="mb-0">Edit Quiz</h5>
     </div>
     <div class="card-body">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.UserId)
 
             @* Partial met de form velden *@
             <partial name="CreateEditPartial" model="Model" />
-
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="mb-3">
+                    <label class="form-label">Current Image</label><br />
+                    <quiz-image image-url="@Model.ImageUrl"  alt="@Model.Title" width="200" />
+                </div>
+            }
             <div class="d-flex align-items-center gap-2 mt-4">
                 <a asp-action="Index" class="btn btn-secondary">
                     <i class="bi bi-x-circle"></i> Cancel

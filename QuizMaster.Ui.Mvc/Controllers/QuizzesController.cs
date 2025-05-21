@@ -17,18 +17,20 @@ namespace QuizMaster.Ui.Mvc.Controllers
     [Authorize(Roles = "Admin")]
     public class QuizzesController : Controller
     {
-
+        private readonly IWebHostEnvironment _env;
         private readonly QuizService _quizService;
         private readonly QuestionService _questionService;
         private readonly AnswerService _answerService;
         private readonly CategoryService _categoryService;
 
-        public QuizzesController(QuizService quizService, QuestionService questionService, AnswerService answerService, CategoryService categoryService)
+        public QuizzesController(QuizService quizService, QuestionService questionService, AnswerService answerService, CategoryService categoryService, IWebHostEnvironment env)
         {
             _quizService = quizService;
             _questionService = questionService;
             _answerService = answerService;
-            _categoryService = categoryService; 
+            _categoryService = categoryService;
+            _env = env;
+
         }
 
         [HttpGet]
@@ -50,24 +52,54 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Detail(int id)
-        {
-            var quiz = await _quizService.Get(id);
-            if (quiz == null)
-            {
-                return NotFound();
-            }
-            return View(quiz);
-        }
+
+        //Do we need this?
+        //[HttpGet]
+        //public async Task<IActionResult> Detail(int id)
+        //{
+        //    var quiz = await _quizService.Get(id);
+        //    if (quiz == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(quiz);
+        //}
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? id = null)
         {
             ViewBag.Categories = await _categoryService.Find();
-            return View();
+            if (!id.HasValue)
+            {
+                return View(); // Empty create form
+            }
+
+            var quiz = await _quizService.Get(id.Value);
+            if (quiz == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var viewModel = new CreateQuizViewModel
+            {
+                CategoryId = quiz.CategoryId,
+                Description = quiz.Description,
+                ImageUrl = quiz.ImageUrl,
+                Title = quiz.Title
+                
+            };
+
+            return View(viewModel);
         }
 
+
+
+
+        /// <summary>
+        /// Handles quiz creation including optional image upload.
+        /// Ensures the quiz title is unique.
+        /// Redirects to AddQuestions after Quiz creation
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateQuizViewModel viewModel)
@@ -80,6 +112,25 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return View(viewModel);
             }
 
+
+            //Check for duplicate quiz title
+            var existingQuiz = await _quizService.GetByTitle(viewModel.Title);
+            if (existingQuiz != null)
+            {
+                ModelState.AddModelError("Title", "A quiz with this title already exists.");
+                ViewBag.Categories = await _categoryService.Find();
+                return View(viewModel);
+            }
+
+            //If user uploaded an image => save it to the root folder and change name to title of quiz.
+            //
+            string? imageName = null;
+
+            if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+            {
+                imageName = await SaveImageAsync(viewModel.ImageFile, viewModel.Title);
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
 
@@ -89,7 +140,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Description = viewModel.Description,
                 CategoryId = viewModel.CategoryId.Value,
                 CreatedAt = DateTime.Now,
-                UserId = userId
+                UserId = userId,
+                ImageUrl = imageName
             };
 
             var createdQuiz = await _quizService.Create(quiz);
@@ -159,7 +211,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Id = quiz.Id,
                 Title = quiz.Title,
                 Description = quiz.Description,
-                CategoryId = quiz.CategoryId
+                CategoryId = quiz.CategoryId,
+                ImageUrl = quiz.ImageUrl
             };
 
             ViewBag.Categories = await _categoryService.Find();
@@ -167,12 +220,45 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditQuizViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = await _categoryService.Find();
                 return View(viewModel);
+            }
+            var existingQuiz = await _quizService.Get(viewModel.Id);
+            if (existingQuiz == null)
+            {
+                return NotFound();
+            }
+            if (!string.Equals(existingQuiz.Title, viewModel.Title, StringComparison.OrdinalIgnoreCase))
+            {
+                var quizWithSameTitle = await _quizService.GetByTitle(viewModel.Title);
+                if (quizWithSameTitle != null)
+                {
+                    ModelState.AddModelError("Title", "A quiz with this title already exists.");
+                    ViewBag.Categories = await _categoryService.Find();
+                    return View(viewModel);
+                }
+            }
+
+            string? imageName = existingQuiz.ImageUrl;
+            if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+            {
+                // Delete the old image
+                if (!string.IsNullOrEmpty(existingQuiz.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_env.WebRootPath, "images/quizimage", existingQuiz.ImageUrl);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Save the new image
+                imageName = await SaveImageAsync(viewModel.ImageFile, existingQuiz.Title);
             }
 
             var quiz = new Quiz
@@ -183,6 +269,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Description = viewModel.Description,
                 UserId = viewModel.UserId,
                 CreatedAt = viewModel.CreatedAt,
+                ImageUrl = imageName
             };
 
             var updatedQuiz = await _quizService.Update(viewModel.Id, quiz);
@@ -323,9 +410,56 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
+
+            var quiz = await _quizService.Get(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+
+            // Delete associated image file if it exists
+            if (!string.IsNullOrEmpty(quiz.ImageUrl))
+            {
+                var imagePath = Path.Combine(_env.WebRootPath, "images/quizimage", quiz.ImageUrl);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+
             await _quizService.Delete(id);
 
             return RedirectToAction("Index");
+        }
+
+
+
+        /// <summary>
+        /// If user uploads an image for a quiz, put it in database and save the image under a consistent filename in wwwroot folder (via Environment).
+        /// </summary>
+
+        private async Task<string?> SaveImageAsync(IFormFile? imageFile, string title)
+        {
+
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return null;
+            }
+                
+
+            var imageName = title.Replace(" ","").ToLower() + Path.GetExtension(imageFile.FileName);
+
+            
+            var filePath = Path.Combine(_env.WebRootPath, "images/quizimage", imageName);
+
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+            
+
+            return imageName;
         }
     }
 }

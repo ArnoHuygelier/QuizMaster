@@ -191,7 +191,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return NotFound();
             }
 
-            return RedirectToAction("EditQuestions", new { id = viewModel.Id });
+            return RedirectToAction("Index");
         }
 
 

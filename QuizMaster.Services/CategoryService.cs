@@ -21,7 +21,7 @@ namespace QuizMaster.Services
         // Alles opvragen
         public async Task<ICollection<Category>> Find()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories.Include(c => c.Quizzes).ToListAsync();
         }
 
         // Eén item opvragen via ID

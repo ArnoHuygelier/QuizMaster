@@ -16,13 +16,20 @@
             @* Partial met de form velden *@
             <partial name="CreateEditPartial" model="Model" />
 
-            <div class="d-flex justify-content-between gap-2 mt-4">
+            <div class="d-flex align-items-center gap-2 mt-4">
                 <a asp-action="Index" class="btn btn-secondary">
                     <i class="bi bi-x-circle"></i> Cancel
                 </a>
-                <button type="submit" class="btn btn-success">
-                    <i class="bi bi-check-circle"></i> Save Changes
-                </button>
+
+                <div class="ms-auto d-flex gap-2">
+                    <a asp-action="EditQuestions" asp-route-id="@Model.Id" class="btn btn-primary">
+                        <i class="bi bi-pencil-square"></i> Edit Questions
+                    </a>
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Save Changes
+                    </button>
+                </div>
             </div>
         </form>
     </div>

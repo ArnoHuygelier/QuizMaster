@@ -14,7 +14,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Users</h5>
                         <p class="card-text">Manage all registered users.</p>
-                        <a asp-controller="Admin" asp-action="Users" class="btn btn-primary">Go to Users</a>
+                        <a asp-controller="Users" asp-action="Index" class="btn btn-primary">Go to Users</a>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Categories</h5>
                         <p class="card-text">Manage quiz categories.</p>
-                        <a asp-controller="Admin" asp-action="Categories" class="btn btn-primary">Go to Categories</a>
+                        <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Go to Categories</a>
                     </div>
                 </div>
             </div>
@@ -32,10 +32,20 @@
                     <div class="card-body">
                         <h5 class="card-title">Quizzes</h5>
                         <p class="card-text">Manage all quizzes.</p>
-                        <a asp-controller="Admin" asp-action="Quizzes" class="btn btn-primary">Go to Quizzes</a>
+                        <a asp-controller="Quizzes" asp-action="Index" class="btn btn-primary">Go to Quizzes</a>
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Badges</h5>
+                        <p class="card-text">Manage quiz badges.</p>
+                        <a asp-controller="Badges" asp-action="Index" class="btn btn-primary">Go to Badges</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

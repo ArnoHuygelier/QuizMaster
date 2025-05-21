@@ -20,13 +20,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
         private readonly QuizService _quizService;
         private readonly QuestionService _questionService;
+        private readonly AnswerService _answerService;
         private readonly CategoryService _categoryService;
 
-
-        public QuizzesController(QuizService quizService, QuestionService questionService, CategoryService categoryService)
+        public QuizzesController(QuizService quizService, QuestionService questionService, AnswerService answerService, CategoryService categoryService)
         {
             _quizService = quizService;
             _questionService = questionService;
+            _answerService = answerService;
             _categoryService = categoryService; 
         }
 
@@ -295,11 +296,23 @@ namespace QuizMaster.Ui.Mvc.Controllers
                     ModelState.AddModelError("", $"Question with Id {qvm.QuestionId} could need be updated.");
                     return View(viewModel);
                 }
+
+                //Add the updated question to the list
+                updatedQuestions.Add(returningQuestion);
             }
 
-            //Delete all removed questions and answers linked to the quiz
+
+            //Get all questions that need to be deleted
             var questions =  await _questionService.GetToBeDeletedQuestions(viewModel.QuizId, updatedQuestions);
-            await 
+
+            //Get a list with all the questionsIds
+            List<int> questionsIds = questions.Select(q => q.Id).ToList();
+
+            //First delete the answers linked to a question
+            await _answerService.BulkDelete(questionsIds);
+
+            //Then delete questions
+            await _questionService.BulkDelete(questionsIds);
 
 
             return RedirectToAction("Index");

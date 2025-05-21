@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
+using System.Runtime.CompilerServices;
 
 namespace QuizMaster.Services
 {
@@ -41,7 +42,7 @@ namespace QuizMaster.Services
         }
 
         /// <summary>
-        /// Get the all the questions linked to a quiz, delete the ones that are not present in the viewodel
+        /// Get the all the questions linked to a quiz, delete the ones that are not present in the viewmodel
         /// </summary>
         /// <returns></returns>
         public async Task<List<Question>> GetToBeDeletedQuestions(int quizId, List<Question> questionsToKeep)
@@ -153,6 +154,17 @@ namespace QuizMaster.Services
             return true;
         }
 
+        /// <summary>
+        /// Get all the questions that need to be deleted
+        /// </summary>
+        /// <param name="questionsIds">the questions that need to be deleted</param>
+        /// <returns></returns>
+        public async Task<bool> BulkDelete(List<int> questionsIds)
+        {
+            _context.Questions.RemoveRange(_context.Questions.Where(a => questionsIds.Contains(a.Id)));
+            await _context.SaveChangesAsync();
 
+            return true;
+        }
     }
 }

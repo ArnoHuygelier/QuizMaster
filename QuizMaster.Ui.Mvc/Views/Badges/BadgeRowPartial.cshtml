@@ -1,8 +1,13 @@
-﻿@model QuizMaster.Ui.Mvc.ViewModels.Categories.CategoryViewModel
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Badges.BadgeViewModel
 
 <tr>
     <td>@Model.Name</td>
-    <td>@Model.NumberOfQuizzes</td>
+    <td>@Model.Description</td>
+    <td>
+        <img src="@Model.ImageUrl" alt="@Model.Name" style="max-height: 40px;" />
+
+    </td>
+    <td>@Model.NumberOfUsers</td>
     <td>
         <div class="d-flex gap-1">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
@@ -15,9 +20,5 @@
                     data-bs-target="#deleteModal"
                     data-id="@Model.Id"
                     data-type="deleteButton"
-                    data-name="@Html.Raw(Html.Encode(Model.Name))">
-                <i class="bi bi-trash"></i> Delete
-            </button>
-        </div>
-    </td>
-</tr>
+                    data-name="@Model.Name">
+                <i class="bi bi-trash

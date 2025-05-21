@@ -1,0 +1,27 @@
+﻿@using QuizMaster.Ui.Mvc.ViewModels.Avatars
+@model AvatarViewModel
+
+<tr>
+    <td>
+        <img src="@Model.AvatarUrl" alt="@Model.Name" style="height: 40px;" class="rounded" />
+    </td>
+    <td>@Model.Name</td>
+    <td>@Model.UserCount</td>
+    <td>
+        <div class="d-flex gap-1">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal"
+                    data-id="@Model.Id"
+                    data-type="deleteButton"
+                    data-name="@Html.Raw(Html.Encode(Model.Name))">
+                <i class="bi bi-trash"></i> Delete
+            </button>
+        </div>
+    </td>
+</tr>

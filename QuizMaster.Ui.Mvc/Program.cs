@@ -4,7 +4,7 @@ using QuizMaster.Services;
 using Microsoft.AspNetCore.Identity;
 using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
-using QuizMaster.Services.Interfaces;
+
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);

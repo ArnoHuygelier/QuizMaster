@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
-using QuizMaster.Ui.Mvc.Controllers.ControllerBases;
+
 using System;
-using QuizMaster.Services.Interfaces;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;

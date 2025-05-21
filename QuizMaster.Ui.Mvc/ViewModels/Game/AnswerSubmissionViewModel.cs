@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace QuizMaster.Ui.Mvc.ViewModels.Game
-
 {
     public class AnswerSubmissionViewModel
     {
@@ -11,8 +10,15 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Game
         [Required]
         public int QuestionId { get; set; }
 
-        [Required]
-        public int SelectedAnswerId { get; set; }
-    }
+        public int? SelectedAnswerId { get; set; }
 
+        [Required]
+        public int CorrectCount { get; set; }
+
+        [Required]
+        public int CurrentIndex { get; set; }
+
+        [Required]
+        public bool IsTimedOut { get; set; }
+    }
 }

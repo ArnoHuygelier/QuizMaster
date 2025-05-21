@@ -63,7 +63,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=quizzes}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 // Seed the database with roles

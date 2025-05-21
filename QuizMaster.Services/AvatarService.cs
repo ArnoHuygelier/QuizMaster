@@ -17,30 +17,6 @@ namespace QuizMaster.Services
 		{
 			_context = context;
 		}
-		public async Task CreateAvatarAsync(CreateAvatarViewModel model)
-		{
-			var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "Avatars");
-			if (!Directory.Exists(uploadsFolder))
-			{
-				Directory.CreateDirectory(uploadsFolder);
-			}
-
-			var fileName = Path.GetFileName(model.AvatarImage.FileName);
-			var filePath = Path.Combine(uploadsFolder, fileName);
-
-			using (var fileStream = new FileStream(filePath, FileMode.Create))
-			{
-				await model.AvatarImage.CopyToAsync(fileStream);
-			}
-
-			var avatar = new Avatar
-			{
-				Name = model.Name,
-				AvatarUrl = "/images/Avatars/" + fileName
-			};
-
-			await Create(avatar);
-		}
 
 		public async Task<ICollection<Avatar>> Find()
 		{

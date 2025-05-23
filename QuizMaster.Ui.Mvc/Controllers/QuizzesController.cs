@@ -89,6 +89,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Description = viewModel.Description,
                 CategoryId = viewModel.CategoryId.Value,
                 CreatedAt = DateTime.Now,
+                UpdatedAt = null,
                 UserId = userId
             };
 
@@ -182,6 +183,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Description = viewModel.Description,
                 UserId = viewModel.UserId,
                 CreatedAt = viewModel.CreatedAt,
+                UpdatedAt = DateTime.Now,
             };
 
             var updatedQuiz = await _quizService.Update(viewModel.Id, quiz);
@@ -299,6 +301,11 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 //Add the updated question to the list
                 updatedQuestions.Add(returningQuestion);
             }
+
+
+            //Update the quiz UpdatedAt
+            quiz.UpdatedAt = DateTime.Now;
+            await _quizService.Update(viewModel.QuizId, quiz);
 
 
             //Get all questions that need to be deleted

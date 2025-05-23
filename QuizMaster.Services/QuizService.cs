@@ -71,6 +71,7 @@ namespace QuizMaster.Services
             tempQuiz.Description = entity.Description;
             tempQuiz.CategoryId = entity.CategoryId;
             tempQuiz.CreatedAt = entity.CreatedAt;
+            tempQuiz.UpdatedAt = entity.UpdatedAt;
             tempQuiz.UserId = entity.UserId;
             
 

@@ -24,7 +24,6 @@ namespace QuizMaster.Ui.Mvc.Controllers
             _answerService = answerService;
             _categoryService = categoryService;
             _env = env;
-
         }
 
         [HttpGet]
@@ -47,15 +46,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
 
-
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             ViewBag.Categories = await _categoryService.Find();
             return View();
         }
-
-
 
 
         /// <summary>
@@ -103,15 +99,16 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Description = viewModel.Description,
                 CategoryId = viewModel.CategoryId,
                 CreatedAt = DateTime.Now,
-                UserId = userId,
-                ImageUrl = imageName
                 UpdatedAt = null,
+                UserId = userId,
+                ImageUrl = imageName,
             };
 
             var createdQuiz = await _quizService.Create(quiz);
-            return RedirectToAction("AddQuestions", new { id = createdQuiz?.Id });
 
+            return RedirectToAction("AddQuestions", new { id = createdQuiz?.Id });
         }
+        
 
         [HttpGet]
         public async Task<IActionResult> AddQuestions(int id)
@@ -128,9 +125,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
             return View(viewModel);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> AddQuestions([FromForm] AddQuestionsViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -182,12 +179,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Title = quiz.Title,
                 Description = quiz.Description,
                 CategoryId = quiz.CategoryId,
+                CreatedAt = quiz.CreatedAt,
                 ImageUrl = quiz.ImageUrl
             };
 
             ViewBag.Categories = await _categoryService.Find();
             return View(viewModel);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -238,7 +237,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Title = viewModel.Title,
                 Description = viewModel.Description,
                 UserId = viewModel.UserId,
-                CreatedAt = viewModel.CreatedAt,
+                CreatedAt = existingQuiz.CreatedAt,
                 UpdatedAt = DateTime.Now,
                 ImageUrl = imageName
             };
@@ -361,7 +360,13 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
             //Update the quiz UpdatedAt
             quiz.UpdatedAt = DateTime.Now;
-            await _quizService.Update(viewModel.QuizId, quiz);
+            var quizResponse = await _quizService.Update(viewModel.QuizId, quiz);
+
+            if (quizResponse == null)
+            {
+                return NotFound();
+            }
+
 
 
             //Get all questions that need to be deleted
@@ -380,9 +385,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             }
 
             return RedirectToAction("Index");
-
         }
-
 
 
         [HttpPost]
@@ -418,11 +421,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
 
-
         /// <summary>
         /// If user uploads an image for a quiz, put it in database and save the image under a consistent filename in wwwroot folder (via Environment).
         /// </summary>
-
         private async Task<string?> SaveImageAsync(IFormFile? imageFile, string title)
         {
 

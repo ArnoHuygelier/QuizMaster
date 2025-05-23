@@ -62,10 +62,16 @@
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Quizzes" asp-action="MyQuizzes">
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="QuizResult" asp-action="MyQuizzes">
                         <i class="bi bi-card-list"></i> My Quizzes
                     </a>
                 </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Leaderboard" asp-action="Index">
+                        <i class="bi bi-trophy-fill"></i> Leaderboard
+                    </a>
+                </li>
+
                 <li><hr class="dropdown-divider" /></li>
                 <li>
                     <form method="post"

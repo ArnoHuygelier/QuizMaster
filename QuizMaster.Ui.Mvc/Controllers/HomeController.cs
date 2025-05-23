@@ -28,7 +28,8 @@ public class HomeController : Controller
 	{
 		var quizzes = categoryId.HasValue 
 			? await _quizService.FindQuizzesByCategory(categoryId.Value)
-			: await _quizService.Find();
+			: await _quizService.FindQuizzesContainingQuestions();
+
 
 		ViewData["Categories"] = await _categoryService.Find();
 		ViewData["SelectedCategoryId"] = categoryId ?? 0;

@@ -19,10 +19,11 @@ function addQuestion() {
 
     const namePrefix = `Questions[${questionIndex}]`;
 
-    card.innerHTML = `<input type="hidden" name="${namePrefix}.QuestionId" id="QuestionId_${questionIndex}" >
+    card.innerHTML = `<input type="hidden" name="${namePrefix}.QuestionId" id="QuestionId_${questionIndex}" value="0"  >
         <div class="d-flex justify-content-between align-items-center mb-2 pe-3">
             <h5>Question ${questionIndex + 1}</h5>
             <button type="button" class="btn btn-danger btn-sm" onclick="removeQuestion(this)">Remove</button>
+            
         </div>
 
         <div class="form-group pe-3">
@@ -36,7 +37,7 @@ function addQuestion() {
         ${[0, 1, 2, 3].map(i => `
             <div class="form-check mb-2 pe-3">
                 <input class="form-check-input" type="radio" name="${namePrefix}.CorrectAnswerIndex" value="${i}" ${i === 0 ? 'checked' : ''} onchange="markCorrect(this)">
-                <input type="hidden" name="${namePrefix}.Answers[${i}].Id">
+                <input type="hidden" name="${namePrefix}.Answers[${i}].Id" value="0">
                 <input type="text" class="form-control" name="${namePrefix}.Answers[${i}].AnswerText" placeholder="Answer ${i + 1}">
                 <input type="hidden" name="${namePrefix}.Answers[${i}].IsCorrect" value="${i === 0 ? 'true' : 'false'}">
                 <span class="text-danger" data-valmsg-for="${namePrefix}.Answers[${i}].AnswerText" data-valmsg-replace="true"></span>

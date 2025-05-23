@@ -14,10 +14,12 @@
     </div>
     <div class="card-body">
         <form asp-action="EditQuestions" method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="QuizId" />
 
             <div id="question-container" data-question-count="@Model.Questions.Count">
+                <span asp-validation-for="Questions" class="text-danger"></span>
+
                 @for (int i = 0; i < Model.Questions.Count; i++)
                 {
                     var question = Model.Questions[i];
@@ -33,7 +35,8 @@
                             <label class="form-label">Question Text</label>
                             <input type="text" name="Questions[@i].Text" value="@question.Text" class="form-control" placeholder="Enter your question" />
                             <input type="hidden" name="Questions[@i].QuestionId" value="@question.QuestionId" />
-                            <span class="text-danger" data-valmsg-for="Questions[@i].Text" data-valmsg-replace="true"></span>
+                            <span asp-validation-for="Questions[@i].Text" class="text-danger"></span>
+
                         </div>
 
                         <label class="mt-3 fw-bold d-block px-3">Select the correct answer</label>
@@ -46,8 +49,10 @@
                                 <input class="form-check-input" type="radio" name="Questions[@i].CorrectAnswerIndex" value="@j" @(isCorrect ? "checked" : "") onchange="markCorrect(this)" />
                                 <input type="hidden" name="Questions[@i].Answers[@j].Id" value="@answer.Id" />
                                 <input type="text" class="form-control" name="Questions[@i].Answers[@j].AnswerText" value="@answer.AnswerText" placeholder="Answer @(j + 1)" />
-                                <span class="text-danger" data-valmsg-for="Questions[@i].Answers[@j].AnswerText" data-valmsg-replace="true"></span>
+
                             </div>
+                            <span asp-validation-for="Questions[@i].Answers[@j].AnswerText" class="text-danger mb-3"></span>
+
                         }
                     </div>
                 }
@@ -71,6 +76,6 @@
 
 @section Scripts
 {
-    <script src="~/js/Questions.js" asp-append-version="true"></script>
+    <script src="~/js/questions.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
 }

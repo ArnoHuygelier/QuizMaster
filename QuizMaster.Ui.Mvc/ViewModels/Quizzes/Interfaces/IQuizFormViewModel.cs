@@ -6,6 +6,10 @@
         string Title { get; set; }
         string Description { get; set; }
         int? CategoryId { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
+
+        
     }
 
 }

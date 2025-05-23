@@ -27,4 +27,11 @@
         }
     </select>
     <span asp-validation-for="CategoryId" class="text-danger small"></span>
+    
+</div>
+
+<div class="mb-3">
+    <label asp-for="ImageFile" class="form-label">Image (optional)</label>
+    <input type="file" asp-for="ImageFile" class="form-control" />
+    <span asp-validation-for="ImageFile" class="text-danger small"></span>
 </div>

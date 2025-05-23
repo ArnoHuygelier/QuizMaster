@@ -5,8 +5,8 @@
 }
 
 <div class="container mt-5">
-    <div class="alert alert-success text-center">
-        <h2 class="mb-3">🎉 Quiz Completed!</h2>
+    <div class="alert @(Model.Score < Math.Ceiling(Model.Total / 2.0) ? "bg-danger" : "bg-success") text-center">
+        <h2 class="mb-3 ">🎉 Quiz Completed!</h2>
         <p class="lead">You achieved a score of</p>
         <h3 class="display-4">@Model.Score / @Model.Total</h3>
     </div>

@@ -12,8 +12,8 @@ using QuizMaster.Repository;
 namespace QuizMaster.Repository.Migrations
 {
     [DbContext(typeof(QuizMasterDbContext))]
-    [Migration("20250516081125_update")]
-    partial class update
+    [Migration("20250523083204_UpdatedAtColumn")]
+    partial class UpdatedAtColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -297,6 +297,9 @@ namespace QuizMaster.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -307,6 +310,36 @@ namespace QuizMaster.Repository.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Quiz");
+                });
+
+            modelBuilder.Entity("QuizMaster.Models.QuizResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QuizResult");
                 });
 
             modelBuilder.Entity("QuizMaster.Models.User", b =>
@@ -499,6 +532,25 @@ namespace QuizMaster.Repository.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("QuizMaster.Models.QuizResult", b =>
+                {
+                    b.HasOne("QuizMaster.Models.Quiz", "Quiz")
+                        .WithMany()
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QuizMaster.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Quiz");
 
                     b.Navigation("User");
                 });

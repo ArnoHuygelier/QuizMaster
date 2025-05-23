@@ -51,7 +51,6 @@ namespace QuizMaster.Services
 
         public async Task<Quiz?> Create(Quiz quiz) // Creates a new quiz
         {
-            quiz.CreatedAt = DateTime.Now;
             await _dbContext.Quizzes.AddAsync(quiz);
             await _dbContext.SaveChangesAsync();
             return quiz;
@@ -72,6 +71,7 @@ namespace QuizMaster.Services
             tempQuiz.Description = entity.Description;
             tempQuiz.CategoryId = entity.CategoryId;
             tempQuiz.CreatedAt = entity.CreatedAt;
+            tempQuiz.UpdatedAt = entity.UpdatedAt;
             tempQuiz.UserId = entity.UserId;
             
 

@@ -27,7 +27,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
             if (quiz == null) return RedirectToAction("Index", "Home");
 
             var firstQuestion = quiz.Questions.OrderBy(q => q.Id).FirstOrDefault();
-            if (firstQuestion == null) return RedirectToAction("Index", "Home");
+            if (firstQuestion == null)
+            {
+                // Zet TempData voor frontend feedback en redirect naar Details
+                TempData["NoQuestions"] = true;
+                return RedirectToAction("Details", "Quiz", new { id = quiz.Id });
+            }
 
             var viewModel = new PlayQuestionViewModel
             {
@@ -44,7 +49,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Next([FromForm] AnswerSubmissionViewModel submission)
         {
-            Console.WriteLine($"Ontvangen submission - QuizId: {submission.QuizId}, QuestionId: {submission.QuestionId}, IsTimedOut: {submission.IsTimedOut}");
+            Console.WriteLine($"Received submission - QuizId: {submission.QuizId}, QuestionId: {submission.QuestionId}, IsTimedOut: {submission.IsTimedOut}");
 
             int correctCount = submission.CorrectCount;
 
@@ -57,24 +62,24 @@ namespace QuizMaster.Ui.Mvc.Controllers
             var quiz = await _gameService.Get(submission.QuizId);
             if (quiz == null)
             {
-                Console.WriteLine($"Quiz met ID {submission.QuizId} niet gevonden");
+                Console.WriteLine($"Quiz with ID {submission.QuizId} not found");
                 return RedirectToAction("Error", "Home");
             }
 
             if (quiz.Questions == null || !quiz.Questions.Any())
             {
-                Console.WriteLine($"Geen vragen gevonden voor quiz {submission.QuizId}");
+                Console.WriteLine($"No questions found for quiz {submission.QuizId}");
                 return RedirectToAction("Error", "Home");
             }
 
             var questions = quiz.Questions.OrderBy(q => q.Id).ToList();
             int currentIndex = submission.CurrentIndex;
 
-            Console.WriteLine($"Huidige index: {currentIndex}, Totaal vragen: {questions.Count}");
+            Console.WriteLine($"Current index: {currentIndex}, Total questions: {questions.Count}");
 
             if (currentIndex + 1 >= questions.Count)
             {
-                Console.WriteLine("Alle vragen beantwoord - doorsturen naar Finish");
+                Console.WriteLine("All questions answered - redirecting to Finish");
                 return RedirectToAction("Finish", new { id = submission.QuizId, correctCount });
             }
 

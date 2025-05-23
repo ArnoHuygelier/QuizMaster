@@ -9,6 +9,10 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Game
         public int CurrentIndex { get; set; }
         public int TotalQuestions { get; set; }
         public int CorrectCount { get; set; }
+        public string ImageUrl { get; set; }
+        public string Title { get; set; }
+
+
     }
 
 }

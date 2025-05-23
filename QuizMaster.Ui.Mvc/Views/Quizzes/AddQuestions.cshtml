@@ -52,7 +52,7 @@
             </button>
 
             <div class="d-flex justify-content-between gap-2 mt-4">
-                <a asp-action="Create" class="btn btn-secondary">
+                <a asp-action="Edit" asp-route-id="@Model.QuizId" class="btn btn-secondary">
                     <i class="bi bi-arrow-left-circle"></i> Back
                 </a>
                 <button type="submit" class="btn btn-success ms-auto">
@@ -63,7 +63,8 @@
     </div>
 </div>
 
-@section Scripts {
-    <script src="~/js/addQuestion.js" asp-append-version="true"></script>
-    <partial name="_ValidationScriptsPartial" />
+@section Scripts
+{
+    <script src="~/js/Questions.js" asp-append-version="true"></script>
+    <partial name="_ValidationScriptsPartial"/>
 }

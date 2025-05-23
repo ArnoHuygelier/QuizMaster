@@ -4,8 +4,9 @@ using QuizMaster.Services;
 using Microsoft.AspNetCore.Identity;
 using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
-using QuizMaster.Services.Interfaces;
+
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,11 @@ var connectionString = builder.Configuration.GetConnectionString(nameof(QuizMast
 
 builder.Services.AddDbContext<QuizMasterDbContext>(options =>
 {
-	options.UseSqlServer(connectionString);
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException("Connection string is empty");
+    }
+    options.UseSqlServer(connectionString);
 });
 
 builder.Services.AddDefaultIdentity<User>(options => 
@@ -33,11 +38,25 @@ builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<BadgeService>();
+builder.Services.AddScoped<AvatarService>();
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
+{
+    var dbcontext = scope.ServiceProvider.GetService<QuizMasterDbContext>();
+
+    if (!dbcontext.Database.CanConnect())
+    {
+        throw new InvalidOperationException("Cannot connect to the database, check the connection string.");
+    }
+}
+
+
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

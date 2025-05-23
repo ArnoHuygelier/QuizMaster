@@ -13,9 +13,5 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Quizzes
         public List<AnswerViewModel> Answers { get; set; } = new List<AnswerViewModel>();
 
         public int CorrectAnswerIndex { get; set; } = 0;
-
-
-
-
     }
 }

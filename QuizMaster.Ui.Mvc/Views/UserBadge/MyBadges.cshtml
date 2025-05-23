@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<UserBadge>
 @{
     ViewData["Title"] = "My Badges";
-    Layout = "_Layout"; 
+    Layout = "_Layout";
 }
 
 @section Styles {
@@ -14,15 +14,26 @@
                 transform: translateY(-5px);
             }
 
-        .badge-icon {
-            font-size: 3rem;
-            color: #ffc107;
+        .badge-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ffc107;
+        }
+
+        .badge-title {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .badge-description {
+            color: #6c757d;
         }
     </style>
 }
 
 <div class="admin-layout d-flex">
-
     <div class="admin-content flex-grow-1 p-4">
         <h1 class="mb-4">My Badges</h1>
 
@@ -36,13 +47,14 @@
                 @foreach (var userBadge in Model)
                 {
                     <div class="col">
-                        <div class="card badge-card h-100 shadow-sm">
-                            <div class="card-body text-center">
-                                <i class="bi bi-award badge-icon"></i>
-                                <h5 class="card-title mt-3">@userBadge.Badge.Name</h5>
-                                <p class="card-text">@userBadge.Badge.Description</p>
+                        <div class="card badge-card h-100 shadow-sm text-center">
+                            <div class="card-body">
+                                <img src="@userBadge.Badge.ImageUrl" alt="@userBadge.Badge.Name"
+                                     class="badge-image mb-3" />
+                                <h5 class="badge-title">@userBadge.Badge.Name</h5>
+                                <p class="badge-description">@userBadge.Badge.Description</p>
                             </div>
-                            <div class="card-footer text-muted text-center">
+                            <div class="card-footer text-muted">
                                 Awarded: @userBadge.AwardedAt.ToString("dd MMM yyyy")
                             </div>
                         </div>

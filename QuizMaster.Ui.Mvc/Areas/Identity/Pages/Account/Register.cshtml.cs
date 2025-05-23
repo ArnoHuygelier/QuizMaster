@@ -17,8 +17,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QuizMaster.Models;
+using QuizMaster.Repository;
 
 namespace QuizMaster.Ui.Mvc.Areas.Identity.Pages.Account
 {
@@ -30,27 +32,34 @@ namespace QuizMaster.Ui.Mvc.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+		private readonly QuizMasterDbContext _context;
 
-        public RegisterModel(
-            UserManager<User> userManager,
-            IUserStore<User> userStore,
-            SignInManager<User> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
-        {
-            _userManager = userManager;
-            _userStore = userStore;
-            _emailStore = GetEmailStore();
-            _signInManager = signInManager;
-            _logger = logger;
-            _emailSender = emailSender;
-        }
+		public List<Avatar> Avatars { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [BindProperty]
+
+		public RegisterModel(
+	UserManager<User> userManager,
+	IUserStore<User> userStore,
+	SignInManager<User> signInManager,
+	ILogger<RegisterModel> logger,
+	IEmailSender emailSender,
+	QuizMasterDbContext context)
+		{
+			_userManager = userManager;
+			_userStore = userStore;
+			_emailStore = GetEmailStore();
+			_signInManager = signInManager;
+			_logger = logger;
+			_emailSender = emailSender;
+			_context = context;
+		}
+
+
+		/// <summary>
+		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+		///     directly from your code. This API may change or be removed in future releases.
+		/// </summary>
+		[BindProperty]
         public InputModel Input { get; set; }
 
         /// <summary>
@@ -102,15 +111,20 @@ namespace QuizMaster.Ui.Mvc.Areas.Identity.Pages.Account
 
 
 		public async Task OnGetAsync(string returnUrl = null)
-        {
-            ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        }
+		{
+			ReturnUrl = returnUrl;
+			ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+			Avatars = await _context.Avatars.ToListAsync();
+		}
+
 
 		public async Task<IActionResult> OnPostAsync(string returnUrl = null)
 		{
 			returnUrl ??= Url.Content("~/");
 			ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+			// Reload avatars for redisplay in case of form error
+			Avatars = await _context.Avatars.ToListAsync();
 
 			if (ModelState.IsValid)
 			{
@@ -124,7 +138,6 @@ namespace QuizMaster.Ui.Mvc.Areas.Identity.Pages.Account
 				user.IsActive = true;
 				user.NewsLetter = Input.NewsLetter;
 				user.AvatarId = Input.AvatarId;
-
 				user.EmailConfirmed = true;
 
 				var result = await _userManager.CreateAsync(user, Input.Password);
@@ -146,6 +159,7 @@ namespace QuizMaster.Ui.Mvc.Areas.Identity.Pages.Account
 			// If we got this far, something failed, redisplay form
 			return Page();
 		}
+
 
 
 		private User CreateUser()

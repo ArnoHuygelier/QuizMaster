@@ -1,17 +1,26 @@
 ﻿@model QuizMaster.Ui.Mvc.ViewModels.Game.QuizResultViewModel
 
 @{
-    ViewData["Title"] = "Resultaat";
+    ViewData["Title"] = "Quiz Result";
+    var isPassed = Model.Score >= Math.Ceiling(Model.Total / 2.0);
+    var alertClass = isPassed ? "bg-success" : "bg-danger";
+    var resultMessage = isPassed ? "🎉 Well done!" : "😞 Better luck next time!";
 }
 
-<div class="container mt-5">
-    <div class="alert @(Model.Score < Math.Ceiling(Model.Total / 2.0) ? "bg-danger" : "bg-success") text-center">
-        <h2 class="mb-3 ">🎉 Quiz Completed!</h2>
-        <p class="lead">You achieved a score of</p>
-        <h3 class="display-4">@Model.Score / @Model.Total</h3>
-    </div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert text-white text-center @alertClass rounded shadow-sm">
+                <h2 class="mb-3">@resultMessage</h2>
+                <p class="lead">You scored:</p>
+                <h1 class="display-3 fw-bold">@Model.Score <small class="text-light fs-4">/ @Model.Total</small></h1>
+            </div>
 
-    <div class="text-center">
-        <a class="btn btn-outline-primary" asp-action="Index" asp-controller="Home">Back to Home</a>
+            <div class="text-center mt-4">
+                <a class="btn btn-outline-primary btn-lg px-4" asp-action="Index" asp-controller="Home">
+                    <i class="bi bi-house-door-fill me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
     </div>
 </div>

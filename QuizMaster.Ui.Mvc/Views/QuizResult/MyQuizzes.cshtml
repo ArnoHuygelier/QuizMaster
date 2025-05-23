@@ -1,0 +1,71 @@
+﻿@model IEnumerable<QuizMaster.Models.QuizResult>
+
+@{
+    ViewData["Title"] = "My Quizzes";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .quiz-table th,
+        .quiz-table td {
+            vertical-align: middle;
+            padding: 0.75rem 1rem;
+        }
+
+        .quiz-score {
+            color: #198754; /* Bootstrap success */
+            font-weight: 600;
+        }
+
+        .quiz-submitted {
+            color: #6c757d;
+        }
+
+        .no-quizzes {
+            font-size: 1.1rem;
+            padding: 1rem;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 0.375rem;
+        }
+    </style>
+}
+
+<div class="admin-layout d-flex">
+    <div class="admin-content flex-grow-1 p-4">
+        <h1 class="mb-4">My Quizzes</h1>
+
+        @if (!Model.Any())
+        {
+            <div class="no-quizzes">
+                <i class="bi bi-info-circle"></i> You haven't taken any quizzes yet.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table quiz-table table-bordered table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Quiz Title</th>
+                            <th scope="col">Score</th>
+                            <th scope="col">Date Taken</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var result in Model)
+                        {
+                            <tr>
+                                <td>@result.Quiz.Title</td>
+                                <td class="quiz-score">@result.Score</td>
+                                <td class="quiz-submitted">@result.SubmittedAt</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

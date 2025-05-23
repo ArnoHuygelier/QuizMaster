@@ -27,8 +27,8 @@ namespace QuizMaster.Services
             return await _context.Users.Include(u => u.Avatar).ToListAsync();
         }
 
-        // Eén item opvragen via ID
-        public async Task<User?> Get(string id)
+		// Eén item opvragen via ID
+		public async Task<User?> Get(string id)
         {
             return await _context.Users.FindAsync(id);
         }

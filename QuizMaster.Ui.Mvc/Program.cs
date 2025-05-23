@@ -40,6 +40,8 @@ builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<GameService>();
 builder.Services.AddScoped<BadgeService>();
 builder.Services.AddScoped<AvatarService>();
+builder.Services.AddScoped<UserBadgeService>();
+builder.Services.AddScoped<QuizResultService>();
 
 
 var app = builder.Build();

@@ -22,11 +22,8 @@ public class HomeController : Controller
 	{
 		var quizzes = categoryId.HasValue 
 			? await _quizService.FindQuizzesByCategory(categoryId.Value)
-<<<<<<< Updated upstream
 			: await _quizService.FindQuizzesContainingQuestions();
-=======
-			: await _quizService.Find();
->>>>>>> Stashed changes
+
 
 		ViewData["Categories"] = await _categoryService.Find();
 		ViewData["SelectedCategoryId"] = categoryId ?? 0;

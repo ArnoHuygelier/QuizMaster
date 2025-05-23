@@ -1,0 +1,54 @@
+﻿@model IEnumerable<UserBadge>
+@{
+    ViewData["Title"] = "My Badges";
+    Layout = "_Layout"; 
+}
+
+@section Styles {
+    <style>
+        .badge-card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .badge-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .badge-icon {
+            font-size: 3rem;
+            color: #ffc107;
+        }
+    </style>
+}
+
+<div class="admin-layout d-flex">
+
+    <div class="admin-content flex-grow-1 p-4">
+        <h1 class="mb-4">My Badges</h1>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info">You haven't earned any badges yet.</div>
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                @foreach (var userBadge in Model)
+                {
+                    <div class="col">
+                        <div class="card badge-card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="bi bi-award badge-icon"></i>
+                                <h5 class="card-title mt-3">@userBadge.Badge.Name</h5>
+                                <p class="card-text">@userBadge.Badge.Description</p>
+                            </div>
+                            <div class="card-footer text-muted text-center">
+                                Awarded: @userBadge.AwardedAt.ToString("dd MMM yyyy")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

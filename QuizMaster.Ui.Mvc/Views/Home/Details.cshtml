@@ -5,6 +5,7 @@
 @{
     ViewData["Title"] = Model.Title;
     var isSignedIn = SignInManager.IsSignedIn(User);
+    var noQuestions = TempData["NoQuestions"] != null && (bool)TempData["NoQuestions"];
 }
 
 <!-- Animate.css + Bootstrap Icons -->
@@ -52,6 +53,7 @@
     <!-- Quiz Header -->
     <div class="row align-items-center mb-5">
         <div class="col-md-3 text-center mb-4 mb-md-0">
+
             <quiz-image image-url="@Model.ImageUrl" class="img-fluid rounded shadow-lg" alt="@Model.Title" />
         </div>
         <div class="col-md-9">
@@ -70,15 +72,15 @@
         <div class="row g-4">
             <div class="col-6 col-md-3">
                 <div class="text-muted stats-title">Total Questions</div>
-                <div class="fs-4 fw-bold">@Model.Questions.Count</div>
+                <div class="fs-4 fw-bold">@Model.Questions?.Count </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="text-muted stats-title">Remaining</div>
-                <div class="fs-4 fw-bold">@Model.Questions.Count</div>
+                <div class="fs-4 fw-bold">@Model.Questions?.Count</div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="text-muted stats-title">Score</div>
-                <div class="fs-4 fw-bold">0 / @Model.Questions.Count</div>
+                <div class="fs-4 fw-bold">0 / @(Model.Questions?.Count ?? 0)</div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="text-muted stats-title">Timer</div>
@@ -89,9 +91,19 @@
         <div class="mt-4">
             @if (isSignedIn)
             {
-                <a asp-controller="Game" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
-                    <i class="bi bi-play-circle-fill me-2"></i>Play Quiz
-                </a>
+
+                if (Model.Questions != null && Model.Questions.Any())
+                {
+                    <a asp-controller="Game" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
+                        <i class="bi bi-play-circle-fill me-2"></i>Play Quiz
+                    </a>
+                }
+                else
+                {
+                    <button class="btn btn-lg btn-secondary px-5" disabled>
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>No questions available
+                    </button>
+                }
             }
             else
             {
@@ -102,7 +114,7 @@
         </div>
     </div>
 
-    <!-- Leaderboard (Optional Placeholder) -->
+    <!-- Leaderboard -->
     <div class="card shadow-sm mb-5 card-highlight">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-bold"><i class="bi bi-trophy-fill leaderboard-icon me-2"></i>Top Scorers</h5>
@@ -157,3 +169,32 @@
         </div>
     </div>
 </div>
+
+@if (noQuestions)
+{
+    <script>
+        window.onload = function () {
+            const modalHtml = `
+                <div class="modal fade" id="noQuestionsModal" tabindex="-1" aria-labelledby="noQuestionsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="noQuestionsModalLabel">No Questions Found</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                This quiz contains no questions. Please add questions before starting the quiz.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            var modal = new bootstrap.Modal(document.getElementById('noQuestionsModal'));
+            modal.show();
+        };
+    </script>
+}

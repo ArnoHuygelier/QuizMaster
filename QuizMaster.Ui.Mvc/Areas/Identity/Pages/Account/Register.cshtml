@@ -5,70 +5,115 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="container py-4">
+<style>
+    .avatar-btn {
+        display: inline-flex;
+        width: 70px;
+        height: 70px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        overflow: hidden;
+        user-select: none;
+    }
+
+        .avatar-btn:hover,
+        .avatar-btn:focus {
+            border-color: #0d6efd; /* Bootstrap primary */
+            box-shadow: 0 0 8px rgba(13, 110, 253, 0.6);
+            outline: none;
+        }
+
+    input.btn-check:checked + .avatar-btn {
+        border-color: #0d6efd;
+        box-shadow: 0 0 12px rgba(13, 110, 253, 0.9);
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+    }
+</style>
+<div class="container py-5">
     <h1 class="text-center mb-4">@ViewData["Title"]</h1>
 
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title mb-3 text-center">Create a new account</h4>
-                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <h4 class="text-center mb-4">Create Your Account</h4>
+
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                         <!-- Username -->
                         <div class="form-floating mb-3">
                             <input asp-for="Input.Username" class="form-control" placeholder="Your username" autocomplete="username" />
                             <label asp-for="Input.Username"></label>
-                            <span asp-validation-for="Input.Username" class="text-danger"></span>
+                            <span asp-validation-for="Input.Username" class="text-danger small"></span>
                         </div>
 
                         <!-- Email -->
                         <div class="form-floating mb-3">
                             <input asp-for="Input.Email" class="form-control" placeholder="name@example.com" autocomplete="email" />
                             <label asp-for="Input.Email"></label>
-                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
                         </div>
 
                         <!-- Password -->
                         <div class="form-floating mb-3 position-relative">
-                            <input asp-for="Input.Password" class="form-control pe-5" placeholder="Enter password" autocomplete="new-password" type="password" id="passwordInput" />
+                            <input asp-for="Input.Password" class="form-control pe-5" placeholder="Enter password" autocomplete="new-password" id="passwordInput" />
                             <label asp-for="Input.Password"></label>
-                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
                             <button type="button" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
-                                    onclick="togglePassword('passwordInput', this)">
+                                    onclick="togglePassword('passwordInput', this)" title="Show/Hide Password">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
 
                         <!-- Confirm Password -->
                         <div class="form-floating mb-3 position-relative">
-                            <input asp-for="Input.ConfirmPassword" class="form-control pe-5" placeholder="Confirm password" autocomplete="new-password" type="password" id="confirmPasswordInput" />
+                            <input asp-for="Input.ConfirmPassword" class="form-control pe-5" placeholder="Confirm password" autocomplete="new-password" id="confirmPasswordInput" />
                             <label asp-for="Input.ConfirmPassword"></label>
-                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
                             <button type="button" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2"
-                                    onclick="togglePassword('confirmPasswordInput', this)">
+                                    onclick="togglePassword('confirmPasswordInput', this)" title="Show/Hide Password">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
 
-
                         <!-- Newsletter -->
-                        <div class="form-check mb-3">
+                        <div class="form-check mb-4">
                             <input asp-for="Input.NewsLetter" class="form-check-input" />
                             <label asp-for="Input.NewsLetter" class="form-check-label"></label>
-                            <span asp-validation-for="Input.NewsLetter" class="text-danger"></span>
+                            <span asp-validation-for="Input.NewsLetter" class="text-danger small"></span>
                         </div>
 
-                        <!-- Avatar -->
-                        <div class="mb-3">
-                            <label asp-for="Input.AvatarId" class="form-label"></label>
-                            <select asp-for="Input.AvatarId" class="form-select">                                <option value="">-- Select Avatar --</option>
-                            </select>
-                            <span asp-validation-for="Input.AvatarId" class="text-danger"></span>
+                        <!-- Avatar Selection -->
+                        <div class="mb-4">
+                            <label asp-for="Input.AvatarId" class="form-label fw-semibold mb-2">Choose an Avatar</label>
+                            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                                @foreach (var avatar in Model.Avatars)
+                                {
+                                    <input type="radio"
+                                           class="btn-check"
+                                           name="Input.AvatarId"
+                                           id="avatar-@avatar.Id"
+                                           value="@avatar.Id"
+                                           autocomplete="off" />
+                                    <label for="avatar-@avatar.Id" class="avatar-btn rounded-circle" title="@avatar.Name" tabindex="0">
+                                        <img src="@avatar.AvatarUrl" alt="@avatar.Name" class="avatar-img rounded-circle" />
+                                    </label>
+                                }
+                            </div>
+                            <span asp-validation-for="Input.AvatarId" class="text-danger small"></span>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                        <!-- Submit -->
+                        <button type="submit" class="btn btn-primary w-100 fw-semibold py-2">Register</button>
                     </form>
                 </div>
             </div>
@@ -78,22 +123,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-}
+    <script>
+        function togglePassword(inputId, toggleButton) {
+            const input = document.getElementById(inputId);
+            const icon = toggleButton.querySelector('i');
 
-<script>
-    function togglePassword(inputId, toggleButton) {
-        const input = document.getElementById(inputId);
-        const icon = toggleButton.querySelector('i');
-
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("bi-eye");
-            icon.classList.add("bi-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.remove("bi-eye-slash");
-            icon.classList.add("bi-eye");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("bi-eye", "bi-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("bi-eye-slash", "bi-eye");
+            }
         }
-    }
-</script>
-
+    </script>
+}

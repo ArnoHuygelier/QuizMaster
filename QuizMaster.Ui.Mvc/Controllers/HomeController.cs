@@ -31,14 +31,21 @@ public class HomeController : Controller
 	}
 
 
-	[HttpGet]
-	public async Task<IActionResult> Details(int id)
-	{
-		var quiz = await _quizService.Get(id);
-		return View(quiz);
-	}
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var quiz = await _quizService.Get(id);
+        if (quiz == null) return NotFound();
 
-	public IActionResult Privacy()
+        if (quiz.Questions == null || !quiz.Questions.Any())
+        {
+            TempData["NoQuestions"] = true;
+        }
+
+        return View(quiz);
+    }
+
+    public IActionResult Privacy()
 	{
 		return View();
 	}

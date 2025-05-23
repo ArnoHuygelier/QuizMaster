@@ -42,5 +42,26 @@ namespace QuizMaster.Services
 				.Include(b => b.Quiz)
 				.FirstOrDefaultAsync(ub => ub.Id == id);
 		}
-	}
+
+
+		//return just the score for a quiz by a user to display on quizdetails page
+        public async Task<int> GetQuizScoreByUserId(int quizId, string userId)
+        {
+            return await _context.QuizResults
+                .Where(q => q.QuizId == quizId && q.UserId == userId).OrderByDescending(q => q.Score)
+                .Select(q => q.Score).FirstOrDefaultAsync();
+        }
+
+
+        //return list of topscorers for specific quiz
+        public async Task<List<QuizResult>> GetTopScorersByQuizId(int quizId)
+        {
+            return await _context.QuizResults.Include(q => q.User).ThenInclude(u => u.Avatar)
+                .Where(qr => qr.QuizId == quizId)
+                .OrderByDescending(qr => qr.Score)
+                .Take(3)
+                .ToListAsync();
+
+        }
+    }
 }

@@ -44,6 +44,12 @@ namespace QuizMaster.Services
             return await _dbContext.Quizzes.Include(q => q.Questions).Include(c => c.Category).FirstOrDefaultAsync(q => q.Id == id);
         }
 
+        public async Task<Quiz?> GetWithUser(int id) // Gets a specific quiz by id with user who created quiz
+        {
+            return await _dbContext.Quizzes.Include(q => q.Questions).Include(q => q.User).Include(c => c.Category).FirstOrDefaultAsync(q => q.Id == id);
+        }
+
+
         public async Task<Quiz?> GetByTitle(string title) // Gets a specific quiz by title
         {
             return await _dbContext.Quizzes.FirstOrDefaultAsync(q => q.Title == title);

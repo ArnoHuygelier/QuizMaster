@@ -35,7 +35,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Question = firstQuestion,
                 CurrentIndex = 0,
                 TotalQuestions = quiz.Questions.Count,
-                CorrectCount = 0
+                CorrectCount = 0,
+                ImageUrl = quiz.ImageUrl,
+                Title = quiz.Title
             };
 
             return View("Play", viewModel);
@@ -86,7 +88,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Question = nextQuestion,
                 CurrentIndex = currentIndex + 1,
                 TotalQuestions = questions.Count,
-                CorrectCount = correctCount
+                CorrectCount = correctCount,
+                ImageUrl = quiz.ImageUrl,
+                Title = quiz.Title
             };
 
             return View("Play", viewModel);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 using QuizMaster.Repository;
-using QuizMaster.Services.Interfaces;
+
 
 namespace QuizMaster.Services
 {

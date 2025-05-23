@@ -13,14 +13,14 @@ public class HomeController : Controller
     private readonly QuizService _quizService;
 	private readonly CategoryService _categoryService;
     private readonly QuizResultService _quizResultService;
-    private readonly LeaderboardService _leaderboardService;
+    p
 
-    public HomeController(QuizService quizService, CategoryService categoryService, QuizResultService quizResultService, LeaderboardService leaderboardService)
+    public HomeController(QuizService quizService, CategoryService categoryService, QuizResultService quizResultService)
     {
         _quizService = quizService;
         _categoryService = categoryService;
         _quizResultService = quizResultService;
-        _leaderboardService = leaderboardService;
+        
     }
 
     [HttpGet]

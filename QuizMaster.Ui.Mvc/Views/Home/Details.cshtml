@@ -1,14 +1,14 @@
-﻿@model QuizMaster.Models.Quiz
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Quizzes.QuizDetailsViewModel
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = Model.Title;
     var isSignedIn = SignInManager.IsSignedIn(User);
-    var noQuestions = TempData["NoQuestions"] != null && (bool)TempData["NoQuestions"];
+    var noQuestions = TempData["NoQuestions"] is bool b && b;
 }
 
-<!-- Animate.css + Bootstrap Icons -->
+<!-- External Styles -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
@@ -23,24 +23,14 @@
             box-shadow: 0 0 20px #0d6efd, 0 0 40px #0d6efd;
         }
 
-    .timer-box {
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 1.25rem;
-        background-color: #f8f9fa;
-        border: 1px dashed #0d6efd;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        display: inline-block;
-    }
-
     .card-highlight {
         border-left: 5px solid #0d6efd;
     }
 
     .stats-title {
         font-size: 0.85rem;
-        letter-spacing: 1px;
         text-transform: uppercase;
+        color: #6c757d;
     }
 
     .leaderboard-icon {
@@ -50,96 +40,91 @@
 </style>
 
 <div class="container py-5 animate__animated animate__fadeIn">
-    <!-- Quiz Header -->
-    <div class="row align-items-center mb-5">
-        <div class="col-md-3 text-center mb-4 mb-md-0">
 
+    <!-- Header -->
+    <section class="row align-items-center mb-5">
+        <div class="col-md-3 text-center mb-4 mb-md-0">
             <quiz-image image-url="@Model.ImageUrl" class="img-fluid rounded shadow-lg" alt="@Model.Title" />
         </div>
         <div class="col-md-9">
             <h1 class="fw-bold display-4">@Model.Title</h1>
             <p class="text-muted fs-5">@Model.Description</p>
             <div class="d-flex flex-wrap gap-4 text-secondary mt-3">
-                <div><i class="bi bi-tag-fill me-1"></i><strong>@Model.Category?.Name</strong></div>
-                <div><i class="bi bi-calendar-event me-1"></i>@Model.CreatedAt.ToString("dd MMM yyyy")</div>
-                <div><i class="bi bi-person-circle me-1"></i>By: <strong>@Model.User?.UserName</strong></div>
+                <div><i class="bi bi-tag-fill me-1"></i><strong>@Model.Category</strong></div>
+                <div><i class="bi bi-calendar-event me-1"></i>@Model.Created</div>
+                <div><i class="bi bi-person-circle me-1"></i>By <strong>@Model.UserName</strong></div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Quiz Stats -->
-    <div class="bg-white rounded shadow-sm p-4 mb-5 text-center border">
-        <div class="row g-4">
+    <!-- Stats -->
+    <section class="bg-white rounded shadow-sm p-4 mb-5 text-center border">
+        <div class="row g-4 justify-content-center">
             <div class="col-6 col-md-3">
-                <div class="text-muted stats-title">Total Questions</div>
-                <div class="fs-4 fw-bold">@Model.Questions?.Count </div>
+                <div class="stats-title">Total Questions</div>
+                <div class="fs-4 fw-bold">@Model.NumberOfQuestions</div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="text-muted stats-title">Remaining</div>
-                <div class="fs-4 fw-bold">@Model.Questions?.Count</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="text-muted stats-title">Score</div>
-                <div class="fs-4 fw-bold">0 / @(Model.Questions?.Count ?? 0)</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="text-muted stats-title">Timer</div>
-                <div class="timer-box" id="timer">01:00</div>
+                <div class="stats-title">Your Score</div>
+                @if (Model.UserScore == 0)
+                {
+                    <div class="text-muted">You haven't played this quiz</div>
+                }
+                else
+                {
+                    <div class="fs-4 fw-bold">@Model.UserScore / @Model.NumberOfQuestions</div>
+                }
             </div>
         </div>
 
         <div class="mt-4">
-            @if (isSignedIn)
-            {
-
-                if (Model.Questions != null && Model.Questions.Any())
-                {
-                    <a asp-controller="Game" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
-                        <i class="bi bi-play-circle-fill me-2"></i>Play Quiz
-                    </a>
-                }
-                else
-                {
-                    <button class="btn btn-lg btn-secondary px-5" disabled>
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>No questions available
-                    </button>
-                }
-            }
-            else
+            @if (!isSignedIn)
             {
                 <button class="btn btn-lg btn-secondary px-5" disabled>
                     <i class="bi bi-lock-fill me-2"></i>Please sign in to play
                 </button>
             }
+            else if (Model.NumberOfQuestions == 0)
+            {
+                <button class="btn btn-lg btn-secondary px-5" disabled>
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>No questions available
+                </button>
+            }
+            else
+            {
+                <a asp-controller="Game" asp-action="Start" asp-route-id="@Model.Id" class="btn btn-lg btn-primary px-5 neon-button">
+                    <i class="bi bi-play-circle-fill me-2"></i>Play Quiz
+                </a>
+            }
         </div>
-    </div>
+    </section>
+    
+    @if (Model.TopScorers.Any())
+    {
+        <!-- Leaderboard -->
+        <article class="card shadow-sm mb-5 card-highlight">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-trophy-fill leaderboard-icon me-2"></i>Top Scorers</h5>
+                
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @foreach (var score in Model.TopScorers)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-star-fill text-warning me-2"></i><strong>@score.UserName</strong></span>
+                            <span class="badge bg-primary rounded-pill">@score.Score</span>
+                        </li>
+                    }
+                    
+                </ul>
+            </div>
+        </article>
+    }
+    
 
-    <!-- Leaderboard -->
-    <div class="card shadow-sm mb-5 card-highlight">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 fw-bold"><i class="bi bi-trophy-fill leaderboard-icon me-2"></i>Top Scorers</h5>
-            <a href="#" class="text-decoration-none small text-muted">View All</a>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-star-fill text-warning me-2"></i><strong>PlayerOne</strong></span>
-                    <span class="badge bg-primary rounded-pill">98 pts</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-star-fill text-secondary me-2"></i>QuizQueen</span>
-                    <span class="badge bg-secondary rounded-pill">89 pts</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-star me-2"></i>FastThinker</span>
-                    <span class="badge bg-dark text-white rounded-pill">85 pts</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Quiz Modes -->
-    <div class="card shadow-sm mb-5">
+   @*  <!-- Quiz Modes -->
+    <article class="card shadow-sm mb-5">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-semibold">Quiz Modes</h5>
             <div>
@@ -149,32 +134,21 @@
         </div>
         <div class="card-body">
             <ul class="list-unstyled">
-                <li class="mb-3">
-                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                    <strong>Multiple Choice:</strong> Choose from provided options.
-                </li>
-                <li class="mb-3">
-                    <i class="bi bi-arrow-down-up text-primary me-2"></i>
-                    <strong>Forced Order:</strong> Must answer in sequence.
-                </li>
-                <li class="mb-3">
-                    <i class="bi bi-exclamation-circle-fill text-danger me-2"></i>
-                    <strong>Minefield:</strong> One wrong answer ends the quiz.
-                </li>
-                <li>
-                    <i class="bi bi-shuffle text-warning me-2"></i>
-                    <strong>Random Order:</strong> Questions are shuffled randomly.
-                </li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Multiple Choice:</strong> Choose from options.</li>
+                <li><i class="bi bi-arrow-down-up text-primary me-2"></i><strong>Forced Order:</strong> Must answer in sequence.</li>
+                <li><i class="bi bi-exclamation-circle-fill text-danger me-2"></i><strong>Minefield:</strong> One wrong answer ends the quiz.</li>
+                <li><i class="bi bi-shuffle text-warning me-2"></i><strong>Random Order:</strong> Questions are shuffled.</li>
             </ul>
         </div>
-    </div>
+    </article> *@
 </div>
 
+<!-- Modal for No Questions -->
 @if (noQuestions)
 {
     <script>
-        window.onload = function () {
-            const modalHtml = `
+        window.onload = () => {
+            document.body.insertAdjacentHTML('beforeend', `
                 <div class="modal fade" id="noQuestionsModal" tabindex="-1" aria-labelledby="noQuestionsModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -190,11 +164,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-            var modal = new bootstrap.Modal(document.getElementById('noQuestionsModal'));
-            modal.show();
+                </div>`);
+            new bootstrap.Modal(document.getElementById('noQuestionsModal')).show();
         };
     </script>
 }
+

@@ -3,23 +3,31 @@
 @{
     ViewData["Title"] = "Quiz Result";
     var isPassed = Model.Score >= Math.Ceiling(Model.Total / 2.0);
-    var alertClass = isPassed ? "bg-success" : "bg-danger";
-    var resultMessage = isPassed ? "🎉 Well done!" : "😞 Better luck next time!";
+    var alertColor = isPassed ? "#28A745" : "#DC3545";
+    var resultMessage = isPassed ? "Well done!" : "Better luck next time!";
+    var icon = isPassed ? "bi bi-emoji-smile-fill" : "bi bi-emoji-frown-fill";
+}
+
+@section Styles {
+    <link href="~/css/quiz-result.css" rel="stylesheet" />
 }
 
 <div class="container py-5">
+    <h1 class="text-center">@ViewBag.Title</h1>
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="alert text-white text-center @alertClass rounded shadow-sm">
-                <h2 class="mb-3">@resultMessage</h2>
-                <p class="lead">You scored:</p>
-                <h1 class="display-3 fw-bold">@Model.Score <small class="text-light fs-4">/ @Model.Total</small></h1>
-            </div>
-
-            <div class="text-center mt-4">
-                <a class="btn btn-outline-primary btn-lg px-4" asp-action="Index" asp-controller="Home">
-                    <i class="bi bi-house-door-fill me-2"></i>Back to Home
-                </a>
+            <div class="quiz-result-card">
+                <div class="quiz-result-header" style="background-color: @alertColor;">
+                    <i class="@icon fs-1 mb-3"></i>
+                    <h2>@resultMessage</h2>
+                    <p class="lead mb-0">You scored:</p>
+                    <div class="quiz-score">@Model.Score <span class="quiz-total">/ @Model.Total</span></div>
+                </div>
+                <div class="mt-4">
+                    <a class="btn btn-outline-primary btn-lg px-4" asp-action="Index" asp-controller="Home">
+                        <i class="bi bi-house-door-fill me-2"></i>Back to Home
+                    </a>
+                </div>
             </div>
         </div>
     </div>

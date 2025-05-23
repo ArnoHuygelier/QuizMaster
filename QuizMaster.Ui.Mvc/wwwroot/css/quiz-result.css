@@ -1,0 +1,36 @@
+﻿.quiz-result-card {
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    text-align: center;
+    animation: fadeInUp 0.6s ease;
+}
+
+.quiz-result-header {
+    color: white;
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.5rem;
+}
+
+.quiz-score {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.quiz-total {
+    font-size: 1.5rem;
+    color: #f8f9fa;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

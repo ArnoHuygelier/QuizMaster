@@ -24,7 +24,7 @@ namespace QuizMaster.Services
         // Alles opvragen
         public async Task<IEnumerable<User>> Find()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(u => u.Avatar).ToListAsync();
         }
 
         // Eén item opvragen via ID

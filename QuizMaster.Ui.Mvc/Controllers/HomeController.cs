@@ -13,7 +13,7 @@ public class HomeController : Controller
     private readonly QuizService _quizService;
 	private readonly CategoryService _categoryService;
     private readonly QuizResultService _quizResultService;
-    p
+    
 
     public HomeController(QuizService quizService, CategoryService categoryService, QuizResultService quizResultService)
     {

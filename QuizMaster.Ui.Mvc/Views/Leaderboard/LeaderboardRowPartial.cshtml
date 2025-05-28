@@ -3,31 +3,33 @@
 
 
 <li class="list-group-item bg-white rounded shadow-sm mb-2">
-    <div class="row align-items-center text-center">
-        <div class="col-1">
-            <span class="badge bg-primary">#@Model.Rank</span>
-        </div>
-        <div class="col-3 d-flex align-items-center">
-            <img src="@Model.AvatarUrl" class="rounded-circle" alt="Avatar" width="30" height="30" />
-            <div class="ms-2 fw-semibold text-dark">@Model.UserName</div>
-        </div>
-        <div class="col-5 text-dark fw-bold">
-            <i class=""></i> @Model.Score
-        </div>
-        <div class="col-3">
-            @if (Model.BadgeUrls != null && Model.BadgeUrls.Any())
-            {
-                foreach (var badgeUrl in Model.BadgeUrls)
+    <form action="PlayerDetails" method="post">
+        <div class="row align-items-center text-center">
+            <div class="col-1">
+                <span class="badge bg-primary">#@Model.Rank</span>
+            </div>
+            <div class="col-3 d-flex align-items-center">
+                <img src="@Model.AvatarUrl" class="rounded-circle" alt="Avatar" width="30" height="30" />
+                <div class="ms-2 fw-semibold text-dark">@Model.UserName</div>
+            </div>
+            <div class="col-5 text-dark fw-bold">
+                <i class=""></i> @Model.Score
+            </div>
+            <div class="col-3">
+                @if (Model.BadgeUrls != null && Model.BadgeUrls.Any())
                 {
-                    <span class="badge-icon rounded-circle">
-                        <img src="@badgeUrl" alt="badge" width="24" height="24" />
-                    </span>
+                    foreach (var badgeUrl in Model.BadgeUrls)
+                    {
+                        <span class="badge-icon rounded-circle">
+                            <img src="@badgeUrl" alt="badge" width="24" height="24" />
+                        </span>
+                    }
                 }
-            }
-            else
-            {
-                <span class="text-muted small">No badges</span>
-            }
+                else
+                {
+                    <span class="text-muted small">No badges</span>
+                }
+            </div>
         </div>
-    </div>
+    </form>
 </li>

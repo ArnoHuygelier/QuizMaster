@@ -5,6 +5,7 @@ using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
 using System.Diagnostics;
 using System.Security.Claims;
 using QuizMaster.Ui.Mvc.ViewModels.Leaderboard;
+using System.Threading.Tasks;
 
 namespace QuizMaster.Ui.Mvc.Controllers;
 
@@ -96,6 +97,12 @@ public class HomeController : Controller
         }
 
         return View(viewModel);
+    }
+
+    public async Task<IActionResult> Categories()
+    {
+        var categories = await _categoryService.Find();
+        return View(categories);
     }
 
     public IActionResult Privacy()

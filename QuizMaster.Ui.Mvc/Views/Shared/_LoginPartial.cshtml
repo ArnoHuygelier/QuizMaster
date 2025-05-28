@@ -4,95 +4,111 @@
 @inject UserManager<User> UserManager
 @inject QuizMasterDbContext DbContext
 
-<ul class="navbar-nav ms-auto">
-    @if (SignInManager.IsSignedIn(User))
-    {
+@{
+    var user = await UserManager.GetUserAsync(User);
+    Avatar? avatar = null;
+    bool isAdmin = false;
+}
 
-        var user = await UserManager.GetUserAsync(User);
-        var avatar = user.AvatarId.HasValue
+@if (SignInManager.IsSignedIn(User) && user == null)
+{
+    // Automatisch uitloggen als user verwijderd is
+    <form id="autoLogoutForm"
+          method="post"
+          asp-area="Identity"
+          asp-page="/Account/Logout"
+          asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <noscript>
+            <button type="submit">Je bent automatisch uitgelogd</button>
+        </noscript>
+    </form>
+
+    <script>
+        document.getElementById('autoLogoutForm').submit();
+    </script>
+}
+else if (SignInManager.IsSignedIn(User) && user != null)
+{
+    avatar = user.AvatarId.HasValue
         ? await DbContext.Avatars.FindAsync(user.AvatarId.Value)
         : null;
 
-        var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+    isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
 
+    <li class="nav-item dropdown" style="list-style: none;">
+        <button class="nav-link dropdown-toggle text-dark d-flex align-items-center bg-transparent border-0"
+                id="userDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                style="cursor: pointer;">
+            @if (avatar != null)
+            {
+                <img src="@avatar.AvatarUrl" alt="Avatar"
+                     class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;" />
+            }
+            else
+            {
+                <i class="bi bi-person-circle me-2 fs-5"></i>
+            }
 
+            <span>Hello, @UserManager.GetUserName(User)</span>
+        </button>
 
-        <li class="nav-item dropdown">
-            <button class="nav-link dropdown-toggle text-dark d-flex align-items-center bg-transparent border-0"
-                    id="userDropdown"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style="cursor: pointer;">
-                @if (avatar != null)
-                {
-                    <img src="@avatar.AvatarUrl" alt="Avatar"
-                         class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;" />
-                }
-                else
-                {
-                    <i class="bi bi-person-circle me-2 fs-5"></i>
-                }
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3 mt-2"
+            aria-labelledby="userDropdown"
+            style="min-width: 220px;">
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" href="/Identity/Account/Manage">
+                    <i class="bi bi-gear"></i> Manage Account
+                </a>
+            </li>
 
-                <span>Hello, @UserManager.GetUserName(User)</span>
-
-            </button>
-
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3 mt-2"
-                aria-labelledby="userDropdown"
-                style="min-width: 220px;">
+            @if (isAdmin)
+            {
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="/Identity/Account/Manage">
-                        <i class="bi bi-gear"></i> Manage Account
+                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Admin" asp-action="Index">
+                        <i class="bi bi-speedometer2"></i> Admin Dashboard
                     </a>
                 </li>
+            }
 
-                @if (isAdmin)
-                {
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Admin" asp-action="Index">
-                            <i class="bi bi-speedometer2"></i> Admin Dashboard
-                        </a>
-                    </li>
-                }
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="UserBadge" asp-action="MyBadges">
+                    <i class="bi bi-award"></i> My Badges
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="QuizResult" asp-action="MyQuizzes">
+                    <i class="bi bi-card-list"></i> My Quizzes
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Leaderboard" asp-action="Index">
+                    <i class="bi bi-trophy-fill"></i> Leaderboard
+                </a>
+            </li>
 
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="UserBadge" asp-action="MyBadges">
-                        <i class="bi bi-award"></i> My Badges
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="QuizResult" asp-action="MyQuizzes">
-                        <i class="bi bi-card-list"></i> My Quizzes
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Leaderboard" asp-action="Index">
-                        <i class="bi bi-trophy-fill"></i> Leaderboard
-                    </a>
-                </li>
-
-                <li><hr class="dropdown-divider" /></li>
-                <li>
-                    <form method="post"
-                          asp-area="Identity"
-                          asp-page="/Account/Logout"
-                          asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 w-100 text-start border-0 bg-transparent">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </form>
-                </li>
-            </ul>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-    }
-</ul>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form method="post"
+                      asp-area="Identity"
+                      asp-page="/Account/Logout"
+                      asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 w-100 text-start border-0 bg-transparent">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item" style="list-style: none;">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+    <li class="nav-item" style="list-style: none;">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+}

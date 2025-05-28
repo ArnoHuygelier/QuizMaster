@@ -21,6 +21,7 @@ namespace QuizMaster.Ui.Mvc.Helpers
 			{
 				UserName = "admin",
 				Email = "admin@gmail.com",
+				AvatarId = 1,
 				IsActive = true,
 				EmailConfirmed = true,
 				PhoneNumberConfirmed = true

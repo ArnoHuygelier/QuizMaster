@@ -84,6 +84,7 @@ namespace QuizMaster.Services
             tempQuiz.CreatedAt = entity.CreatedAt;
             tempQuiz.UpdatedAt = entity.UpdatedAt;
             tempQuiz.UserId = entity.UserId;
+            tempQuiz.ImageUrl = entity.ImageUrl;
             
 
             await _dbContext.SaveChangesAsync();

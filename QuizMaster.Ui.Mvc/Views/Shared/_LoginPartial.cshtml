@@ -22,7 +22,6 @@
             <button type="submit">Je bent automatisch uitgelogd</button>
         </noscript>
     </form>
-
     <script>
         document.getElementById('autoLogoutForm').submit();
     </script>
@@ -105,10 +104,10 @@ else if (SignInManager.IsSignedIn(User) && user != null)
 }
 else
 {
-    <li class="nav-item" style="list-style: none;">
+    <li class="nav-item" style="list-style: none">
         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
-    <li class="nav-item" style="list-style: none;">
+    <li class="nav-item" style="list-style: none">
         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
     </li>
 }

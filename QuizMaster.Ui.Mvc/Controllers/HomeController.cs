@@ -60,7 +60,7 @@ public class HomeController : Controller
                 {
                     Rank = index + 1,
                     UserId = result.UserId,
-                    AvatarUrl = result.User.Avatar.AvatarUrl,
+                    AvatarUrl = result.User.Avatar?.AvatarUrl ?? "",
                     UserName = result.User.UserName,
                     Score = result.Score,
                     BadgeUrls = result.User.UserBadges

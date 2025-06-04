@@ -19,7 +19,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             _quizResultService = quizResultService;
         }
 
-
+        [HttpGet]
         public IActionResult Index()
         {
             var users = _leaderboardService.Find();

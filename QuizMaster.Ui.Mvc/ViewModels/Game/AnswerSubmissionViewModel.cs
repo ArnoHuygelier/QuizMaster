@@ -20,6 +20,8 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Game
 
         [Required]
         public bool IsTimedOut { get; set; }
+        public int TimeLeftInSeconds { get; set; }
+        public int TotalTimeLeft { get; set; }
 
         public string? AnswersSoFarJson { get; set; }
     }

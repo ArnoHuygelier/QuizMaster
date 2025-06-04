@@ -38,13 +38,15 @@ namespace QuizMaster.Services
             return answer != null && answer.IsCorrect;
         }
 
-        public async Task<QuizResult> CreateResult(int quizId, string userId, int correctCount)
+        public async Task<QuizResult> CreateResult(int quizId, string userId, int correctCount, int timeLeft)
         {
+
             var quizResult = new QuizResult
             {
                 QuizId = quizId,
                 UserId = userId,
-                Score = correctCount,
+                CorrectCount = correctCount,
+                Score = timeLeft * correctCount,
                 SubmittedAt = DateTime.UtcNow
             };
 

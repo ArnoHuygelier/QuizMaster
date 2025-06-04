@@ -15,10 +15,13 @@ namespace QuizMaster.Ui.Mvc.Controllers
     public class GameController : Controller
     {
         private readonly GameService _gameService;
+        private readonly BadgeService _badgeService;
 
-        public GameController(GameService gameService)
+
+        public GameController(GameService gameService, BadgeService badgeService)
         {
             _gameService = gameService;
+            _badgeService = badgeService;
         }
 
         [HttpGet]
@@ -146,7 +149,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Console.WriteLine($"Quiz with ID {id} not found");
                 return RedirectToAction("Error", "Home");
             }
-
+            await _badgeService.CheckAndAssignBadgesAsync(userId);
             // Create/save the quiz result record (optional, depending on your service)
             var result = await _gameService.CreateResult(id, userId, correctCount);
 

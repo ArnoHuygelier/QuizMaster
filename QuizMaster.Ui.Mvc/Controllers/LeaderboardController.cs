@@ -41,8 +41,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
         }
 
 
-        public async Task<IActionResult> PlayerDetails([FromBody] string id)
+        [HttpGet("Leaderboard/PlayerDetails/{id}")]
+        public async Task<IActionResult> PlayerDetails([FromRoute] string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+
             var quizResults = await _quizResultService.GetQuizResultsByUserId(id);
 
             List<PlayerDetailsViewModel> playerDetails = quizResults.Select(x => new PlayerDetailsViewModel

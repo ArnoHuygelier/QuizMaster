@@ -3,17 +3,15 @@
 
 
 <li class="list-group-item bg-white rounded shadow-sm mb-2">
-    <form action="PlayerDetails" method="post">
-        <div class="row align-items-center text-center">
-            <div class="col-4">
-                <span class="badge bg-primary">@Model.Title</span>
-            </div>
-            <div class="col-4 text-dark fw-bold">
-                <i class=""></i> @Model.Score
-            </div>
-            <div class="col-4">
-                <span class="text-muted small">@Model.SubmittedAt.ToString("d")</span>
-            </div>
+    <div class="row align-items-center text-center">
+        <div class="col-4">
+            <span class="badge bg-primary">@Model.Title</span>
         </div>
-    </form>
+        <div class="col-4 text-dark fw-bold">
+            <i class=""></i> @Model.Score
+        </div>
+        <div class="col-4">
+            <span class="text-muted small">@Model.SubmittedAt.ToString("d")</span>
+        </div>
+    </div>
 </li>

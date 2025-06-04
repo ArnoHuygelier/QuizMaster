@@ -11,17 +11,23 @@
     <div class="row">
         <div class="col-12">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item bg-primary text-white fw-bold">
-                    <div class="row text-center">
-                        <div class="col-4 text-start">Quiz</div>
-                        <div class="col-4">Score</div>
-                        <div class="col-4">Played at</div>
-                    </div>
-                </li>
-
-                @foreach (var item in Model)
+                @if(Model.Count == 0)
                 {
-                    <partial name="LeaderboardRowPartial" model="item"></partial>
+                    <span class="text-muted small">This player hasn't played any quizzes yet</span>
+                }
+                else
+                {
+                    <li class="list-group-item bg-primary text-white fw-bold">
+                        <div class="row text-center">
+                            <div class="col-4 text-start">Quiz</div>
+                            <div class="col-4">Score</div>
+                            <div class="col-4">Played at</div>
+                        </div>
+                    </li>
+                    @foreach (var item in Model)
+                    {
+                        <partial name="PlayerDetailsRowPartial" model="item"></partial>
+                    }
                 }
             </ul>
         </div>

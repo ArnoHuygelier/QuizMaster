@@ -1,0 +1,41 @@
+﻿@model List<Category>
+@{
+    ViewData["Title"] = "Categories";
+
+    // Groepeer categorieën op eerste letter
+    var groupedCategories = Model
+        .OrderBy(c => c.Name)
+        .GroupBy(c => c.Name.Substring(0, 1).ToUpper())
+        .OrderBy(g => g.Key);
+}
+
+<h2 class="mb-4 mt-4">Categories</h2>
+
+<!-- A-Z navigatiebalk -->
+<nav class="mb-4">
+    <ul class="pagination flex-wrap">
+        @foreach (char letter in Enumerable.Range('A', 26).Select(x => (char)x))
+        {
+            var hasCategory = groupedCategories.Any(g => g.Key == letter.ToString());
+            <li class="page-item @(hasCategory ? "" : "disabled")">
+                <a class="page-link" href="#@letter">@letter</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<!-- Categorieënlijst per letter -->
+@foreach (var group in groupedCategories)
+{
+    <h4 id="@group.Key" class="mt-4">@group.Key</h4>
+    <ul class="list-group mb-5 shadow-sm">
+        @foreach (var category in group)
+        {
+            <li class="list-group-item">
+                <a asp-controller="Home" asp-action="index" asp-route-categoryId="@category.Id" class="text-decoration-none text-dark">
+                    @category.Name
+                </a>
+            </li>
+        }
+    </ul>
+}

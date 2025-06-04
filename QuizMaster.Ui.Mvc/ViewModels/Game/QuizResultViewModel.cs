@@ -5,5 +5,8 @@
         public int QuizId { get; set; }
         public int Score { get; set; }
         public int Total { get; set; }
+        public List<QuestionResultViewModel> QuestionResults { get; set; } = new List<QuestionResultViewModel>();
+
+
     }
 }

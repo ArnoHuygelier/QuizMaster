@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using System.Text.Json;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
@@ -51,16 +52,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Next([FromForm] AnswerSubmissionViewModel submission)
         {
-            Console.WriteLine($"Received submission - QuizId: {submission.QuizId}, QuestionId: {submission.QuestionId}, IsTimedOut: {submission.IsTimedOut}");
-
-            int correctCount = submission.CorrectCount;
-
-            if (!submission.IsTimedOut && submission.SelectedAnswerId.HasValue)
-            {
-                bool isCorrect = await _gameService.IsAnswerCorrect(submission.QuestionId, submission.SelectedAnswerId.Value);
-                if (isCorrect) correctCount++;
-            }
-
+            // Get the quiz and questions
             var quiz = await _gameService.Get(submission.QuizId);
             if (quiz == null)
             {
@@ -68,38 +60,78 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            if (quiz.Questions == null || !quiz.Questions.Any())
+            var questions = quiz.Questions?.OrderBy(q => q.Id).ToList();
+            if (questions == null || !questions.Any())
             {
                 Console.WriteLine($"No questions found for quiz {submission.QuizId}");
                 return RedirectToAction("Error", "Home");
             }
 
-            var questions = quiz.Questions.OrderBy(q => q.Id).ToList();
-            int currentIndex = submission.CurrentIndex;
+            // Deserialize answers so far from JSON string in submission (or create new list)
+            var answersSoFar = string.IsNullOrEmpty(submission.AnswersSoFarJson)
+                ? new List<QuestionResultViewModel>()
+                : JsonSerializer.Deserialize<List<QuestionResultViewModel>>(submission.AnswersSoFarJson) ?? new List<QuestionResultViewModel>();
 
-            Console.WriteLine($"Current index: {currentIndex}, Total questions: {questions.Count}");
+            // Current question based on the submitted index
+            var currentQuestion = questions[submission.CurrentIndex];
+            var correctAnswer = currentQuestion.Answers.FirstOrDefault(a => a.IsCorrect);
 
-            if (currentIndex + 1 >= questions.Count)
+            // Determine if user's selected answer is correct
+            bool isCorrect = false;
+            int? selectedAnswerId = submission.SelectedAnswerId;
+            string selectedAnswerText = "";
+
+            if (!submission.IsTimedOut && selectedAnswerId.HasValue)
             {
-                Console.WriteLine("All questions answered - redirecting to Finish");
+                var selectedAnswer = currentQuestion.Answers.FirstOrDefault(a => a.Id == selectedAnswerId.Value);
+                if (selectedAnswer != null)
+                {
+                    selectedAnswerText = selectedAnswer.AnswerText;
+                    isCorrect = selectedAnswer.IsCorrect;
+                }
+            }
+
+            // Add current question result to answersSoFar
+            answersSoFar.Add(new QuestionResultViewModel
+            {
+                QuestionId = currentQuestion.Id,
+                QuestionText = currentQuestion.QuestionText,
+                SelectedAnswerId = selectedAnswerId,
+                SelectedAnswerText = selectedAnswerText,
+                CorrectAnswerId = correctAnswer?.Id ?? 0,
+                CorrectAnswerText = correctAnswer?.AnswerText ?? "",
+                IsCorrect = isCorrect
+            });
+
+            // Recalculate correct count
+            int correctCount = answersSoFar.Count(a => a.IsCorrect);
+
+            int nextIndex = submission.CurrentIndex + 1;
+
+            // If last question answered, redirect to Finish and pass answers in TempData
+            if (nextIndex >= questions.Count)
+            {
+                TempData["AnswersSoFar"] = JsonSerializer.Serialize(answersSoFar);
                 return RedirectToAction("Finish", new { id = submission.QuizId, correctCount });
             }
 
-            var nextQuestion = questions[currentIndex + 1];
-
+            // Prepare next question view model with answers so far
+            var nextQuestion = questions[nextIndex];
             var viewModel = new PlayQuestionViewModel
             {
-                QuizId = submission.QuizId,
+                QuizId = quiz.Id,
                 Question = nextQuestion,
-                CurrentIndex = currentIndex + 1,
+                CurrentIndex = nextIndex,
                 TotalQuestions = questions.Count,
                 CorrectCount = correctCount,
                 ImageUrl = quiz.ImageUrl,
-                Title = quiz.Title
+                Title = quiz.Title,
+                AnswersSoFar = answersSoFar
             };
 
             return View("Play", viewModel);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Finish(int id, int correctCount = 0)
@@ -107,17 +139,37 @@ namespace QuizMaster.Ui.Mvc.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return RedirectToAction("Login", "Account");
 
-            var result = await _gameService.CreateResult(id, userId, correctCount);
+            // Get quiz info
             var quiz = await _gameService.Get(id);
+            if (quiz == null)
+            {
+                Console.WriteLine($"Quiz with ID {id} not found");
+                return RedirectToAction("Error", "Home");
+            }
 
+            // Create/save the quiz result record (optional, depending on your service)
+            var result = await _gameService.CreateResult(id, userId, correctCount);
+
+            // Read AnswersSoFar from TempData and deserialize
+            var answersJson = TempData["AnswersSoFar"] as string;
+            List<QuestionResultViewModel> questionResults = new List<QuestionResultViewModel>();
+            if (!string.IsNullOrEmpty(answersJson))
+            {
+                questionResults = JsonSerializer.Deserialize<List<QuestionResultViewModel>>(answersJson) ?? new List<QuestionResultViewModel>();
+            }
+
+            // Prepare view model
             var viewModel = new QuizResultViewModel
             {
                 QuizId = id,
-                Score = result.Score,
-                Total = quiz?.Questions.Count ?? 0
+                Score = correctCount,
+                Total = quiz.Questions.Count,
+                QuestionResults = questionResults
+                
             };
 
             return View("Result", viewModel);
         }
+
     }
 }

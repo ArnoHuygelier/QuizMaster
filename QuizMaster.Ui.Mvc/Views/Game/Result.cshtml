@@ -12,23 +12,50 @@
     <link href="~/css/quiz-result.css" rel="stylesheet" />
 }
 
+
+
 <div class="container py-5">
     <h1 class="text-center">@ViewBag.Title</h1>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="quiz-result-card">
-                <div class="quiz-result-header" style="background-color: @alertColor;">
-                    <i class="@icon fs-1 mb-3"></i>
-                    <h2>@resultMessage</h2>
-                    <p class="lead mb-0">You scored:</p>
-                    <div class="quiz-score">@Model.Score <span class="quiz-total">/ @Model.Total</span></div>
-                </div>
-                <div class="mt-4">
-                    <a class="btn btn-outline-primary btn-lg px-4" asp-action="Index" asp-controller="Home">
-                        <i class="bi bi-house-door-fill me-2"></i>Back to Home
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="text-center mb-4" style="color:@alertColor;">
+        <i class="@icon fs-1 mb-3"></i>
+        <h2>@resultMessage</h2>
+        <p class="lead">You scored: <strong>@Model.Score</strong> / <strong>@Model.Total</strong></p>
+    </div>
+
+    <div class="quiz-details">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.QuestionResults.Count; i++)
+                {
+                    var q = Model.QuestionResults[i];
+                    string statusIcon = q.IsCorrect ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger";
+                    string yourAnswerDisplay = string.IsNullOrEmpty(q.SelectedAnswerText) ? "<em>No answer</em>" : q.SelectedAnswerText;
+
+                    <tr>
+                        <td>@q.QuestionText</td>
+                        <td>@Html.Raw(yourAnswerDisplay)</td>
+                        <td>@q.CorrectAnswerText</td>
+                        <td class="text-center">
+                            <i class="@statusIcon fs-4"></i>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-house-door-fill me-2"></i>Back to Home
+        </a>
     </div>
 </div>
+

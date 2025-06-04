@@ -15,7 +15,9 @@ namespace QuizMaster.Models
         public required string Description { get; set; }
 
         public required string ImageUrl { get; set; }
-        
+
+        public string Type { get; set; }
+        public int Threshold { get; set; }
         public  ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
 	}
 

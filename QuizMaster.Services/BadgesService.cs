@@ -116,8 +116,7 @@ namespace QuizMaster.Services
             // Load all badge metadata from DB once
             var allBadges = await _context.Badges.ToListAsync();
 
-            // Create a lookup dictionary for quick access by name
-            var badgeLookup = allBadges.ToDictionary(b => b.Name.Trim().ToLower(), b => b.Id);
+            
 
             // Count user quiz attempts and flawless quizzes
             var quizCount = await _context.QuizResults
@@ -130,28 +129,17 @@ namespace QuizMaster.Services
                 .Where(q => q.UserId == userId && q.Score == q.Quiz.Questions.Count)
                 .CountAsync();
 
-            // Define badge rules as (badgeName, type, threshold)
-            var badgeRules = new List<BadgeRule>
-            {
-                new BadgeRule { BadgeName = "beginner", Type = "quiz", Threshold = 1 },
-                new BadgeRule { BadgeName = "active participant", Type = "quiz", Threshold = 10 },
-                new BadgeRule { BadgeName = "quiz veteran", Type = "quiz", Threshold = 50 },
-                new BadgeRule { BadgeName = "flawless victory", Type = "flawless", Threshold = 1 },
-                new BadgeRule { BadgeName = "perfection seeker", Type = "flawless", Threshold = 10 },
-                new BadgeRule { BadgeName = "mastermind", Type = "flawless", Threshold = 50 }
+            
 
-            };
-
-            foreach (var rule in badgeRules)
+            foreach (var badge in allBadges)
             {
-                if (!badgeLookup.TryGetValue(rule.BadgeName, out var badgeId))
-                    continue;
-                if (existingBadgeIds.Contains(badgeId))
+                
+                if (existingBadgeIds.Contains(badge.Id))
                     continue;
 
-                int stat = rule.Type == "quiz" ? quizCount : flawlessCount;
-                if (stat >= rule.Threshold)
-                    earned.Add(badgeId);
+                int stat = badge.Type == "quiz" ? quizCount : flawlessCount;
+                if (stat >= badge.Threshold)
+                    earned.Add(badge.Id);
             }
             
 

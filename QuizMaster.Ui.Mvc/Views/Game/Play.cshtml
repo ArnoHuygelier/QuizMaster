@@ -1,4 +1,8 @@
-﻿@model QuizMaster.Ui.Mvc.ViewModels.Game.PlayQuestionViewModel
+﻿@using System.Text.Json
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using QuizMaster.Ui.Mvc.TagHelpers
+@using QuizMaster.Ui.Mvc.ViewModels.Game
+@model QuizMaster.Ui.Mvc.ViewModels.Game.PlayQuestionViewModel
 
 @{
     ViewData["Title"] = "Play Quiz";
@@ -27,9 +31,21 @@
                 <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
                 <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
                 <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
+                <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar ?? new List<QuestionResultViewModel>()))' />
 
                 <!-- Answer Options (no "required") -->
-                <div class="list-group mb-4">
+                <div class="d-grid gap-3 mb-4">
+                    @foreach (var answer in Model.Question.Answers)
+                    {
+                        <button type="submit"
+                                name="SelectedAnswerId"
+                                value="@answer.Id"
+                                class="btn btn-outline-primary btn-lg w-100 text-start">
+                            @answer.AnswerText
+                        </button>
+                    }
+                </div>
+                @* <div class="list-group mb-4">
                     @foreach (var answer in Model.Question.Answers)
                     {
                         <label class="list-group-item d-flex align-items-center">
@@ -37,7 +53,7 @@
                             @answer.AnswerText
                         </label>
                     }
-                </div>
+                </div> *@
 
                 <div class="mt-4 d-flex justify-content-between align-items-center">
                     
@@ -104,5 +120,7 @@
                 e.preventDefault();
             }
         });
+
+            
     </script>
 }

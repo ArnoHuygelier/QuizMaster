@@ -12,11 +12,13 @@ namespace QuizMaster.Ui.Mvc.Controllers
     {
         private readonly LeaderboardService _leaderboardService;
         private readonly QuizResultService _quizResultService;
+        private readonly QuizService _quizService;
 
-        public LeaderboardController(LeaderboardService leaderboardService, QuizResultService quizResultService)
+        public LeaderboardController(LeaderboardService leaderboardService, QuizResultService quizResultService, QuizService quizService)
         {
             _leaderboardService = leaderboardService;
             _quizResultService = quizResultService;
+            _quizService = quizService;
         }
 
         [HttpGet]
@@ -50,11 +52,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
             }
 
             var quizResults = await _quizResultService.GetQuizResultsByUserId(id);
+            var quizzes = await _quizService.FindQuizzesContainingQuestions();
 
             List<PlayerDetailsViewModel> playerDetails = quizResults.Select(x => new PlayerDetailsViewModel
             {
                 Title = x.Quiz.Title,
                 Score = x.Score,
+                CorrectCount = x.CorrectCount,
+                AmountOfQuestions = quizzes.Where(y => y.Id == 7).FirstOrDefault().Questions.Count(),
                 SubmittedAt = x.SubmittedAt
             }).ToList();
 

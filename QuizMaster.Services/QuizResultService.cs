@@ -48,8 +48,8 @@ namespace QuizMaster.Services
         public async Task<int> GetQuizScoreByUserId(int quizId, string userId)
         {
             return await _context.QuizResults
-                .Where(q => q.QuizId == quizId && q.UserId == userId).OrderByDescending(q => q.Score)
-                .Select(q => q.Score).FirstOrDefaultAsync();
+                .Where(q => q.QuizId == quizId && q.UserId == userId).OrderByDescending(q => q.CorrectCount)
+                .Select(q => q.CorrectCount).FirstOrDefaultAsync();
         }
 
 

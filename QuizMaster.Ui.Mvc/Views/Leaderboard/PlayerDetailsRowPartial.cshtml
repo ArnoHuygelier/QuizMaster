@@ -4,13 +4,16 @@
 
 <li class="list-group-item bg-white rounded shadow-sm mb-2">
     <div class="row align-items-center text-center">
-        <div class="col-4">
+        <div class="col-3">
             <span class="badge bg-primary">@Model.Title</span>
         </div>
-        <div class="col-4 text-dark fw-bold">
-            <i class=""></i> @Model.Score
+        <div class="col-3 text-dark fw-bold">
+            <span class="">@Model.Score</span>
         </div>
-        <div class="col-4">
+        <div class="col-3 text-dark fw-bold">
+            <i class=""></i> @Model.CorrectCount / @Model.AmountOfQuestions
+        </div>
+        <div class="col-3">
             <span class="text-muted small">@Model.SubmittedAt.ToString("d")</span>
         </div>
     </div>

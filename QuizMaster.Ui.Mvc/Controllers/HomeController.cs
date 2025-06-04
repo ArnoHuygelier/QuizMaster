@@ -53,7 +53,7 @@ public class HomeController : Controller
 
         var topResults = await _quizResultService.GetTopScorersByQuizId(quiz.Id);
         List<LeaderboardViewModel> topScorers = new List<LeaderboardViewModel>();
-        if (topResults.Count() > 0)
+        if (topResults.Count > 0)
         {
             // Convert to LeaderboardViewModel
              topScorers = topResults

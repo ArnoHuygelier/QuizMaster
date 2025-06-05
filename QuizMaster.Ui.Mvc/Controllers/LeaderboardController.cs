@@ -59,7 +59,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 Title = x.Quiz.Title,
                 Score = x.Score,
                 CorrectCount = x.CorrectCount,
-                AmountOfQuestions = quizzes.Where(y => y.Id == 7).FirstOrDefault().Questions.Count(),
+                AmountOfQuestions = quizzes.Where(y => y.Id == x.QuizId).FirstOrDefault().Questions.Count(),
                 SubmittedAt = x.SubmittedAt
             }).ToList();
 

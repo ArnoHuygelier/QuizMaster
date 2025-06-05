@@ -102,6 +102,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                     {
                         //Add the time left of this question to the total time left => to calculate the total score
                         submission.TotalTimeLeft += submission.TimeLeftInSeconds;
+                        
                     }
                 }
             }
@@ -123,9 +124,15 @@ namespace QuizMaster.Ui.Mvc.Controllers
             // If last question answered, redirect to Finish and pass answers in TempData
             if (nextIndex >= questions.Count)
             {
-                
-               
-                var result = await _gameService.CreateResult(quiz.Id, userId, correctCount);
+
+                var score = submission.TotalTimeLeft * correctCount;
+                var result = await _gameService.CreateResult(quiz.Id, userId, correctCount,score);
+                //Update the score in aspNetUser table
+                var user = await _userService.Get(userId);
+
+                user.Score += score;
+
+                var userResult = await _userService.Update(userId, user);
                 TempData["AnsweredQuestions"] = JsonSerializer.Serialize(answersSoFar);
                 return RedirectToAction("Finish", new { id = result.Id });
             }
@@ -152,6 +159,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Finish(int id, int totalTimeLeft, int correctCount = 0)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await _gameService.GetResult(id);
             var quiz = await _gameService.Get(result.QuizId);
             if (quiz == null)
@@ -160,27 +168,27 @@ namespace QuizMaster.Ui.Mvc.Controllers
             }
 
             //Calculation score
-            int score = totalTimeLeft * correctCount;
+            //int score = totalTimeLeft * correctCount;
 
             //Create/save the quiz result record (optional, depending on your service)
-            var result = await _gameService.CreateResult(id, userId, correctCount, score);
+            //var result = await _gameService.CreateResult(id, userId, correctCount, score);
 
             //Update the score in aspNetUser table
-            var user = await _userService.Get(userId);
+            //var user = await _userService.Get(userId);
 
-            user.Score += score;
+            //user.Score += score;
 
-            var userResult = await _userService.Update(userId, user);
+            //var userResult = await _userService.Update(userId, user);
 
 
             // Read AnswersSoFar from TempData and deserialize
-            var answersJson = TempData["AnswersSoFar"] as string;
+            //var answersJson = TempData["AnswersSoFar"] as string;
 
-            List<QuestionResultViewModel> questionResults = new List<QuestionResultViewModel>();
-            if (!string.IsNullOrEmpty(answersJson))
-            {
-                questionResults = JsonSerializer.Deserialize<List<QuestionResultViewModel>>(answersJson) ?? new List<QuestionResultViewModel>();
-            }
+            //List<QuestionResultViewModel> questionResults = new List<QuestionResultViewModel>();
+            //if (!string.IsNullOrEmpty(answersJson))
+            //{
+            //    questionResults = JsonSerializer.Deserialize<List<QuestionResultViewModel>>(answersJson) ?? new List<QuestionResultViewModel>();
+            //}
             var newlyEarnedBadges = await _badgeService.CheckAndAssignBadges(userId);
 
             // Prepare view model

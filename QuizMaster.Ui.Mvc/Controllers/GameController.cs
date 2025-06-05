@@ -210,7 +210,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             };
 
             // Assign badges
-            viewModel.BadgesEarned = await _badgeService.CheckAndAssignBadges(viewModel.UserId);
+            viewModel.BadgesEarned = newlyEarnedBadges;
 
             return View("Result", viewModel);
         }

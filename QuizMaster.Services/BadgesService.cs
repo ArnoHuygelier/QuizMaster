@@ -126,7 +126,7 @@ namespace QuizMaster.Services
             var flawlessCount = await _context.QuizResults
                 .Include(q => q.Quiz)
                 .ThenInclude(quiz => quiz.Questions)
-                .Where(q => q.UserId == userId && q.Score == q.Quiz.Questions.Count)
+                .Where(q => q.UserId == userId && q.CorrectCount == q.Quiz.Questions.Count)
                 .CountAsync();
 
             

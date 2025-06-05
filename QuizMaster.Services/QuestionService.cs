@@ -31,6 +31,11 @@ namespace QuizMaster.Services
             return await _context.Questions.FindAsync(id);
         }
 
+
+        public async Task<Question?> GetQuestionWithAnswers(int id)
+        {
+            return await _context.Questions.Include(q=> q.Answers).FirstOrDefaultAsync(q=> q.Id == id);
+        }
         public async Task<List<Question>> GetQuestionsByQuizId(int quizId)
         {
             var a = await _context.Questions

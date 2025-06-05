@@ -12,7 +12,10 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Game
         public string ImageUrl { get; set; }
         public string Title { get; set; }
 
+        public string? AnswersSoFarJson { get; set; }
         public List<QuestionResultViewModel> AnswersSoFar { get; set; } = new();
+        public bool HintUsed { get; set; } = false;
+        public List<int> AnswerIdsToShow { get; set; } = new();
     }
 
 }

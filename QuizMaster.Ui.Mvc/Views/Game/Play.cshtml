@@ -33,17 +33,8 @@
                 <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
                 <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar ?? new List<QuestionResultViewModel>()))' />
 
-                <!-- Answer Options (no "required") -->
-                <div class="d-grid gap-3 mb-4">
-                    @foreach (var answer in Model.Question.Answers)
-                    {
-                        <button type="submit"
-                                name="SelectedAnswerId"
-                                value="@answer.Id"
-                                class="btn btn-outline-primary btn-lg w-100 text-start">
-                            @answer.AnswerText
-                        </button>
-                    }
+                <div id="answer-container">
+                    @await Html.PartialAsync("QuestionPartial", Model)
                 </div>
                 
 
@@ -52,9 +43,25 @@
                     <div id="timer" class="fw-bold text-success fs-4"></div>
 
                     
+
                     <button type="submit" class="btn btn-primary" id="submitButton">Skip</button>
                 </div>
             </form>
+            @if (!Model.HintUsed)
+            {
+                <form method="post" asp-action="UseHint" asp-controller="Game">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="QuizId" value="@Model.QuizId" />
+                    <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
+                    <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
+                    <input type="hidden" name="Title" value="@Model.Title" />
+                    <input type="hidden" name="ImageUrl" value="@Model.ImageUrl" />
+                    <input type="hidden" name="Question.Id" value="@Model.Question.Id" />
+                    <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar ?? new()))' />
+                    
+                    <button type="submit" class="btn btn-warning">Get Hint</button>
+                </form>
+            }
         </div>
     </div>
 </div>
@@ -112,7 +119,7 @@
                 e.preventDefault();
             }
         });
-
+     
             
     </script>
 }

@@ -1,0 +1,19 @@
+﻿@model QuizMaster.Ui.Mvc.ViewModels.Game.PlayQuestionViewModel
+
+<!-- Answer Options -->
+<div class="d-grid gap-3 mb-4">
+    @foreach (var answer in Model.Question.Answers)
+    {
+        if (Model.HintUsed && !Model.AnswerIdsToShow.Contains(answer.Id))
+        {
+            continue; // skip hidden answers
+        }
+
+        <button type="submit"
+                name="SelectedAnswerId"
+                value="@answer.Id"
+                class="btn btn-outline-primary btn-lg w-100 text-start">
+            @answer.AnswerText
+        </button>
+    }
+</div>

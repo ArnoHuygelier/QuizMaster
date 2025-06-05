@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Quiz Result";
-    var isPassed = Model.Score >= Math.Ceiling(Model.Total / 2.0);
+    var isPassed = Model.CorrectCount >= Math.Ceiling(Model.Total / 2.0);
     var alertColor = isPassed ? "#28A745" : "#DC3545";
     var resultMessage = isPassed ? "Well done!" : "Better luck next time!";
     var icon = isPassed ? "bi bi-emoji-smile-fill" : "bi bi-emoji-frown-fill";
@@ -19,7 +19,7 @@
     <div class="text-center mb-4" style="color:@alertColor;">
         <i class="@icon fs-1 mb-3"></i>
         <h2>@resultMessage</h2>
-        <p class="lead">You scored: <strong>@Model.Score</strong> / <strong>@Model.Total</strong></p>
+        <p class="lead">You scored: <strong>@Model.CorrectCount</strong> / <strong>@Model.Total</strong></p>
     </div>
 
     <div class="quiz-details">

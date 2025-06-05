@@ -203,7 +203,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 QuizId = result.QuizId,
                 Title = quiz.Title,
-                Score = result.Score,
+                CorrectCount = result.CorrectCount,
                 Total = quiz.Questions?.Count ?? 0,
                 UserId = result.UserId,
                 QuestionResults = questionResults

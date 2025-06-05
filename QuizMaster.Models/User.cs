@@ -16,8 +16,9 @@ namespace QuizMaster.Models
 		public bool NewsLetter { get; set; }
 		public int? AvatarId { get; set; }
 		public Avatar? Avatar { get; set; }
-		public int? Score { get; set; }
+		public int Score { get; set; }
 
+        public int Hints { get; set; } = 3;
 		public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
 		public ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
 	}

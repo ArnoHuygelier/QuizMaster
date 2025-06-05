@@ -6,9 +6,9 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Game
     public class QuizResultViewModel
     {
         public int QuizId { get; set; }
-
+        public string?  UserId { get; set; }
         public string Title { get; set; }
-        public int Score { get; set; }
+        public int CorrectCount { get; set; }
         public int Total { get; set; }
         public List<QuestionResultViewModel> QuestionResults { get; set; } = new();
 

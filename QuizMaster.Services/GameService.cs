@@ -97,6 +97,10 @@ namespace QuizMaster.Services
             return true;
         }
 
-        
+        public async Task<QuizResult?> GetResult(int id)
+        {
+            return await _context.QuizResults.FirstOrDefaultAsync(qr => qr.Id == id);
+
+        }
     }
 }

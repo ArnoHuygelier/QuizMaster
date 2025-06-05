@@ -101,6 +101,8 @@ namespace QuizMaster.Services
             // Add new UserBadge records to the context
             _context.UserBadges.AddRange(userBadges);
 
+           
+
             // Save all changes to the database
             await _context.SaveChangesAsync();
 
@@ -111,6 +113,7 @@ namespace QuizMaster.Services
 
         private async Task<List<int>> CalculateEarnedBadges(string userId, List<int> existingBadgeIds)
         {
+            
             var earned = new List<int>();
 
             // Load all badge metadata from DB once
@@ -126,7 +129,7 @@ namespace QuizMaster.Services
             var flawlessCount = await _context.QuizResults
                 .Include(q => q.Quiz)
                 .ThenInclude(quiz => quiz.Questions)
-                .Where(q => q.UserId == userId && q.Score == q.Quiz.Questions.Count)
+                .Where(q => q.UserId == userId && q.CorrectCount == q.Quiz.Questions.Count)
                 .CountAsync();
 
             

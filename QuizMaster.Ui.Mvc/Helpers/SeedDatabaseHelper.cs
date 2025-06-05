@@ -19,7 +19,6 @@ namespace QuizMaster.Ui.Mvc.Helpers
 			// creating admin
 			var user = new User
 			{
-				Score = 0,
 				UserName = "admin",
 				Email = "admin@gmail.com",
 				AvatarId = 1,

@@ -20,18 +20,23 @@ namespace QuizMaster.Ui.Mvc.Controllers
         private readonly BadgeService _badgeService;
         private readonly UserService _userService;
         private readonly QuestionService _questionService;
+        private readonly HintService _hintService;
 
-        public GameController(GameService gameService, UserService userService, BadgeService badgeService, QuestionService questionService)
+
+        public GameController(GameService gameService, UserService userService, BadgeService badgeService, QuestionService questionService,HintService hintService)
         {
             _gameService = gameService;
             _badgeService = badgeService;
             _userService = userService;
             _questionService = questionService;
+            _hintService = hintService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Start(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.Get(userId);
             var quiz = await _gameService.Get(id);
             if (quiz == null) return RedirectToAction("Index", "Home");
 
@@ -51,7 +56,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 TotalQuestions = quiz.Questions.Count,
                 CorrectCount = 0,
                 ImageUrl = quiz.ImageUrl,
-                Title = quiz.Title
+                Title = quiz.Title,
+                Hints = user.Hints
             };
 
             return View("Play", viewModel);
@@ -61,7 +67,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         public async Task<IActionResult> Next([FromForm] AnswerSubmissionViewModel submission)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+            var user = await _userService.Get(userId);
             // Get the quiz and questions
             var quiz = await _gameService.Get(submission.QuizId);
             if (quiz == null)
@@ -128,7 +134,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 var score = submission.TotalTimeLeft * correctCount;
                 var result = await _gameService.CreateResult(quiz.Id, userId, correctCount,score);
                 //Update the score in aspNetUser table
-                var user = await _userService.Get(userId);
+                
 
                 user.Score += score;
 
@@ -149,7 +155,8 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 ImageUrl = quiz.ImageUrl,
                 Title = quiz.Title,
                 TotalTimeLeft = submission.TotalTimeLeft,
-                AnswersSoFar = answersSoFar
+                AnswersSoFar = answersSoFar,
+                Hints = user.Hints
             };
 
             return View("Play", viewModel);
@@ -167,31 +174,10 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return RedirectToAction("Error");
             }
 
-            //Calculation score
-            //int score = totalTimeLeft * correctCount;
-
-            //Create/save the quiz result record (optional, depending on your service)
-            //var result = await _gameService.CreateResult(id, userId, correctCount, score);
-
-            //Update the score in aspNetUser table
-            //var user = await _userService.Get(userId);
-
-            //user.Score += score;
-
-            //var userResult = await _userService.Update(userId, user);
-
-
-            // Read AnswersSoFar from TempData and deserialize
-            //var answersJson = TempData["AnswersSoFar"] as string;
-
-            //List<QuestionResultViewModel> questionResults = new List<QuestionResultViewModel>();
-            //if (!string.IsNullOrEmpty(answersJson))
-            //{
-            //    questionResults = JsonSerializer.Deserialize<List<QuestionResultViewModel>>(answersJson) ?? new List<QuestionResultViewModel>();
-            //}
+            await _hintService.CheckForNewHints(userId);
             var newlyEarnedBadges = await _badgeService.CheckAndAssignBadges(userId);
 
-            // Prepare view model
+            
 
             // Deserialize the answers from TempData
             var answersJson = TempData["AnsweredQuestions"] as string;
@@ -228,37 +214,49 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UseHint(PlayQuestionViewModel model)
         {
-            var question = await _questionService.GetQuestionWithAnswers(model.Question.Id);
-
-            if (question == null) return NotFound();
-
-            var correct = question.Answers.FirstOrDefault(a => a.IsCorrect);
-            var incorrect = question.Answers.Where(a => !a.IsCorrect).ToList();
-
-
-
-            // Keep 1 incorrect and the correct
-            var random = new Random();
-            var randomIncorrect = incorrect.OrderBy(x => random.Next()).Take(1).ToList();
-            var visibleAnswers = new List<int> { correct.Id, randomIncorrect[0].Id };
-            TempData["AnswersSoFar"] = JsonSerializer.Serialize(model.AnswersSoFar);
-            var viewModel = new PlayQuestionViewModel
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.Get(userId);
+            if (user.Hints > 0)
             {
-                QuizId = model.QuizId,
-                Question = question,
-                CurrentIndex = model.CurrentIndex,
-                TotalQuestions = model.TotalQuestions,
-                CorrectCount = model.CorrectCount,
-                AnswersSoFar = string.IsNullOrEmpty(model.AnswersSoFarJson)
-                    ? new List<QuestionResultViewModel>()
-                    : JsonSerializer.Deserialize<List<QuestionResultViewModel>>(model.AnswersSoFarJson) ?? new List<QuestionResultViewModel>(),
-                Title = model.Title,
-                ImageUrl = model.ImageUrl,
-                HintUsed = true,
-                AnswerIdsToShow = visibleAnswers
-            };
+                user.Hints -= 1;
+                await _userService.Update(userId, user);
 
-            return View("Play", viewModel);
+                var question = await _questionService.GetQuestionWithAnswers(model.Question.Id);
+
+                if (question == null) return NotFound();
+
+                var correct = question.Answers.FirstOrDefault(a => a.IsCorrect);
+                var incorrect = question.Answers.Where(a => !a.IsCorrect).ToList();
+
+
+
+                // Keep 1 incorrect and the correct
+                var random = new Random();
+                var randomIncorrect = incorrect.OrderBy(x => random.Next()).Take(1).ToList();
+                var visibleAnswers = new List<int> { correct.Id, randomIncorrect[0].Id };
+
+                TempData["AnswersSoFar"] = JsonSerializer.Serialize(model.AnswersSoFar);
+                var viewModel = new PlayQuestionViewModel
+                {
+                    QuizId = model.QuizId,
+                    Question = question,
+                    CurrentIndex = model.CurrentIndex,
+                    TotalQuestions = model.TotalQuestions,
+                    CorrectCount = model.CorrectCount,
+                    AnswersSoFar = string.IsNullOrEmpty(model.AnswersSoFarJson)
+                        ? new List<QuestionResultViewModel>()
+                        : JsonSerializer.Deserialize<List<QuestionResultViewModel>>(model.AnswersSoFarJson) ??
+                          new List<QuestionResultViewModel>(),
+                    Title = model.Title,
+                    ImageUrl = model.ImageUrl,
+                    HintUsed = true,
+                    AnswerIdsToShow = visibleAnswers
+                };
+
+                return View("Play", viewModel);
+            }
+
+            return RedirectToAction("Next");
         }
 
     }

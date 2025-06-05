@@ -8,50 +8,49 @@
     ViewData["Title"] = "Play Quiz";
 }
 
-<div class="container my-5">
-
-    
+<div class="container py-4">
 
     <div class="text-center mb-4">
-        <h2 class="mb-2">@Model.Title</h2>
-        <quiz-image image-url="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded mb-3" width="250" height="250" />
-        <p class="text-muted">Question @(Model.CurrentIndex + 1) of @Model.TotalQuestions</p>
+        <h2 class="h4 mb-3">@Model.Title</h2>
+
+        <div class="d-flex justify-content-center">
+            <quiz-image image-url="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded shadow" width="200" height="200" />
+        </div>
+
+        <p class="text-muted mt-2">Question @(Model.CurrentIndex + 1) of @Model.TotalQuestions</p>
     </div>
 
     <div class="card shadow-sm">
-        <div class="card-body">
-            <h4 class="card-title mb-4">@Model.Question.QuestionText</h4>
+        <div class="card-body p-3">
+
+            <h5 class="card-title mb-3">@Model.Question.QuestionText</h5>
 
             <form method="post" asp-action="Next" asp-controller="Game" id="quizForm">
                 @Html.AntiForgeryToken()
 
-                <!-- Hidden Fields -->
+                <!-- Hidden fields -->
                 <input type="hidden" name="QuizId" value="@Model.QuizId" />
                 <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
                 <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
                 <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
                 <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
-                <input type="hidden" name="TimeLeftInSeconds" id="TimeLeftInSeconds"/>
+                <input type="hidden" name="TimeLeftInSeconds" id="TimeLeftInSeconds" />
                 <input type="hidden" name="TotalTimeLeft" value="@Model.TotalTimeLeft" />
                 <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar ?? new List<QuestionResultViewModel>()))' />
 
                 <div id="answer-container">
                     @await Html.PartialAsync("QuestionPartial", Model)
                 </div>
-                
 
-                <div class="mt-4 d-flex justify-content-between align-items-center">
-                    
-                    <div id="timer" class="fw-bold text-success fs-4"></div>
-
-                    
-
-                    <button type="submit" class="btn btn-primary" id="submitButton">Skip</button>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
+                    <div id="timer" class="fw-bold text-success fs-5 mb-2 mb-md-0">⏳ 20</div>
+                    <button type="submit" class="btn btn-primary w-100 w-md-auto" id="submitButton">Skip</button>
                 </div>
             </form>
+
             @if (!Model.HintUsed)
             {
-                <form method="post" asp-action="UseHint" asp-controller="Game">
+                <form method="post" asp-action="UseHint" asp-controller="Game" class="mt-3">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="QuizId" value="@Model.QuizId" />
                     <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
@@ -59,9 +58,9 @@
                     <input type="hidden" name="Title" value="@Model.Title" />
                     <input type="hidden" name="ImageUrl" value="@Model.ImageUrl" />
                     <input type="hidden" name="Question.Id" value="@Model.Question.Id" />
-                    <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar ?? new()))' />
-                    
-                    <button type="submit" class="btn btn-warning">Get Hint</button>
+                    <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar))' />
+
+                    <button type="submit" class="btn btn-warning w-100" @(Model.Hints == 0 ? "disabled" : "")>Get Hint (@Model.Hints left)</button>
                 </form>
             }
         </div>
@@ -124,6 +123,6 @@
             }
         });
      
-            
+        
     </script>
 }

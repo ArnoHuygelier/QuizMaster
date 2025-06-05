@@ -42,6 +42,8 @@ builder.Services.AddScoped<BadgeService>();
 builder.Services.AddScoped<AvatarService>();
 builder.Services.AddScoped<UserBadgeService>();
 builder.Services.AddScoped<QuizResultService>();
+builder.Services.AddScoped<HintService>();
+
 
 
 var app = builder.Build();

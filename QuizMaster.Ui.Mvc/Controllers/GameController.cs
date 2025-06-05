@@ -15,10 +15,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
     public class GameController : Controller
     {
         private readonly GameService _gameService;
+        private readonly UserService _userService;
 
-        public GameController(GameService gameService)
+        public GameController(GameService gameService, UserService userService)
         {
             _gameService = gameService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -153,8 +155,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            // Create/save the quiz result record (optional, depending on your service)
-            var result = await _gameService.CreateResult(id, userId, correctCount, totalTimeLeft);
+            //Calculation score
+            int score = totalTimeLeft * correctCount;
+
+            //Create/save the quiz result record (optional, depending on your service)
+            var result = await _gameService.CreateResult(id, userId, correctCount, score);
+
+            //Update the score in aspNetUser table
+            var user = await _userService.Get(userId);
+
+            user.Score += score;
+
+            var userResult = await _userService.Update(userId, user);
+
 
             // Read AnswersSoFar from TempData and deserialize
             var answersJson = TempData["AnswersSoFar"] as string;

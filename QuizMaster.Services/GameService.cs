@@ -38,7 +38,7 @@ namespace QuizMaster.Services
             return answer != null && answer.IsCorrect;
         }
 
-        public async Task<QuizResult> CreateResult(int quizId, string userId, int correctCount, int timeLeft)
+        public async Task<QuizResult> CreateResult(int quizId, string userId, int correctCount, int score)
         {
 
             var quizResult = new QuizResult
@@ -46,17 +46,11 @@ namespace QuizMaster.Services
                 QuizId = quizId,
                 UserId = userId,
                 CorrectCount = correctCount,
-                Score = timeLeft * correctCount,
+                Score = score,
                 SubmittedAt = DateTime.UtcNow
             };
 
             _context.QuizResults.Add(quizResult);
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user != null)
-            {
-                user.Score = (user.Score ?? 0) + correctCount;
-            }
 
             await _context.SaveChangesAsync();
             return quizResult;

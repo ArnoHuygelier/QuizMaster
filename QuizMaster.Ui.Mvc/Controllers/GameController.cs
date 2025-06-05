@@ -18,13 +18,14 @@ namespace QuizMaster.Ui.Mvc.Controllers
     {
         private readonly GameService _gameService;
         private readonly BadgeService _badgeService;
+        private readonly UserService _userService;
         private readonly QuestionService _questionService;
 
-
-        public GameController(GameService gameService, BadgeService badgeService, QuestionService questionService)
+        public GameController(GameService gameService, UserService userService, BadgeService badgeService, QuestionService questionService)
         {
             _gameService = gameService;
             _badgeService = badgeService;
+            _userService = userService;
             _questionService = questionService;
         }
 
@@ -97,6 +98,11 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 {
                     selectedAnswerText = selectedAnswer.AnswerText;
                     isCorrect = selectedAnswer.IsCorrect;
+                    if (isCorrect)
+                    {
+                        //Add the time left of this question to the total time left => to calculate the total score
+                        submission.TotalTimeLeft += submission.TimeLeftInSeconds;
+                    }
                 }
             }
 
@@ -135,6 +141,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 CorrectCount = correctCount,
                 ImageUrl = quiz.ImageUrl,
                 Title = quiz.Title,
+                TotalTimeLeft = submission.TotalTimeLeft,
                 AnswersSoFar = answersSoFar
             };
 
@@ -143,7 +150,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Finish(int id)
+        public async Task<IActionResult> Finish(int id, int totalTimeLeft, int correctCount = 0)
         {
             var result = await _gameService.GetResult(id);
             var quiz = await _gameService.Get(result.QuizId);
@@ -151,6 +158,32 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 return RedirectToAction("Error");
             }
+
+            //Calculation score
+            int score = totalTimeLeft * correctCount;
+
+            //Create/save the quiz result record (optional, depending on your service)
+            var result = await _gameService.CreateResult(id, userId, correctCount, score);
+
+            //Update the score in aspNetUser table
+            var user = await _userService.Get(userId);
+
+            user.Score += score;
+
+            var userResult = await _userService.Update(userId, user);
+
+
+            // Read AnswersSoFar from TempData and deserialize
+            var answersJson = TempData["AnswersSoFar"] as string;
+
+            List<QuestionResultViewModel> questionResults = new List<QuestionResultViewModel>();
+            if (!string.IsNullOrEmpty(answersJson))
+            {
+                questionResults = JsonSerializer.Deserialize<List<QuestionResultViewModel>>(answersJson) ?? new List<QuestionResultViewModel>();
+            }
+            var newlyEarnedBadges = await _badgeService.CheckAndAssignBadges(userId);
+
+            // Prepare view model
 
             // Deserialize the answers from TempData
             var answersJson = TempData["AnsweredQuestions"] as string;

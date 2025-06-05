@@ -20,8 +20,8 @@ namespace QuizMaster.Models
             public int QuizId { get; set; }
             public Quiz Quiz { get; set; }
 
+            public int CorrectCount { get; set; }
             public int Score { get; set; }
             public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
-        }
-
     }
+}

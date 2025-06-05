@@ -38,23 +38,19 @@ namespace QuizMaster.Services
             return answer != null && answer.IsCorrect;
         }
 
-        public async Task<QuizResult> CreateResult(int quizId, string userId, int correctCount)
+        public async Task<QuizResult> CreateResult(int quizId, string userId, int correctCount, int score)
         {
+
             var quizResult = new QuizResult
             {
                 QuizId = quizId,
                 UserId = userId,
-                Score = correctCount,
+                CorrectCount = correctCount,
+                Score = score,
                 SubmittedAt = DateTime.UtcNow
             };
 
             _context.QuizResults.Add(quizResult);
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user != null)
-            {
-                user.Score = (user.Score ?? 0) + correctCount;
-            }
 
             await _context.SaveChangesAsync();
             return quizResult;

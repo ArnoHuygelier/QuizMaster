@@ -8,6 +8,7 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Leaderboard
         public string UserId { get; set; }
         public required string AvatarUrl { get; set; }
         public required string UserName { get; set; }
+        public int CorrectCount { get; set; }
         public int? Score { get; set; }
         public ICollection<string> BadgeUrls { get; set; }
     }

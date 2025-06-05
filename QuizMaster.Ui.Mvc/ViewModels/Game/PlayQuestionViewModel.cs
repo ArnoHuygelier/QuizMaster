@@ -11,6 +11,7 @@ namespace QuizMaster.Ui.Mvc.ViewModels.Game
         public int CorrectCount { get; set; }
         public string ImageUrl { get; set; }
         public string Title { get; set; }
+        public int TotalTimeLeft { get; set; }
 
         public string? AnswersSoFarJson { get; set; }
         public List<QuestionResultViewModel> AnswersSoFar { get; set; } = new();

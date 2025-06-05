@@ -54,7 +54,7 @@ public class HomeController : Controller
 
         var topResults = await _quizResultService.GetTopScorersByQuizId(quiz.Id);
         List<LeaderboardViewModel> topScorers = new List<LeaderboardViewModel>();
-        if (topResults.Count() > 0)
+        if (topResults.Count > 0)
         {
             // Convert to LeaderboardViewModel
              topScorers = topResults
@@ -86,10 +86,7 @@ public class HomeController : Controller
             UserScore = await _quizResultService.GetQuizScoreByUserId(quiz.Id, userId),
 			ImageUrl = quiz.ImageUrl,
 			Id = quiz.Id,
-           TopScorers = topScorers
-
-
-
+            TopScorers = topScorers
         };
 
         if (quiz.Questions == null || !quiz.Questions.Any())

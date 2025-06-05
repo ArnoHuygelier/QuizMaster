@@ -15,7 +15,7 @@
 
 
 <div class="container py-5">
-    <h1 class="text-center">@ViewBag.Title</h1>
+    <h1 class="text-center">@ViewBag.Title - @Model.Title</h1>
     <div class="text-center mb-4" style="color:@alertColor;">
         <i class="@icon fs-1 mb-3"></i>
         <h2>@resultMessage</h2>
@@ -23,34 +23,23 @@
     </div>
 
     <div class="quiz-details">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Question</th>
-                    <th>Your Answer</th>
-                    <th>Correct Answer</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.QuestionResults.Count; i++)
-                {
-                    var q = Model.QuestionResults[i];
-                    string statusIcon = q.IsCorrect ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger";
-                    string yourAnswerDisplay = string.IsNullOrEmpty(q.SelectedAnswerText) ? "<em>No answer</em>" : q.SelectedAnswerText;
+        @foreach (var q in Model.QuestionResults)
+        {
+            var statusIcon = q.IsCorrect ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger";
+            var yourAnswerDisplay = string.IsNullOrEmpty(q.SelectedAnswerText) ? "<em>No answer</em>" : q.SelectedAnswerText;
 
-                    <tr>
-                        <td>@q.QuestionText</td>
-                        <td>@Html.Raw(yourAnswerDisplay)</td>
-                        <td>@q.CorrectAnswerText</td>
-                        <td class="text-center">
-                            <i class="@statusIcon fs-4"></i>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            <div class="result-card mb-3 p-3 shadow-sm rounded border">
+                <h5 class="fw-bold">@q.QuestionText</h5>
+                <p><strong>Your Answer:</strong> @Html.Raw(yourAnswerDisplay)</p>
+                <p><strong>Correct Answer:</strong> @q.CorrectAnswerText</p>
+                <div class="status-icon">
+                    <i class="@statusIcon fs-4"></i>
+                    <span class="ms-2">@((q.IsCorrect ? "Correct" : "Incorrect"))</span>
+                </div>
+            </div>
+        }
     </div>
+
 
     <div class="text-center mt-4">
         <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
@@ -59,3 +48,50 @@
     </div>
 </div>
 
+@section Modals {
+    <div class="modal fade" id="badgesModal" tabindex="-1" aria-labelledby="badgesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="badgesModalLabel">Badges Earned!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (Model.BadgesEarned != null && Model.BadgesEarned.Any())
+                    {
+                        <p>Congratulations! You've earned the following badges:</p>
+                        <div class="row g-3">
+                            @foreach (var badge in Model.BadgesEarned)
+                            {
+                                <div class="col-md-4 text-center">
+                                    <img src="@badge.ImageUrl" alt="@badge.Name" class="img-fluid mb-2" style="max-height: 80px;" />
+                                    <h6>@badge.Name</h6>
+                                    <p class="text-muted small">@badge.Description</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No new badges earned this time. Keep playing!</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Awesome!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        window.addEventListener('load', () => {
+            const badgeCount = @Model.BadgesEarned?.Count ?? 0;
+            if (badgeCount > 0) {
+                const badgeModal = new bootstrap.Modal(document.getElementById('badgesModal'));
+                badgeModal.show();
+            }
+        });
+    </script>
+}

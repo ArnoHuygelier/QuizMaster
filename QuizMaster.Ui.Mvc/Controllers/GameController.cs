@@ -22,6 +22,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
         {
             _gameService = gameService;
             _badgeService = badgeService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -35,7 +36,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
                 // Zet TempData voor frontend feedback en redirect naar Details
                 TempData["NoQuestions"] = true;
-                return RedirectToAction("Details", "Quiz", new { id = quiz.Id });
+                return RedirectToAction("Details", "Home", new { id = quiz.Id });
             }
 
             var viewModel = new PlayQuestionViewModel
@@ -91,6 +92,11 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 {
                     selectedAnswerText = selectedAnswer.AnswerText;
                     isCorrect = selectedAnswer.IsCorrect;
+                    if (isCorrect)
+                    {
+                        //Add the time left of this question to the total time left => to calculate the total score
+                        submission.TotalTimeLeft += submission.TimeLeftInSeconds;
+                    }
                 }
             }
 
@@ -115,7 +121,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
             if (nextIndex >= questions.Count)
             {
                 TempData["AnswersSoFar"] = JsonSerializer.Serialize(answersSoFar);
-                return RedirectToAction("Finish", new { id = submission.QuizId, correctCount });
+                return RedirectToAction("Finish", new { id = submission.QuizId, correctCount, submission.TotalTimeLeft});
             }
 
             // Prepare next question view model with answers so far
@@ -129,6 +135,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 CorrectCount = correctCount,
                 ImageUrl = quiz.ImageUrl,
                 Title = quiz.Title,
+                TotalTimeLeft = submission.TotalTimeLeft,
                 AnswersSoFar = answersSoFar
             };
 
@@ -137,42 +144,63 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Finish(int id, int correctCount = 0)
+        public async Task<IActionResult> Finish(int id, int totalTimeLeft, int correctCount = 0)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login", "Account");
+            if (userId == null) return RedirectToPage("/Account/Login", new { area = "Identity" });
 
             // Get quiz info
             var quiz = await _gameService.Get(id);
             if (quiz == null)
             {
                 Console.WriteLine($"Quiz with ID {id} not found");
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Error");
             }
-            await _badgeService.CheckAndAssignBadgesAsync(userId);
-            // Create/save the quiz result record (optional, depending on your service)
-            var result = await _gameService.CreateResult(id, userId, correctCount);
+
+            //Calculation score
+            int score = totalTimeLeft * correctCount;
+
+            //Create/save the quiz result record (optional, depending on your service)
+            var result = await _gameService.CreateResult(id, userId, correctCount, score);
+
+            //Update the score in aspNetUser table
+            var user = await _userService.Get(userId);
+
+            user.Score += score;
+
+            var userResult = await _userService.Update(userId, user);
+
 
             // Read AnswersSoFar from TempData and deserialize
             var answersJson = TempData["AnswersSoFar"] as string;
+
             List<QuestionResultViewModel> questionResults = new List<QuestionResultViewModel>();
             if (!string.IsNullOrEmpty(answersJson))
             {
                 questionResults = JsonSerializer.Deserialize<List<QuestionResultViewModel>>(answersJson) ?? new List<QuestionResultViewModel>();
             }
+            var newlyEarnedBadges = await _badgeService.CheckAndAssignBadges(userId);
 
             // Prepare view model
             var viewModel = new QuizResultViewModel
             {
                 QuizId = id,
+                Title = quiz.Title,
                 Score = correctCount,
                 Total = quiz.Questions.Count,
-                QuestionResults = questionResults
+                QuestionResults = questionResults,
+                BadgesEarned = newlyEarnedBadges
                 
             };
-
+            
             return View("Result", viewModel);
         }
 
+
+        [HttpGet]
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }

@@ -57,51 +57,97 @@ namespace QuizMaster.Services.Interfaces
             return true;
         }
 
-        public async Task CheckAndAssignBadgesAsync(string userId)
+
+
+        /// <summary>
+        /// Checks which badges a user has earned based on quiz activity and assigns any new ones.
+        /// </summary>
+        /// 
+        /// <returns></returns>
+        public async Task<List<Badge>> CheckAndAssignBadges(string userId)
         {
+            // Fetch the user including their currently earned badges
             var user = await _context.Users
                 .Include(u => u.UserBadges)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user == null) return;
+            // If user doesn't exist, return an empty list
+            if (user == null) return new List<Badge>();
 
-            var userBadges = user.UserBadges.Select(ub => ub.BadgeId).ToList();
+            // Get a list of badge IDs the user already has
+            var userBadgeIds = user.UserBadges.Select(ub => ub.BadgeId).ToList();
+
+            // Determine which new badges the user has earned but doesn't have yet
+            var earnedBadgeIds = await CalculateEarnedBadges(userId, userBadgeIds);
+
+            // If no new badges were earned, return an empty list
+            if (earnedBadgeIds.Count == 0) return new List<Badge>();
+
+            // Fetch full badge objects for the newly earned badge IDs
+            var badges = await _context.Badges
+                .Where(b => earnedBadgeIds.Contains(b.Id))
+                .ToListAsync();
+
+            // Create new UserBadge entries to represent earned badges
+            var userBadges = badges.Select(badge => new UserBadge
+            {
+                UserId = userId,
+                BadgeId = badge.Id,
+                AwardedAt = DateTime.UtcNow,
+                User = user,
+                Badge = badge
+            }).ToList();
+
+            // Add new UserBadge records to the context
+            _context.UserBadges.AddRange(userBadges);
+
+            // Save all changes to the database
+            await _context.SaveChangesAsync();
+
+            // Return the list of newly earned badges
+            return badges;
+        }
+
+
+        private async Task<List<int>> CalculateEarnedBadges(string userId, List<int> existingBadgeIds)
+        {
             var earned = new List<int>();
 
+            // Load all badge metadata from DB once
+            var allBadges = await _context.Badges.ToListAsync();
+
+            
+
+            // Count user quiz attempts and flawless quizzes
             var quizCount = await _context.QuizResults
-                .Where(q => q.UserId == userId)
-                .CountAsync();
+                
+                .CountAsync(q => q.UserId == userId);
+
             var flawlessCount = await _context.QuizResults
-                .Where(q => q.UserId == userId && q.Score == q.Quiz.Questions.Count)
                 .Include(q => q.Quiz)
                 .ThenInclude(quiz => quiz.Questions)
+                .Where(q => q.UserId == userId && q.Score == q.Quiz.Questions.Count)
                 .CountAsync();
-            
-
-            // Beginner badge
-            if (quizCount >= 1 && !userBadges.Contains(7)) earned.Add(7); // Beginner
-            if (quizCount >= 10 && !userBadges.Contains(8)) earned.Add(8); // Active Participant
-            if (quizCount >= 50 && !userBadges.Contains(9)) earned.Add(9); // Quiz Veteran
-
-            if (flawlessCount >= 1 && !userBadges.Contains(4)) earned.Add(4); // Flawless Victory
-            if (flawlessCount >= 10 && !userBadges.Contains(5)) earned.Add(5); // Perfection Seeker
-            if (flawlessCount >= 50 && !userBadges.Contains(6)) earned.Add(6); // Mastermind
 
             
 
-            foreach (var badgeId in earned)
+            foreach (var badge in allBadges)
             {
-                _context.UserBadges.Add(new UserBadge
-                {
-                    UserId = userId,
-                    BadgeId = badgeId,
-                    AwardedAt = DateTime.UtcNow,
-                    User = user,
-                    Badge = await Get(badgeId)
-                });
-            }
+                
+                if (existingBadgeIds.Contains(badge.Id))
+                    continue;
 
-            await _context.SaveChangesAsync();
+                int stat = badge.Type == "quiz" ? quizCount : flawlessCount;
+                if (stat >= badge.Threshold)
+                    earned.Add(badge.Id);
+            }
+            
+
+            return earned;
         }
     }
 }
+
+
+    
+

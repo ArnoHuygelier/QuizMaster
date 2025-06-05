@@ -34,3 +34,20 @@
         transform: translateY(0);
     }
 }
+
+
+.result-card:hover {
+    transform: scale(1.01);
+}
+
+.status-icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+@media (min-width: 768px) {
+    .result-card {
+        padding: 2rem;
+    }
+}

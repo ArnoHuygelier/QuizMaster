@@ -31,6 +31,8 @@
                 <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
                 <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
                 <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
+                <input type="hidden" name="TimeLeftInSeconds" id="TimeLeftInSeconds"/>
+                <input type="hidden" name="TotalTimeLeft" value="@Model.TotalTimeLeft" />
                 <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar ?? new List<QuestionResultViewModel>()))' />
 
                 <!-- Answer Options (no "required") -->
@@ -45,22 +47,14 @@
                         </button>
                     }
                 </div>
-                @* <div class="list-group mb-4">
-                    @foreach (var answer in Model.Question.Answers)
-                    {
-                        <label class="list-group-item d-flex align-items-center">
-                            <input class="form-check-input me-2" type="radio" name="SelectedAnswerId" value="@answer.Id" />
-                            @answer.AnswerText
-                        </label>
-                    }
-                </div> *@
+                
 
                 <div class="mt-4 d-flex justify-content-between align-items-center">
                     
                     <div id="timer" class="fw-bold text-success fs-4"></div>
 
                     
-                    <button type="submit" class="btn btn-primary" id="submitButton">Next</button>
+                    <button type="submit" class="btn btn-primary" id="submitButton">Skip</button>
                 </div>
             </form>
         </div>
@@ -105,6 +99,8 @@
                 e.preventDefault();
                 return;
             }
+
+            document.getElementById("TimeLeftInSeconds").value = seconds;
 
             if (seconds > 0) {
                 console.log("Handmatige submit - timer nog niet afgelopen");

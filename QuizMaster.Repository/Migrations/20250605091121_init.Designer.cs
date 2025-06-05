@@ -12,8 +12,8 @@ using QuizMaster.Repository;
 namespace QuizMaster.Repository.Migrations
 {
     [DbContext(typeof(QuizMasterDbContext))]
-    [Migration("20250523083204_UpdatedAtColumn")]
-    partial class UpdatedAtColumn
+    [Migration("20250605091121_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,6 +228,13 @@ namespace QuizMaster.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Threshold")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Badge");
@@ -319,6 +326,9 @@ namespace QuizMaster.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CorrectCount")
+                        .HasColumnType("int");
 
                     b.Property<int>("QuizId")
                         .HasColumnType("int");

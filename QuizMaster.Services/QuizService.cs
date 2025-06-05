@@ -24,7 +24,7 @@ namespace QuizMaster.Services
 
         public async Task<IList<Quiz>> FindQuizzesContainingQuestions() // Get all quizzes with atleast 1 question
         {
-            return await _dbContext.Quizzes.Where(x => x.Questions.Count() > 0).Include(q => q.User).Include(c => c.Category).ToListAsync();
+            return await _dbContext.Quizzes.Where(x => x.Questions.Count() > 0).Include(q => q.Questions).Include(q => q.User).Include(c => c.Category).ToListAsync();
         }
 
         public async Task<IList<Quiz>> FindWithQuestions() // Gets all quizzes

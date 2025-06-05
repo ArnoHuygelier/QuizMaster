@@ -31,6 +31,8 @@
                 <input type="hidden" name="CorrectCount" value="@Model.CorrectCount" />
                 <input type="hidden" name="CurrentIndex" value="@Model.CurrentIndex" />
                 <input type="hidden" id="IsTimedOut" name="IsTimedOut" value="false" />
+                <input type="hidden" name="TimeLeftInSeconds" id="TimeLeftInSeconds"/>
+                <input type="hidden" name="TotalTimeLeft" value="@Model.TotalTimeLeft" />
                 <input type="hidden" name="AnswersSoFarJson" value='@Html.Raw(JsonSerializer.Serialize(Model.AnswersSoFar ?? new List<QuestionResultViewModel>()))' />
 
                 <!-- Answer Options (no "required") -->
@@ -97,6 +99,8 @@
                 e.preventDefault();
                 return;
             }
+
+            document.getElementById("TimeLeftInSeconds").value = seconds;
 
             if (seconds > 0) {
                 console.log("Handmatige submit - timer nog niet afgelopen");

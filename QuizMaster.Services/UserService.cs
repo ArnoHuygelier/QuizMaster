@@ -12,8 +12,6 @@ namespace QuizMaster.Services
 {
     public class UserService
     {
-
-
         private readonly QuizMasterDbContext _context;
 
         public UserService(QuizMasterDbContext context)

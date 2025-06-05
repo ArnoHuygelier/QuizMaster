@@ -85,10 +85,7 @@ public class HomeController : Controller
             UserScore = await _quizResultService.GetQuizScoreByUserId(quiz.Id, userId),
 			ImageUrl = quiz.ImageUrl,
 			Id = quiz.Id,
-           TopScorers = topScorers
-
-
-
+            TopScorers = topScorers
         };
 
         if (quiz.Questions == null || !quiz.Questions.Any())

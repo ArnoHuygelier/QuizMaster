@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuizMaster.Services
+namespace QuizMaster.Services.Interfaces
 {
-	public class AvatarService
-	{
+	public class AvatarService : IAvatarService
+    {
 		private readonly QuizMasterDbContext _context;
 
 		public AvatarService(QuizMasterDbContext context)

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuizMaster.Services
+namespace QuizMaster.Services.Interfaces
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly QuizMasterDbContext _context;
 

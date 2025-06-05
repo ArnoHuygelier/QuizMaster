@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
 using QuizMaster.Ui.Mvc.ViewModels.Categories;
 
 
@@ -8,9 +9,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly CategoryService _categoryService;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(CategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }

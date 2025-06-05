@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
 using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
 using QuizMaster.Ui.Mvc.ViewModels.Badges;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 public class BadgesController : Controller
 {
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly BadgeService _badgeService;
+    private readonly IBadgeService _badgeService;
 
-    public BadgesController(BadgeService badgeService, IWebHostEnvironment webHostEnvironment)
+    public BadgesController(IBadgeService badgeService, IWebHostEnvironment webHostEnvironment)
     {
         _webHostEnvironment = webHostEnvironment;
         _badgeService = badgeService;

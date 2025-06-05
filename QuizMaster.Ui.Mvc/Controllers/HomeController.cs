@@ -5,18 +5,18 @@ using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
 using System.Diagnostics;
 using System.Security.Claims;
 using QuizMaster.Ui.Mvc.ViewModels.Leaderboard;
-using System.Threading.Tasks;
+using QuizMaster.Services.Interfaces;
 
 namespace QuizMaster.Ui.Mvc.Controllers;
 
 public class HomeController : Controller
 {
     private readonly QuizService _quizService;
-	private readonly CategoryService _categoryService;
+	private readonly ICategoryService _categoryService;
     private readonly QuizResultService _quizResultService;
     
 
-    public HomeController(QuizService quizService, CategoryService categoryService, QuizResultService quizResultService)
+    public HomeController(QuizService quizService, ICategoryService categoryService, QuizResultService quizResultService)
     {
         _quizService = quizService;
         _categoryService = categoryService;
@@ -27,6 +27,7 @@ public class HomeController : Controller
     [HttpGet]
 	public async Task<IActionResult> Index(int? categoryId)
 	{
+
 		var quizzes = categoryId.HasValue 
 			? await _quizService.FindQuizzesByCategory(categoryId.Value)
 			: await _quizService.FindQuizzesContainingQuestions();
@@ -97,12 +98,6 @@ public class HomeController : Controller
         }
 
         return View(viewModel);
-    }
-
-    public async Task<IActionResult> Categories()
-    {
-        var categories = await _categoryService.Find();
-        return View(categories);
     }
 
     public IActionResult Privacy()

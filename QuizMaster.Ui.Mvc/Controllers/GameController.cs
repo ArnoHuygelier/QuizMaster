@@ -15,10 +15,10 @@ namespace QuizMaster.Ui.Mvc.Controllers
     public class GameController : Controller
     {
         private readonly GameService _gameService;
-        private readonly BadgeService _badgeService;
+        private readonly IBadgeService _badgeService;
 
 
-        public GameController(GameService gameService, BadgeService badgeService)
+        public GameController(GameService gameService, IBadgeService badgeService)
         {
             _gameService = gameService;
             _badgeService = badgeService;

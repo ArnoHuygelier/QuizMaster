@@ -4,6 +4,7 @@ using QuizMaster.Models;
 using QuizMaster.Services;
 using System.Security.Claims;
 using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
+using QuizMaster.Services.Interfaces;
 
 
 namespace QuizMaster.Ui.Mvc.Controllers
@@ -14,10 +15,10 @@ namespace QuizMaster.Ui.Mvc.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly QuizService _quizService;
         private readonly QuestionService _questionService;
-        private readonly AnswerService _answerService;
-        private readonly CategoryService _categoryService;
+        private readonly IAnswerService _answerService;
+        private readonly ICategoryService _categoryService;
 
-        public QuizzesController(QuizService quizService, QuestionService questionService, AnswerService answerService, CategoryService categoryService, IWebHostEnvironment env)
+        public QuizzesController(QuizService quizService, QuestionService questionService, IAnswerService answerService, ICategoryService categoryService, IWebHostEnvironment env)
         {
             _quizService = quizService;
             _questionService = questionService;

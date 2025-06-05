@@ -7,6 +7,7 @@ using QuizMaster.Ui.Mvc.Helpers;
 
 using Microsoft.Data.SqlClient;
 using System.Data;
+using QuizMaster.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,11 +36,11 @@ builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IdentityRole>();
 builder.Services.AddScoped<QuestionService>();
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<AnswerService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
 builder.Services.AddScoped<GameService>();
-builder.Services.AddScoped<BadgeService>();
-builder.Services.AddScoped<AvatarService>();
+builder.Services.AddScoped<IBadgeService, BadgeService>();
+builder.Services.AddScoped<IAvatarService, AvatarService>();
 builder.Services.AddScoped<UserBadgeService>();
 builder.Services.AddScoped<QuizResultService>();
 

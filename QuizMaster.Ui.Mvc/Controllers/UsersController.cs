@@ -111,6 +111,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
             await _userManager.UpdateAsync(user);
 
+            //Make sure user has roles
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
             if (!string.IsNullOrEmpty(model.Role) && await _roleManager.RoleExistsAsync(model.Role))

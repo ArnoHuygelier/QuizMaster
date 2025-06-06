@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 using QuizMaster.Services.Interfaces;
-using QuizMaster.Services.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Game;
-using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Threading.Tasks;
+
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
@@ -37,9 +32,23 @@ namespace QuizMaster.Ui.Mvc.Controllers
         public async Task<IActionResult> Start(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                TempData["FeedbackMessage"] = "You must be logged in to start a quiz.";
+                return RedirectToAction("Index", "Home");
+            }
             var user = await _userService.Get(userId);
+            if (user == null)
+            {
+                TempData["FeedbackMessage"] = "User not found. Please log in again.";
+                return RedirectToAction("Index", "Home");
+            }
             var quiz = await _gameService.Get(id);
-            if (quiz == null) return RedirectToAction("Index", "Home");
+            if (quiz == null)
+            {
+                TempData["FeedbackMessage"] = "Quiz not found.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var firstQuestion = quiz.Questions.OrderBy(q => q.Id).FirstOrDefault();
             if (firstQuestion == null)
@@ -68,20 +77,31 @@ namespace QuizMaster.Ui.Mvc.Controllers
         public async Task<IActionResult> Next([FromForm] AnswerSubmissionViewModel submission)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                TempData["FeedbackMessage"] = "You must be logged in to start a quiz.";
+                return RedirectToAction("Index", "Home");
+            }
             var user = await _userService.Get(userId);
+            if (user == null)
+            {
+                TempData["FeedbackMessage"] = "User not found. Please log in again.";
+                return RedirectToAction("Index", "Home");
+            }
+
             // Get the quiz and questions
             var quiz = await _gameService.Get(submission.QuizId);
             if (quiz == null)
             {
-                Console.WriteLine($"Quiz with ID {submission.QuizId} not found");
-                return RedirectToAction("Error", "Home");
+                TempData["FeedbackMessage"] = "Quiz not found.";
+                return RedirectToAction("Index", "Home");
             }
 
             var questions = quiz.Questions?.OrderBy(q => q.Id).ToList();
             if (questions == null || !questions.Any())
             {
                 Console.WriteLine($"No questions found for quiz {submission.QuizId}");
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Error");
             }
 
             // Deserialize answers so far from JSON string in submission (or create new list)
@@ -109,7 +129,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                     {
                         //Add the time left of this question to the total time left => to calculate the total score
                         submission.TotalTimeLeft += submission.TimeLeftInSeconds;
-                        
+
                     }
                 }
             }
@@ -133,9 +153,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
             {
 
                 var score = submission.TotalTimeLeft * correctCount;
-                var result = await _gameService.CreateResult(quiz.Id, userId, correctCount,score);
+                var result = await _gameService.CreateResult(quiz.Id, userId, correctCount, score);
                 //Update the score in aspNetUser table
-                
+
 
                 user.Score += score;
 
@@ -168,7 +188,16 @@ namespace QuizMaster.Ui.Mvc.Controllers
         public async Task<IActionResult> Finish(int id, int totalTimeLeft, int correctCount = 0)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return NotFound();
+            }
+
             var result = await _gameService.GetResult(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
             var quiz = await _gameService.Get(result.QuizId);
             if (quiz == null)
             {
@@ -178,13 +207,18 @@ namespace QuizMaster.Ui.Mvc.Controllers
             await _hintService.CheckForNewHints(userId);
             var newlyEarnedBadges = await _badgeService.CheckAndAssignBadges(userId);
 
-            
+
 
             // Deserialize the answers from TempData
             var answersJson = TempData["AnsweredQuestions"] as string;
             var questionResults = string.IsNullOrEmpty(answersJson)
                 ? new List<QuestionResultViewModel>()
                 : JsonSerializer.Deserialize<List<QuestionResultViewModel>>(answersJson);
+
+            if (questionResults is null)
+            {
+                return NotFound();
+            }
 
             var viewModel = new QuizResultViewModel
             {
@@ -216,9 +250,19 @@ namespace QuizMaster.Ui.Mvc.Controllers
         public async Task<IActionResult> UseHint(PlayQuestionViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return NotFound();
+            }
             var user = await _userService.Get(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
             if (user.Hints > 0)
             {
+
+                //ToDo: Refactor this logic into the HintService (will need to use DTO's)
                 user.Hints -= 1;
                 await _userService.Update(userId, user);
 
@@ -234,6 +278,10 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 // Keep 1 incorrect and the correct
                 var random = new Random();
                 var randomIncorrect = incorrect.OrderBy(x => random.Next()).Take(1).ToList();
+                if (correct == null || randomIncorrect.Count == 0)
+                {
+                    return NotFound();
+                }
                 var visibleAnswers = new List<int> { correct.Id, randomIncorrect[0].Id };
 
                 TempData["AnswersSoFar"] = JsonSerializer.Serialize(model.AnswersSoFar);
@@ -256,9 +304,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
 
                 return View("Play", viewModel);
             }
-
+            TempData["FeedbackMessage"] = "You have no hints left!";
             return RedirectToAction("Next");
+            
         }
+
+        
 
     }
 }

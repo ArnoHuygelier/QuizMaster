@@ -79,10 +79,10 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.MapControllerRoute(
-    name: "profile",
-    pattern: "{naam}",
-    defaults: new { controller = "Users", action = "Profile" });
+//app.MapControllerRoute(
+//    name: "profile",
+//    pattern: "{naam}",
+//    defaults: new { controller = "Users", action = "Profile" });
 
 app.UseAuthorization();
 

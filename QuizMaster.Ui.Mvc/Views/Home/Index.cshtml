@@ -154,7 +154,12 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
         </button>
     </div>
-
+    @if (TempData["FeedbackMessage"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["FeedbackMessage"]
+        </div>
+    }
     <div class="tag-filter-wrapper">
         <button class="arrow-btn" onclick="scrollTags(-200)">&#8249;</button>
         <div id="tagScroll" class="hide-scrollbar">

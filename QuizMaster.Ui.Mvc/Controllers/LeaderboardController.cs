@@ -2,7 +2,8 @@
 using Microsoft.Build.Framework;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using QuizMaster.Models;
-using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Leaderboard;
 using System.Threading.Tasks;
 
@@ -10,11 +11,11 @@ namespace QuizMaster.Ui.Mvc.Controllers
 {
     public class LeaderboardController : Controller
     {
-        private readonly LeaderboardService _leaderboardService;
-        private readonly QuizResultService _quizResultService;
-        private readonly QuizService _quizService;
+        private readonly ILeaderboardService _leaderboardService;
+        private readonly IQuizResultService _quizResultService;
+        private readonly IQuizService _quizService;
 
-        public LeaderboardController(LeaderboardService leaderboardService, QuizResultService quizResultService, QuizService quizService)
+        public LeaderboardController(ILeaderboardService leaderboardService, IQuizResultService quizResultService, IQuizService quizService)
         {
             _leaderboardService = leaderboardService;
             _quizResultService = quizResultService;

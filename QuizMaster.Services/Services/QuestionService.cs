@@ -1,16 +1,17 @@
-﻿using QuizMaster.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using QuizMaster.Models;
+using QuizMaster.Repository;
+using QuizMaster.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using QuizMaster.Models;
-using System.Runtime.CompilerServices;
 
-namespace QuizMaster.Services
+namespace QuizMaster.Services.Services
 {
-    public class QuestionService
+    public class QuestionService : IQuestionService
     {
         private readonly QuizMasterDbContext _context;
 

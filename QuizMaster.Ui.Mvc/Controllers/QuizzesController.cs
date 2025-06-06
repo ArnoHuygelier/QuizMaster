@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
-using QuizMaster.Services;
-using System.Security.Claims;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
+using System.Security.Claims;
 
 
 namespace QuizMaster.Ui.Mvc.Controllers
@@ -12,12 +13,12 @@ namespace QuizMaster.Ui.Mvc.Controllers
     public class QuizzesController : Controller
     {
         private readonly IWebHostEnvironment _env;
-        private readonly QuizService _quizService;
-        private readonly QuestionService _questionService;
-        private readonly AnswerService _answerService;
-        private readonly CategoryService _categoryService;
+        private readonly IQuizService _quizService;
+        private readonly IQuestionService _questionService;
+        private readonly IAnswerService _answerService;
+        private readonly ICategoryService _categoryService;
 
-        public QuizzesController(QuizService quizService, QuestionService questionService, AnswerService answerService, CategoryService categoryService, IWebHostEnvironment env)
+        public QuizzesController(IQuizService quizService, IQuestionService questionService, IAnswerService answerService, ICategoryService categoryService, IWebHostEnvironment env)
         {
             _quizService = quizService;
             _questionService = questionService;

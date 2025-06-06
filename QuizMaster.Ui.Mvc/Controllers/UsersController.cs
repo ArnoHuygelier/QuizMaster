@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
-using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Users;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public UsersController(UserService service, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(IUserService service, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userService = service;
             _userManager = userManager;

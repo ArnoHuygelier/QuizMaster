@@ -2,18 +2,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
-using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
 	[Authorize]
 	public class UserBadgeController : Controller
 	{
-		private readonly UserBadgeService _badgeService;
-		private readonly UserService _userService;
+		private readonly IUserBadgeService _badgeService;
+		private readonly IUserService _userService;
 		private readonly UserManager<User> _userManager;
 
-		public UserBadgeController(UserBadgeService badgeService, UserService userService, UserManager<User> userManager)
+		public UserBadgeController(IUserBadgeService badgeService, IUserService userService, UserManager<User> userManager)
 		{
 			_badgeService = badgeService;
 			_userService = userService;

@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Repository;
-using QuizMaster.Services;
 using Microsoft.AspNetCore.Identity;
 using QuizMaster.Models;
 using QuizMaster.Ui.Mvc.Helpers;
 
 using Microsoft.Data.SqlClient;
 using System.Data;
+using QuizMaster.Services.Services;
+using QuizMaster.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,19 +31,19 @@ builder.Services.AddDefaultIdentity<User>(options =>
 	.AddEntityFrameworkStores<QuizMasterDbContext>();
 
 // Add services here
-builder.Services.AddScoped<LeaderboardService>();
-builder.Services.AddScoped<QuizService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IdentityRole>();
-builder.Services.AddScoped<QuestionService>();
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<AnswerService>();
-builder.Services.AddScoped<GameService>();
-builder.Services.AddScoped<BadgeService>();
-builder.Services.AddScoped<AvatarService>();
-builder.Services.AddScoped<UserBadgeService>();
-builder.Services.AddScoped<QuizResultService>();
-builder.Services.AddScoped<HintService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IBadgeService, BadgeService>();
+builder.Services.AddScoped<IAvatarService, AvatarService>();
+builder.Services.AddScoped<IUserBadgeService, UserBadgeService>();
+builder.Services.AddScoped<IQuizResultService, QuizResultService>();
+builder.Services.AddScoped<IHintService, HintService>();
 
 
 

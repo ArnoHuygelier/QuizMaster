@@ -2,17 +2,18 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizMaster.Models;
-using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
 	[Authorize]
 	public class QuizResultController : Controller
 	{
-		private readonly QuizResultService _quizResultService;
+		private readonly IQuizResultService _quizResultService;
 		private readonly UserManager<User> _userManager;
 
-		public QuizResultController(QuizResultService quizResultService, UserManager<User> userManager)
+		public QuizResultController(IQuizResultService quizResultService, UserManager<User> userManager)
 		{
 			_quizResultService = quizResultService;
 			_userManager = userManager;

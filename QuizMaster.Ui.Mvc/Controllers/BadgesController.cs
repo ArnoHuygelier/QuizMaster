@@ -40,7 +40,7 @@ public class BadgesController : Controller
     [HttpGet]
     public IActionResult Create()
     {
-        return View(new CreateBadgeViewModel());
+        return View();
     }
 
     [HttpPost]
@@ -64,7 +64,9 @@ public class BadgesController : Controller
         {
             Name = vm.Name,
             Description = vm.Description,
-            ImageUrl = "/images/badges/" + imageName
+            ImageUrl = "/images/badges/" + imageName,
+            Type = vm.Type,
+            Threshold = vm.Threshold
 
         };
 
@@ -85,7 +87,9 @@ public class BadgesController : Controller
             Id = badge.Id,
             Name = badge.Name,
             Description = badge.Description,
-            ImageUrl = badge.ImageUrl
+            ImageUrl = badge.ImageUrl,
+            Type = badge.Type,
+            Threshold = badge.Threshold
         };
 
         ViewData["Id"] = id;
@@ -123,7 +127,9 @@ public class BadgesController : Controller
             Id = id,
             Name = vm.Name,
             Description = vm.Description,
-            ImageUrl = imageUrl
+            ImageUrl = imageUrl,
+            Type = vm.Type,
+            Threshold = vm.Threshold
         };
 
         await _badgeService.Update(id, updatedBadge);

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QuizMaster.Models.Enums;
 
 namespace QuizMaster.Models
 {
@@ -16,7 +17,7 @@ namespace QuizMaster.Models
 
         public required string ImageUrl { get; set; }
 
-        public string Type { get; set; }
+        public BadgeType Type { get; set; }
         public int Threshold { get; set; }
         public  ICollection<UserBadge> UserBadges { get; set; } = new List<UserBadge>();
 	}

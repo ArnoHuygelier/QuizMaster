@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
+using QuizMaster.Models.Enums;
 using QuizMaster.Repository;
 
 
@@ -113,38 +114,50 @@ namespace QuizMaster.Services
 
         private async Task<List<int>> CalculateEarnedBadges(string userId, List<int> existingBadgeIds)
         {
-            
+
             var earned = new List<int>();
 
-            // Load all badge metadata from DB once
+            // 1. Load all badge definitions from the database
             var allBadges = await _context.Badges.ToListAsync();
 
-            
-
-            // Count user quiz attempts and flawless quizzes
+            // 2. Count the number of quizzes the user has taken
             var quizCount = await _context.QuizResults
-                
                 .CountAsync(q => q.UserId == userId);
 
+            // 3. Count the number of flawless quizzes (all questions answered correctly)
             var flawlessCount = await _context.QuizResults
                 .Include(q => q.Quiz)
                 .ThenInclude(quiz => quiz.Questions)
                 .Where(q => q.UserId == userId && q.CorrectCount == q.Quiz.Questions.Count)
                 .CountAsync();
 
-            
+            // 4. Placeholder: Calculate average or total score for Score-based badges
+            // TODO: Replace with your own logic
+            var scoreCount = await _context.QuizResults
+                .Where(q => q.UserId == userId)
+                .SumAsync(q => q.CorrectCount); // or use AverageAsync
 
+            ;
+
+            // 6. Loop through all badges and check if the user qualifies for any new ones
             foreach (var badge in allBadges)
             {
-                
                 if (existingBadgeIds.Contains(badge.Id))
-                    continue;
+                    continue; // Skip badges the user already earned
 
-                int stat = badge.Type == "quiz" ? quizCount : flawlessCount;
+                // Match badge type to relevant user stat
+                int stat = badge.Type switch
+                {
+                    BadgeType.Quiz => quizCount,
+                    BadgeType.Flawless => flawlessCount,
+                    BadgeType.Score => scoreCount,
+                    _ => 0 // default fallback (could also log unexpected types)
+                };
+
+                // 7. If the user's stat meets or exceeds the badge threshold, add to earned
                 if (stat >= badge.Threshold)
                     earned.Add(badge.Id);
             }
-            
 
             return earned;
         }

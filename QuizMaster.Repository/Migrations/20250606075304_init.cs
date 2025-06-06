@@ -48,7 +48,7 @@ namespace QuizMaster.Repository.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     Threshold = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -98,7 +98,8 @@ namespace QuizMaster.Repository.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     NewsLetter = table.Column<bool>(type: "bit", nullable: false),
                     AvatarId = table.Column<int>(type: "int", nullable: true),
-                    Score = table.Column<int>(type: "int", nullable: true),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    Hints = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

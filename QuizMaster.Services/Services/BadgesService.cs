@@ -138,7 +138,6 @@ namespace QuizMaster.Services.Services
                 .Where(q => q.UserId == userId)
                 .SumAsync(q => q.CorrectCount); // or use AverageAsync
 
-            ;
 
             // 6. Loop through all badges and check if the user qualifies for any new ones
             foreach (var badge in allBadges)
@@ -164,7 +163,3 @@ namespace QuizMaster.Services.Services
         }
     }
 }
-
-
-    
-

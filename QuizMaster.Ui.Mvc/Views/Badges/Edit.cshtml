@@ -22,6 +22,21 @@
                 <label asp-for="Description"></label>
                 <input asp-for="Description" class="form-control" />
             </div>
+            
+            <div>
+                <label asp-for="Type"></label>
+                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<QuizMaster.Models.Enums.BadgeType>()">
+                    <option value="">-- Select Type --</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger small"></span>
+            </div>
+
+            <div>
+                <label asp-for="Threshold"></label>
+                <input asp-for="Threshold" class="form-control" type="number" min="0" />
+                <span asp-validation-for="Threshold" class="text-danger small"></span>
+            </div>
+
 
             <div>
                 <label>Current Image</label><br />

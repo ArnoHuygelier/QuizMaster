@@ -25,8 +25,11 @@ builder.Services.AddDbContext<QuizMasterDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.AddDefaultIdentity<User>(options => 
-     options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<User>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = true;
+        options.User.RequireUniqueEmail = true;
+    })
     .AddRoles<IdentityRole>()
 	.AddEntityFrameworkStores<QuizMasterDbContext>();
 

@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 using QuizMaster.Repository;
+using QuizMaster.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuizMaster.Services
+namespace QuizMaster.Services.Services
 {
-	public class UserBadgeService
-	{
+	public class UserBadgeService : IUserBadgeService
+    {
 		private readonly QuizMasterDbContext _context;
 
 		public UserBadgeService(QuizMasterDbContext context)

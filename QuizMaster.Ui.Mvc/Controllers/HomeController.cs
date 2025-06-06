@@ -1,22 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
-using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 using QuizMaster.Ui.Mvc.ViewModels;
+using QuizMaster.Ui.Mvc.ViewModels.Leaderboard;
 using QuizMaster.Ui.Mvc.ViewModels.Quizzes;
 using System.Diagnostics;
 using System.Security.Claims;
-using QuizMaster.Ui.Mvc.ViewModels.Leaderboard;
 using System.Threading.Tasks;
 
 namespace QuizMaster.Ui.Mvc.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly QuizService _quizService;
-	private readonly CategoryService _categoryService;
-    private readonly QuizResultService _quizResultService;
+    private readonly IQuizService _quizService;
+	private readonly ICategoryService _categoryService;
+    private readonly IQuizResultService _quizResultService;
     
 
-    public HomeController(QuizService quizService, CategoryService categoryService, QuizResultService quizResultService)
+    public HomeController(IQuizService quizService, ICategoryService categoryService, IQuizResultService quizResultService)
     {
         _quizService = quizService;
         _categoryService = categoryService;

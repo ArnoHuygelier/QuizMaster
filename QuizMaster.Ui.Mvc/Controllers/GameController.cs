@@ -1,29 +1,30 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
-using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Game;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
 
 namespace QuizMaster.Ui.Mvc.Controllers
 {
     [Authorize]
     public class GameController : Controller
     {
-        private readonly GameService _gameService;
-        private readonly BadgeService _badgeService;
-        private readonly UserService _userService;
-        private readonly QuestionService _questionService;
-        private readonly HintService _hintService;
+        private readonly IGameService _gameService;
+        private readonly IBadgeService _badgeService;
+        private readonly IUserService _userService;
+        private readonly IQuestionService _questionService;
+        private readonly IHintService _hintService;
 
 
-        public GameController(GameService gameService, UserService userService, BadgeService badgeService, QuestionService questionService,HintService hintService)
+        public GameController(IGameService gameService, IUserService userService, IBadgeService badgeService, IQuestionService questionService, IHintService hintService)
         {
             _gameService = gameService;
             _badgeService = badgeService;

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
-using QuizMaster.Services;
+using QuizMaster.Services.Interfaces;
+using QuizMaster.Services.Services;
 using QuizMaster.Ui.Mvc.ViewModels.Avatars;
 using QuizMaster.Ui.Mvc.ViewModels.Categories;
 using System.Threading.Tasks;
@@ -10,9 +11,9 @@ namespace QuizMaster.Ui.Mvc.Controllers
 {
 	public class AvatarController : Controller
 	{
-		private readonly AvatarService _avatarService;
+		private readonly IAvatarService _avatarService;
 
-		public AvatarController(AvatarService avatarService)
+		public AvatarController(IAvatarService avatarService)
 		{
 			_avatarService = avatarService;
 		}

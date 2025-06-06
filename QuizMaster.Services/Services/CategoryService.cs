@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuizMaster.Models;
 using QuizMaster.Repository;
+using QuizMaster.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuizMaster.Services
+namespace QuizMaster.Services.Services
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly QuizMasterDbContext _context;
 

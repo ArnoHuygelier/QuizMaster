@@ -133,7 +133,7 @@ namespace QuizMaster.Services.Services
                 .CountAsync();
 
             // 4. Placeholder: Calculate average or total score for Score-based badges
-            // TODO: Replace with your own logic
+            // TODO: Replace with custom logic
             var scoreCount = await _context.QuizResults
                 .Where(q => q.UserId == userId)
                 .SumAsync(q => q.CorrectCount); // or use AverageAsync

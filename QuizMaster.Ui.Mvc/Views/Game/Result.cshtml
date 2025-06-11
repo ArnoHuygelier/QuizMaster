@@ -83,6 +83,18 @@
         </div>
     </div>
 }
+@section Toasts
+{
+    <div id="toast" class="toast align-items-center text-white bg-success border-0 position-fixed top-0 start-50 translate-middle-x mt-3 p-3" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-autohide="true">
+        <div class="toast-header">
+            <strong class="me-auto">New Hint</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            You received a new hint
+        </div>
+    </div>
+}
 
 @section Scripts {
     <script>
@@ -91,6 +103,12 @@
             if (badgeCount > 0) {
                 const badgeModal = new bootstrap.Modal(document.getElementById('badgesModal'));
                 badgeModal.show();
+            }
+            const newHint = @(ViewBag.NewHint != null && (bool)ViewBag.NewHint ? "true" : "false");
+            if (newHint === true) {
+                const toastDiv = document.getElementById('toast');
+                const toast = new bootstrap.Toast(toastDiv);
+                toast.show();
             }
         });
     </script>

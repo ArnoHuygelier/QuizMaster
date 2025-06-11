@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuizMaster.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace QuizMaster.Services.Interfaces
 {
     public interface IHintService
     {
-        Task CheckForNewHints(string userId);
+        Task<bool> CheckForNewHints(string userId);
+        
     }
 }

@@ -204,7 +204,7 @@ namespace QuizMaster.Ui.Mvc.Controllers
                 return RedirectToAction("Error");
             }
 
-            await _hintService.CheckForNewHints(userId);
+            ViewBag.NewHint = await _hintService.CheckForNewHints(userId);
             var newlyEarnedBadges = await _badgeService.CheckAndAssignBadges(userId);
 
 

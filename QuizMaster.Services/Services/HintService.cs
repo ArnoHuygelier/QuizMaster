@@ -20,26 +20,51 @@ namespace QuizMaster.Services.Services
         }
 
 
-        public async Task CheckForNewHints(string userId)
+        public async Task<bool> CheckForNewHints(string userId)
         {
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            //  Hint logic
+            if (user is null)
+            {
+                return false;
+            }
+
             var flawlessCount = await _context.QuizResults
                 .Include(q => q.Quiz)
                 .ThenInclude(quiz => quiz.Questions)
                 .Where(q => q.UserId == userId && q.CorrectCount == q.Quiz.Questions.Count)
                 .CountAsync();
 
-            
-            if (flawlessCount > 0 && flawlessCount % 3 == 0 && user.Hints < 3)
+            var lastQuizzes = await _context.QuizResults
+                .Where(q => q.UserId == userId)
+                .OrderByDescending(q => q.SubmittedAt)
+                .Take(3)
+                .ToListAsync();
+
+            bool newHintAdded = false;
+            if (user.Hints < 3 && CheckHintParameters(flawlessCount,lastQuizzes))
             {
                 user.Hints += 1;
+                newHintAdded = true;
             }
 
+
             await _context.SaveChangesAsync();
+            return newHintAdded;
+
+        }
+
+        private bool CheckHintParameters(int flawlessCount, List<QuizResult> lastThreeQuizzes)
+        {
+            if (flawlessCount > 0 && flawlessCount % 3 == 0 || lastThreeQuizzes.All(q => q.Score >= 500))
+            {
+                return true;
+
+            }
+
+            return false;
         }
 
     }

@@ -49,39 +49,39 @@
 </div>
 
 @section Modals {
-    <div class="modal fade" id="badgesModal" tabindex="-1" aria-labelledby="badgesModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="badgesModalLabel">Badges Earned!</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    @if (Model.BadgesEarned != null && Model.BadgesEarned.Any())
-                    {
-                        <p>Congratulations! You've earned the following badges:</p>
-                        <div class="row g-3">
-                            @foreach (var badge in Model.BadgesEarned)
-                            {
-                                <div class="col-md-4 text-center">
-                                    <img src="@badge.ImageUrl" alt="@badge.Name" class="img-fluid mb-2" style="max-height: 80px;" />
-                                    <h6>@badge.Name</h6>
-                                    <p class="text-muted small">@badge.Description</p>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p>No new badges earned this time. Keep playing!</p>
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Awesome!</button>
-                </div>
+<div class="modal fade" id="badgesModal" tabindex="-1" aria-labelledby="badgesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title" id="badgesModalLabel">Badges Earned!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                @if (Model.BadgesEarned != null && Model.BadgesEarned.Any())
+                {
+                    <p class="text-center">Congratulations! You've earned the following badges:</p>
+                    <div class="row g-3 justify-content-center">
+                        @foreach (var badge in Model.BadgesEarned)
+                        {
+                            <div class="col-md-4 text-center">
+                                <img src="@badge.ImageUrl" alt="@badge.Name" class="img-fluid mb-2" style="max-height: 80px;" />
+                                <h6 class="text-center">@badge.Name</h6>
+                                <p class="text-muted small text-center">@badge.Description</p>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-center">No new badges earned this time. Keep playing!</p>
+                }
+            </div>
+            <div class="modal-footer text-center d-flex justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Awesome!</button>
             </div>
         </div>
     </div>
+</div>
 }
 
 @section Scripts {

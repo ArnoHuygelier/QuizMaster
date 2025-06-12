@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿    using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace QuizMaster.Ui.Mvc.TagHelpers
 {
@@ -27,6 +27,13 @@ namespace QuizMaster.Ui.Mvc.TagHelpers
     [HtmlTargetElement("quiz-image")]
     public class QuizImageTagHelper : TagHelper
     {
+        private readonly IWebHostEnvironment _env;
+
+        public QuizImageTagHelper(IWebHostEnvironment env)
+        {
+            _env = env;
+        }
+
         [HtmlAttributeName("image-url")]
         public string? ImageUrl { get; set; }
 
@@ -47,9 +54,23 @@ namespace QuizMaster.Ui.Mvc.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            string resolvedUrl = string.IsNullOrWhiteSpace(ImageUrl)
-                ? "/images/quizimage/defaultQuiz.png"
-                : $"/images/quizimage/{ImageUrl}";
+            string resolvedUrl;
+            if (string.IsNullOrWhiteSpace(ImageUrl))
+            {
+                resolvedUrl = "/images/quizimage/defaultQuiz.png";
+            }
+            else
+            {
+                var imagePath = Path.Combine(_env.WebRootPath, "images", "quizimage", ImageUrl);
+                if (!File.Exists(imagePath))
+                {
+                    resolvedUrl = "/images/quizimage/defaultQuiz.png";
+                }
+                else
+                {
+                    resolvedUrl = $"/images/quizimage/{ImageUrl}";
+                }
+            }
 
             output.TagName = "img";
             output.TagMode = TagMode.SelfClosing;

@@ -60,7 +60,7 @@
                             <tr>
                                 <td>@result.Quiz.Title</td>
                                 <td class="quiz-score">@result.Score</td>
-                                <td class="quiz-submitted">@result.SubmittedAt</td>
+                                <td class="quiz-submitted">@result.SubmittedAt.ToShortDateString()</td>
                             </tr>
                         }
                     </tbody>

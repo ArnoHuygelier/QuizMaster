@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 using QuizMaster.Models;
 using QuizMaster.Services.Interfaces;
 using QuizMaster.Services.Services;
@@ -80,9 +81,17 @@ namespace QuizMaster.Ui.Mvc.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-           await _categoryService.Delete(id);
+            try
+            {
+                await _categoryService.Delete(id);
+                return RedirectToAction("Index");
 
-            return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+
         }
 
         private IActionResult CreateView(string viewName, Category? category = null)

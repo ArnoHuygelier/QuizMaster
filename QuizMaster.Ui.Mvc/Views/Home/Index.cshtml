@@ -3,7 +3,6 @@
 @model IEnumerable<QuizMaster.Models.Quiz>
 @{
     ViewData["Title"] = "Home Page";
-     
 }
 
 <style>
@@ -135,31 +134,45 @@
             background-color: #e9ecef;
             border-color: #dee2e6;
         }
+
+    .hero-banner {
+        height: 400px;
+        background-color: #000;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+    .hero-content {
+        z-index: 2;
+        max-width: 90%;
+    }
 </style>
 
 <div class="container py-4">
-    <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="images/slider.png" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item">
-                <img src="images/slider.png" class="d-block w-100" alt="...">
-            </div>
+
+    <!-- Modern Hero Banner -->
+    <div class="hero-banner position-relative rounded-4 overflow-hidden mb-4">
+        <img src="images/Backgroundhero.jpg" alt="Hero Banner" class="w-100 h-100 object-fit-cover">
+        <div class="hero-content position-absolute top-50 start-50 translate-middle text-center text-white px-3">
+            <h1 class="display-5 fw-bold mb-3">Welcome to QuizMaster</h1>
+            <p class="lead mb-4">Challenge your mind. Explore quizzes. Level up.</p>
+            <a href="#quizContainer" class="btn btn-dark btn-lg px-4 py-2 rounded-pill shadow">Browse Quizzes</a>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
     </div>
+
     @if (TempData["FeedbackMessage"] != null)
     {
         <div class="alert alert-warning">
             @TempData["FeedbackMessage"]
         </div>
     }
+
     <div class="tag-filter-wrapper">
         <button class="arrow-btn" onclick="scrollTags(-200)">&#8249;</button>
         <div id="tagScroll" class="hide-scrollbar">
@@ -178,7 +191,6 @@
         </div>
         <button class="arrow-btn" onclick="scrollTags(200)">&#8250;</button>
     </div>
-
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="quizContainer">
         @foreach (var quiz in Model)

@@ -1,5 +1,4 @@
-﻿using QuizMaster.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace QuizMaster.Services.Interfaces
 {
-    public interface IHintService
+    public interface IEndGameService
     {
-        Task<bool> CheckForNewHints(string userId);
-        
+       Task<(int quizCount, int flawlessCount)> GetQuizStatsAsync(string userId);
     }
 }

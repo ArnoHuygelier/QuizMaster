@@ -47,6 +47,9 @@ builder.Services.AddScoped<IAvatarService, AvatarService>();
 builder.Services.AddScoped<IUserBadgeService, UserBadgeService>();
 builder.Services.AddScoped<IQuizResultService, QuizResultService>();
 builder.Services.AddScoped<IHintService, HintService>();
+builder.Services.AddScoped<IEndGameService, EndGameService>();
+builder.Services.AddScoped<EndGameService>();
+
 
 
 

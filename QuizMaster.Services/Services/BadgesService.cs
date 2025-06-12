@@ -3,17 +3,21 @@ using QuizMaster.Models;
 using QuizMaster.Models.Enums;
 using QuizMaster.Repository;
 using QuizMaster.Services.Interfaces;
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuizMaster.Services.Services
 {
     public class BadgeService : IBadgeService
     {
         private readonly QuizMasterDbContext _context;
+        private readonly EndGameService _endGameService;
 
-        public BadgeService(QuizMasterDbContext context)
+        public BadgeService(QuizMasterDbContext context, EndGameService endGameService)
         {
             _context = context;
+            _endGameService = endGameService;
         }
 
         public async Task<ICollection<Badge>> Find()
@@ -115,46 +119,43 @@ namespace QuizMaster.Services.Services
 
         private async Task<List<int>> CalculateEarnedBadges(string userId, List<int> existingBadgeIds)
         {
-
             var earned = new List<int>();
 
-            // 1. Load all badge definitions from the database
+            
             var allBadges = await _context.Badges.ToListAsync();
 
-            // 2. Count the number of quizzes the user has taken
-            var quizCount = await _context.QuizResults
-                .CountAsync(q => q.UserId == userId);
+            
+            var (quizCount, flawlessCount) = await _endGameService.GetQuizStatsAsync(userId);
 
-            // 3. Count the number of flawless quizzes (all questions answered correctly)
-            var flawlessCount = await _context.QuizResults
-                .Include(q => q.Quiz)
-                .ThenInclude(quiz => quiz.Questions)
-                .Where(q => q.UserId == userId && q.CorrectCount == q.Quiz.Questions.Count)
-                .CountAsync();
-
-            // 4. Placeholder: Calculate average or total score for Score-based badges
-            // TODO: Replace with custom logic
+            
             var scoreCount = await _context.QuizResults
                 .Where(q => q.UserId == userId)
-                .SumAsync(q => q.CorrectCount); // or use AverageAsync
+                .SumAsync(q => q.CorrectCount);
 
 
-            // 6. Loop through all badges and check if the user qualifies for any new ones
+            //Loop through all badges and check if the user qualifies for any new ones
             foreach (var badge in allBadges)
             {
                 if (existingBadgeIds.Contains(badge.Id))
-                    continue; // Skip badges the user already earned
+                    continue;
 
-                // Match badge type to relevant user stat
-                int stat = badge.Type switch
+                int stat;
+                switch (badge.Type)
                 {
-                    BadgeType.Quiz => quizCount,
-                    BadgeType.Flawless => flawlessCount,
-                    BadgeType.Score => scoreCount,
-                    _ => 0 // default fallback (could also log unexpected types)
-                };
+                    case BadgeType.Quiz:
+                        stat = quizCount;
+                        break;
+                    case BadgeType.Flawless:
+                        stat = flawlessCount;
+                        break;
+                    case BadgeType.Score:
+                        stat = scoreCount;
+                        break;
+                    default:
+                        stat = 0;
+                        break;
+                }
 
-                // 7. If the user's stat meets or exceeds the badge threshold, add to earned
                 if (stat >= badge.Threshold)
                     earned.Add(badge.Id);
             }
